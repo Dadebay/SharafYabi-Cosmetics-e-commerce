@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "1069011072291",
+    "project_id": "sharafyabi-4293c",
+    "storage_bucket": "sharafyabi-4293c.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1069011072291:android:6e2314726c7a71c94f8896",
+        "android_client_info": {
+          "package_name": "com.bilermennesil.sharafyabi"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1069011072291-8uqp9qprjbfe75e53ls3g03ft0p79r7b.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAGOPaUjBwRsNQbCMndUaqJNC6RHXBQstQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1069011072291-8uqp9qprjbfe75e53ls3g03ft0p79r7b.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

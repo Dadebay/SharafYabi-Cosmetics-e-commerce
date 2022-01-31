@@ -1,0 +1,11 @@
+include: package:lint/analysis_options.yaml
+analyzer:
+  errors:
+    argument_type_not_assignable: ignore
+    invalid_assignment: ignore
+    for_in_of_invalid_element_type: ignore
+ 
+
+linter:
+  rules:
+    require_trailing_commas: false
