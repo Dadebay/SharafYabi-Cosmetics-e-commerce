@@ -19,12 +19,12 @@ class AgreeButton extends StatelessWidget {
         onTap: onTap,
         child: PhysicalModel(
           elevation: 4,
-          borderRadius: borderRadius10,
+          borderRadius: borderRadius15,
           color: kPrimaryColor,
           shadowColor: Colors.black,
           child: AnimatedContainer(
             decoration: const BoxDecoration(
-              borderRadius: borderRadius10,
+              borderRadius: borderRadius15,
               color: kPrimaryColor,
             ),
             padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 12),

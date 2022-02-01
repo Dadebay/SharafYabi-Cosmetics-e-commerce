@@ -17,7 +17,6 @@ class _AddCartButton2State extends State<AddCartButton2> {
   int quantityMine = 1;
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     quantityMine = widget.quantity;
     if (quantityMine > 1) addCart = true;
@@ -69,12 +68,11 @@ class _AddCartButton2State extends State<AddCartButton2> {
                   GestureDetector(
                     onTap: () {
                       setState(() {
-                        Get.find<Fav_Cart_Controller>().cartList.forEach((element) {
-                          if (element["id"] == widget.id) {
-                            quantityMine++;
-                            element["count"]++;
-                          }
-                        });
+                        print(Get.find<Fav_Cart_Controller>().cartList);
+                        Get.find<Fav_Cart_Controller>().addCart(widget.id!);
+                        print(Get.find<Fav_Cart_Controller>().cartList);
+
+                        quantityMine++;
                       });
                     },
                     child: PhysicalModel(

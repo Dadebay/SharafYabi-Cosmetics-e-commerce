@@ -68,7 +68,7 @@ class BrandCard extends StatelessWidget {
                 "${brand.name}",
                 overflow: TextOverflow.ellipsis,
                 textAlign: TextAlign.center,
-                maxLines: 2,
+                maxLines: 1,
                 style: const TextStyle(color: Colors.black, fontFamily: montserratMedium),
               ),
             )

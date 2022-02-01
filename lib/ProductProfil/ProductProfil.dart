@@ -6,7 +6,7 @@ import 'package:lottie/lottie.dart';
 import 'package:sharaf_yabi_ecommerce/components/compackages.dart';
 import 'package:sharaf_yabi_ecommerce/controllers/CartPageController.dart';
 
-import 'PhotoView.dart';
+import '../components/PhotoView.dart';
 
 class ProductProfil extends StatefulWidget {
   final int? id;
@@ -72,7 +72,6 @@ class _ProductProfilState extends State<ProductProfil> {
           child: FutureBuilder<ProductProfilModel>(
               future: ProductProfilModel().getRealEstatesById(widget.id),
               builder: (context, snapshot) {
-                print(snapshot.error);
                 if (snapshot.hasError) {
                   return Container(
                       height: Get.size.height - 200,
@@ -246,11 +245,76 @@ class _ProductProfilState extends State<ProductProfil> {
     return Container(width: Get.size.width, padding: const EdgeInsets.all(20), margin: const EdgeInsets.only(top: 15), color: Colors.white, child: widget);
   }
 
+  Widget bottomSheetMine() {
+    return Container(
+      width: Get.size.width,
+      padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
+      decoration: const BoxDecoration(
+        borderRadius: BorderRadius.only(topLeft: Radius.circular(20), topRight: Radius.circular(20)),
+        color: Color(0xff2f2b33),
+      ),
+      child: Row(
+        children: [
+          GestureDetector(
+            onTap: () {
+              Get.find<Fav_Cart_Controller>().toggleFav(widget.id!);
+              favCartController.favBool.value = !favCartController.favBool.value;
+            },
+            child: Container(
+                padding: const EdgeInsets.all(10),
+                margin: const EdgeInsets.only(left: 12),
+                decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(18)),
+                child: Obx(() {
+                  return Icon(IconlyBold.heart, size: 28, color: favCartController.favBool.value ? Colors.red : Colors.grey);
+                })),
+          ),
+          Expanded(
+            child: Obx(() {
+              return AnimatedCrossFade(
+                crossFadeState: favCartController.addCartBool.value ? CrossFadeState.showFirst : CrossFadeState.showSecond,
+                duration: const Duration(seconds: 5),
+                firstChild: GestureDetector(
+                  onTap: () {
+                    if (priceOLD != 0.0) {
+                      favCartController.addCartBool.value = !favCartController.addCartBool.value;
+                      final int? a = widget.id;
+                      Get.find<Fav_Cart_Controller>().addCart(a!);
+                    } else {
+                      showSnackBar("retry", "error404", Colors.red);
+                    }
+                  },
+                  child: Container(
+                    decoration: const BoxDecoration(color: kPrimaryColor, borderRadius: borderRadius20),
+                    margin: const EdgeInsets.all(8),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Expanded(child: Text("addCart3".tr, textAlign: TextAlign.center, style: const TextStyle(color: Colors.white, fontSize: 18, fontFamily: montserratSemiBold))),
+                        Container(
+                          padding: const EdgeInsets.all(10),
+                          margin: const EdgeInsets.all(4),
+                          decoration: BoxDecoration(color: Colors.white.withOpacity(0.4), borderRadius: borderRadius15),
+                          child: const Icon(CupertinoIcons.plus, size: 24, color: Colors.white),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                secondChild: Text("asdasd"),
+              );
+            }),
+          ),
+        ],
+      ),
+    );
+  }
+
   AppBar appBar() {
     return AppBar(
       automaticallyImplyLeading: false,
       backgroundColor: Colors.white,
       elevation: 1,
+      systemOverlayStyle: const SystemUiOverlayStyle(statusBarColor: kPrimaryColor),
       centerTitle: true,
       leadingWidth: 25,
       leading: IconButton(
@@ -268,106 +332,11 @@ class _ProductProfilState extends State<ProductProfil> {
           },
           child: Image.asset("assets/icons/share.png", width: 27, color: Colors.black),
         ),
-        Obx(() {
-          return GestureDetector(
-            onTap: () {
-              Get.find<Fav_Cart_Controller>().toggleFav(widget.id!);
-              favCartController.favBool.value = !favCartController.favBool.value;
-            },
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 15),
-              child: Icon(favCartController.favBool.value == true ? IconlyBold.heart : IconlyLight.heart, color: favCartController.favBool.value == true ? Colors.red : Colors.black, size: 28),
-            ),
-          );
-        }),
       ],
       title: Text(
         name,
         style: const TextStyle(color: Colors.black, fontFamily: montserratMedium, fontSize: 18),
       ),
     );
-  }
-
-  Widget bottomSheetMine() {
-    return Obx(() {
-      return Container(
-        color: kPrimaryColor,
-        width: Get.size.width,
-        child: favCartController.addCartBool.value
-            ? Row(
-                children: [
-                  RaisedButton(
-                      padding: const EdgeInsets.symmetric(vertical: 14),
-                      color: Colors.white,
-                      elevation: 2,
-                      onPressed: () {
-                        Get.find<Fav_Cart_Controller>().cartList.forEach((element) {
-                          if (element["id"] == widget.id) {
-                            favCartController.quantity.value--;
-                            Get.find<CartPageController>().removeCard(element["id"]);
-
-                            element["count"]--;
-                            if (favCartController.quantity.value == 0) {
-                              favCartController.addCartBool.value = false;
-                            }
-                          }
-                        });
-                      },
-                      child: const Icon(CupertinoIcons.minus_circled, color: kPrimaryColor, size: 34)),
-                  Expanded(
-                    child: Container(
-                        color: kPrimaryColor,
-                        child: Text(
-                          "${favCartController.quantity.value}",
-                          textAlign: TextAlign.center,
-                          style: const TextStyle(color: Colors.white, fontFamily: montserratBold, fontSize: 24),
-                        )),
-                  ),
-                  RaisedButton(
-                      padding: const EdgeInsets.symmetric(vertical: 14),
-                      color: Colors.white,
-                      elevation: 2,
-                      onPressed: () {
-                        Get.find<Fav_Cart_Controller>().cartList.forEach((element) {
-                          if (element["id"] == widget.id) {
-                            if (favCartController.stockCount.value > (element["count"] + 1)) {
-                              favCartController.quantity.value++;
-                              Get.find<CartPageController>().addToCard(element["id"]);
-                              element["count"]++;
-                            } else {
-                              showSnackBar("emptyStockMin", "emptyStockSubtitle", Colors.red);
-                            }
-                          }
-                        });
-                      },
-                      child: const Icon(CupertinoIcons.add_circled, color: kPrimaryColor, size: 34)),
-                ],
-              )
-            : RaisedButton(
-                onPressed: () {
-                  if (priceOLD != 0.0) {
-                    favCartController.addCartBool.value = !favCartController.addCartBool.value;
-                    final int? a = widget.id;
-                    Get.find<Fav_Cart_Controller>().addCart(a!);
-                  } else {
-                    showSnackBar("retry", "error404", Colors.red);
-                  }
-                },
-                color: kPrimaryColor.withOpacity(0.8),
-                disabledColor: kPrimaryColor.withOpacity(0.8),
-                padding: const EdgeInsets.symmetric(vertical: 15),
-                highlightColor: Colors.white.withOpacity(0.4),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 10),
-                      child: Icon(IconlyLight.buy, size: 28, color: Colors.white),
-                    ),
-                    Text("addCart3".tr, textAlign: TextAlign.center, style: const TextStyle(color: Colors.white, fontFamily: montserratSemiBold, fontSize: 20)),
-                  ],
-                )),
-      );
-    });
   }
 }

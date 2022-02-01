@@ -336,7 +336,6 @@ class _ShowAllProductsPageState extends State<ShowAllProductsPage> {
                 onPressed: () {
                   filterController.loading.value = 0;
                   filterController.list.clear();
-                  if (filterController.categoryID.isEmpty) filterController.mainCategoryID.value = 0;
                   filterController.fetchProducts();
                   Get.back();
                 },

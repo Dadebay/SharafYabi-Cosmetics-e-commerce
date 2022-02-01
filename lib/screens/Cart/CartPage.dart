@@ -59,7 +59,7 @@ class _CartPageState extends State<CartPage> {
   Widget floatingActionButton() {
     return FloatingActionButton.extended(
       elevation: 1,
-      shape: const RoundedRectangleBorder(borderRadius: borderRadius15),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
       onPressed: () {
         double sum = 0.0;
         int sumCount = 0;

@@ -38,7 +38,7 @@ class _ProductCard2State extends State<ProductCard2> {
               image: "$serverImage/${widget.image}-mini.webp",
             ));
       },
-      shape: const RoundedRectangleBorder(borderRadius: borderRadius5),
+      shape: const RoundedRectangleBorder(borderRadius: borderRadius10),
       color: Colors.white,
       disabledColor: Colors.white,
       padding: EdgeInsets.zero,

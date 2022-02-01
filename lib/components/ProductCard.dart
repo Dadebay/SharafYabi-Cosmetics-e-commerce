@@ -43,7 +43,7 @@ class _ProductCardState extends State<ProductCard> {
               image: "$serverImage/${widget.product?.imagePath}-mini.webp",
             ));
       },
-      shape: const RoundedRectangleBorder(borderRadius: borderRadius5),
+      shape: const RoundedRectangleBorder(borderRadius: borderRadius10),
       color: Colors.white,
       disabledColor: Colors.white,
       padding: EdgeInsets.zero,
@@ -101,27 +101,28 @@ class _ProductCardState extends State<ProductCard> {
       flex: 3,
       child: Stack(
         children: [
-          CachedNetworkImage(
-              fadeInCurve: Curves.ease,
-              imageUrl: "$serverImage/${widget.product?.imagePath}-mini.webp",
-              imageBuilder: (context, imageProvider) => Container(
-                    padding: EdgeInsets.zero,
-                    decoration: BoxDecoration(
-                      borderRadius: const BorderRadius.only(topRight: Radius.circular(5), topLeft: Radius.circular(5)),
-                      image: DecorationImage(
-                        image: imageProvider,
-                        fit: BoxFit.contain,
+          Padding(
+            padding: const EdgeInsets.all(10.0),
+            child: CachedNetworkImage(
+                fadeInCurve: Curves.ease,
+                imageUrl: "$serverImage/${widget.product?.imagePath}-mini.webp",
+                imageBuilder: (context, imageProvider) => Container(
+                      decoration: BoxDecoration(
+                        image: DecorationImage(
+                          image: imageProvider,
+                          fit: BoxFit.contain,
+                        ),
                       ),
                     ),
-                  ),
-              placeholder: (context, url) => Center(child: spinKit()),
-              errorWidget: (context, url, error) => Padding(
-                    padding: const EdgeInsets.all(30.0),
-                    child: Image.asset(
-                      "assets/appLogo/greyLogo.png",
-                      color: Colors.grey,
-                    ),
-                  )),
+                placeholder: (context, url) => Center(child: spinKit()),
+                errorWidget: (context, url, error) => Padding(
+                      padding: const EdgeInsets.all(15.0),
+                      child: Image.asset(
+                        "assets/appLogo/greyLogo.png",
+                        color: Colors.grey,
+                      ),
+                    )),
+          ),
           if (widget.product!.discountValue != 0 && widget.product!.discountValue != null)
             Positioned(
                 top: 8,

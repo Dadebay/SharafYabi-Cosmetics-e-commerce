@@ -1,10 +1,9 @@
-// ignore_for_file: file_names, avoid_print
+// ignore_for_file: file_names, avoid_print, avoid_dynamic_calls
 
 import 'dart:convert';
 import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:sharaf_yabi_ecommerce/components/compackages.dart';
-import 'package:sharaf_yabi_ecommerce/screens/BottomNavBar.dart';
 
 class CartModel extends ChangeNotifier {
   CartModel({
@@ -66,7 +65,7 @@ class OrderModel extends ChangeNotifier {
 
   final int? id;
 
-  Future createOrder({String? coupon, String? name, String? userID, String? address, String? phoneNumber}) async {
+  Future createOrder({String? coupon, String? name, String? userID, String? address, String? phoneNumber, String? comment}) async {
     final body = json.encode({
       "products": Get.find<Fav_Cart_Controller>().cartList,
       "coupon": coupon ?? "",
@@ -74,6 +73,7 @@ class OrderModel extends ChangeNotifier {
       "address": address ?? "",
       "user_id": userID ?? "",
       "name": name ?? "",
+      "comment": comment ?? "",
     });
     final response = await http.post(
         Uri.parse(
@@ -86,13 +86,33 @@ class OrderModel extends ChangeNotifier {
     if (response.statusCode == 200) {
       Get.find<Fav_Cart_Controller>().clearCartList();
       Get.find<AuthController>().changeSignInAnimation();
-      showSnackBar("orderComplete", "orderCompleteSubtitle", Colors.green);
-      Get.to(() => BottomNavBar());
       return true;
     } else {
       Get.find<AuthController>().changeSignInAnimation();
-
       showSnackBar("retry", "error404", Colors.red);
+      return false;
+    }
+  }
+
+  Future createPromo({
+    String? coupon,
+  }) async {
+    final response = await http.get(
+      Uri.parse(
+        "$serverURL/api/ru/get-coupon?coupon=$coupon",
+      ),
+      headers: <String, String>{
+        HttpHeaders.contentTypeHeader: 'application/json; charset=UTF-8',
+      },
+    );
+    if (response.statusCode == 200) {
+      if (jsonDecode(response.body)["rows"] == null) {
+        return false;
+      } else {
+        final responseJson = jsonDecode(response.body)["rows"]["discount_value"] ?? false;
+        return responseJson ?? false;
+      }
+    } else {
       return false;
     }
   }

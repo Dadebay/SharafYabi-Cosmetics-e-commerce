@@ -7,6 +7,8 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:sharaf_yabi_ecommerce/components/ProductCard2.dart';
 import 'package:sharaf_yabi_ecommerce/components/compackages.dart';
 import 'package:sharaf_yabi_ecommerce/controllers/FilterController.dart';
+import 'package:sharaf_yabi_ecommerce/models/CategoryModel.dart';
+import 'package:sharaf_yabi_ecommerce/widgets/bottomSheetName.dart';
 
 class SearchPage extends StatefulWidget {
   @override
@@ -20,10 +22,11 @@ class _SearchPageState extends State<SearchPage> {
     super.initState();
     filterController.loading.value = 0;
     filterController.list.clear();
-
     filterController.fetchProducts();
     filterController.page.value = 1;
     filterController.search.value = "";
+    filterController.brandList.clear();
+    filterController.categoryList.clear();
   }
 
   final RefreshController _refreshController = RefreshController();
@@ -51,10 +54,10 @@ class _SearchPageState extends State<SearchPage> {
   }
 
   search(String value) {
-    Get.find<FilterController>().list.clear();
-    Get.find<FilterController>().loading.value = 0;
+    filterController.list.clear();
+    filterController.loading.value = 0;
     filterController.search.value = value;
-    Get.find<FilterController>().fetchProducts();
+    filterController.fetchProducts();
   }
 
   Widget searchTextField() {
@@ -112,6 +115,7 @@ class _SearchPageState extends State<SearchPage> {
             Expanded(
               child: SmartRefresher(
                   enablePullUp: true,
+                  scrollDirection: Axis.vertical,
                   physics: const BouncingScrollPhysics(),
                   header: const MaterialClassicHeader(
                     color: kPrimaryColor,
@@ -141,9 +145,11 @@ class _SearchPageState extends State<SearchPage> {
                             }),
                       );
                     } else if (filterController.loading.value == 2) {
-                      return emptyData(imagePath: "assets/icons/svgIcons/SearchNotFound2.png", errorTitle: "emptyProducts", errorSubtitle: "emptyProductsSubtitle");
+                      return emptyDataLottie(imagePath: "assets/lottie/searchNotFound.json", errorTitle: "emptyProducts", errorSubtitle: "emptyProductsSubtitle");
                     } else if (filterController.loading.value == 3) {
                       return retryButton(() {
+                        filterController.list.clear();
+                        filterController.loading.value = 0;
                         filterController.fetchProducts();
                       });
                     } else if (filterController.loading.value == 0) {
@@ -167,7 +173,7 @@ class _SearchPageState extends State<SearchPage> {
           Expanded(
             child: RaisedButton(
               onPressed: () {
-                // filterBottomSheet();
+                filterBottomSheet();
               },
               color: Colors.white,
               disabledColor: Colors.white,
@@ -310,156 +316,259 @@ class _SearchPageState extends State<SearchPage> {
         });
   }
 
-  // void filterBottomSheet() {
-  //   Get.bottomSheet(
-  //     Container(
-  //       color: Colors.white,
-  //       child: Wrap(
-  //         children: [
-  //           BottomSheetName(
-  //             name: "filter",
-  //           ),
-  //           const Divider(
-  //             height: 0,
-  //           ),
-  //           ListTile(
-  //             title: Text(
-  //               "brendler".tr,
-  //               style: TextStyle(color: Colors.black, fontFamily: montserratRegular, fontSize: 18),
-  //             ),
-  //             trailing: Icon(IconlyLight.arrowRightCircle, color: Colors.black),
-  //             onTap: () {
-  //               Get.bottomSheet(Container(
-  //                 color: Colors.white,
-  //                 child: Column(children: [
-  //                   BottomSheetName(
-  //                     name: "brendler",
-  //                   ),
-  //                   Divider(
-  //                     height: 1,
-  //                   ),
-  //                   Expanded(
-  //                     child: ListView.builder(
-  //                       shrinkWrap: true,
-  //                       itemCount: Get.find<Fav_Cart_Controller>().brandList.length,
-  //                       scrollDirection: Axis.vertical,
-  //                       itemBuilder: (BuildContext context, int index) {
-  //                         return StatefulBuilder(
-  //                             builder: (BuildContext context, StateSetter setState) => Obx(() {
-  //                                   return CheckboxListTile(
-  //                                     value: Get.find<Fav_Cart_Controller>().brandList[index]["value"],
-  //                                     activeColor: kPrimaryColor,
-  //                                     onChanged: (value) {
-  //                                       Get.find<Fav_Cart_Controller>().brandList[index]["value"] = value;
-  //                                       if (Get.find<Fav_Cart_Controller>().brandList[index]["value"] == true) {
-  //                                         filterController.producersID.add(Get.find<Fav_Cart_Controller>().brandList[index]["id"]);
-  //                                       } else {
-  //                                         filterController.producersID.removeWhere((element) => element == Get.find<Fav_Cart_Controller>().brandList[index]["id"]);
-  //                                       }
-  //                                       setState(() {});
-  //                                     },
-  //                                     title: Text(
-  //                                       Get.find<Fav_Cart_Controller>().brandList[index]["name"],
-  //                                       style: TextStyle(fontFamily: montserratRegular),
-  //                                     ),
-  //                                   );
-  //                                 }));
-  //                       },
-  //                     ),
-  //                   )
-  //                 ]),
-  //               ));
-  //             },
-  //           ),
-  //           ListTile(
-  //             title: Text(
-  //               "category".tr,
-  //               style: TextStyle(color: Colors.black, fontFamily: montserratRegular, fontSize: 18),
-  //             ),
-  //             trailing: Icon(IconlyLight.arrowRightCircle, color: Colors.black),
-  //             onTap: () {
-  //               Get.bottomSheet(Container(
-  //                 color: Colors.white,
-  //                 child: Column(
-  //                   children: [
-  //                     BottomSheetName(
-  //                       name: "brendler",
-  //                     ),
-  //                     Divider(
-  //                       height: 1,
-  //                     ),
-  //                     Expanded(
-  //                       child: ListView.builder(
-  //                         shrinkWrap: true,
-  //                         itemCount: Get.find<Fav_Cart_Controller>().categoryList.length,
-  //                         scrollDirection: Axis.vertical,
-  //                         itemBuilder: (BuildContext context, int index) {
-  //                           return StatefulBuilder(
-  //                               builder: (BuildContext context, StateSetter setState) => Obx(() {
-  //                                     return CheckboxListTile(
-  //                                       value: Get.find<Fav_Cart_Controller>().categoryList[index]["value"],
-  //                                       activeColor: kPrimaryColor,
-  //                                       onChanged: (value) {
-  //                                         Get.find<Fav_Cart_Controller>().categoryList[index]["value"] = value;
-  //                                         if (Get.find<Fav_Cart_Controller>().categoryList[index]["value"] == true) {
-  //                                           filterController.categoryID.add(Get.find<Fav_Cart_Controller>().categoryList[index]["id"]);
-  //                                         } else {
-  //                                           filterController.categoryID.removeWhere((element) => element == Get.find<Fav_Cart_Controller>().categoryList[index]["id"]);
-  //                                         }
-  //                                         setState(() {});
-  //                                       },
-  //                                       title: Text(
-  //                                         Get.find<Fav_Cart_Controller>().categoryList[index]["name"],
-  //                                         style: TextStyle(fontFamily: montserratRegular),
-  //                                       ),
-  //                                     );
-  //                                   }));
-  //                         },
-  //                       ),
-  //                     )
-  //                   ],
-  //                 ),
-  //               ));
-  //             },
-  //           ),
-  //           Obx(() {
-  //             return SwitchListTile.adaptive(
-  //               value: filterController.discountBool.value,
-  //               onChanged: (value) {
-  //                 filterController.discountBool.value = value;
-  //               },
-  //               activeColor: kPrimaryColor,
-  //               title: Text(
-  //                 "discount".tr,
-  //                 style: TextStyle(color: Colors.black, fontFamily: montserratRegular, fontSize: 18),
-  //               ),
-  //             );
-  //           }),
-  //           Container(
-  //             margin: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-  //             width: Get.size.width,
-  //             child: RaisedButton(
-  //               onPressed: () {
-  //                 filterController.loading.value = 0;
-  //                 filterController.list.clear();
-  //                 filterController.fetchProducts();
-  //                 Get.back();
-  //               },
-  //               color: kPrimaryColor,
-  //               shape: RoundedRectangleBorder(borderRadius: borderRadius10),
-  //               disabledColor: kPrimaryColor,
-  //               padding: EdgeInsets.symmetric(vertical: 8),
-  //               elevation: 1,
-  //               child: Text(
-  //                 "agree".tr,
-  //                 style: TextStyle(color: Colors.white, fontSize: 18, fontFamily: montserratSemiBold),
-  //               ),
-  //             ),
-  //           )
-  //         ],
-  //       ),
-  //     ),
-  //   );
-  // }
+  void filterBottomSheet() {
+    Get.bottomSheet(
+      Container(
+        color: Colors.white,
+        child: Wrap(
+          children: [
+            const BottomSheetName(
+              name: "filter",
+            ),
+            const Divider(
+              height: 0,
+            ),
+            brendFilter(),
+            categoryFilter(),
+            Obx(() {
+              return SwitchListTile.adaptive(
+                value: filterController.discountBool.value,
+                onChanged: (value) {
+                  filterController.discountBool.value = value;
+                },
+                activeColor: kPrimaryColor,
+                title: Text(
+                  "discount".tr,
+                  style: const TextStyle(color: Colors.black, fontFamily: montserratRegular, fontSize: 18),
+                ),
+              );
+            }),
+            Container(
+              margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+              width: Get.size.width,
+              child: RaisedButton(
+                onPressed: () {
+                  filterController.loading.value = 0;
+                  filterController.list.clear();
+                  filterController.fetchProducts();
+                  Get.back();
+                },
+                color: kPrimaryColor,
+                shape: const RoundedRectangleBorder(borderRadius: borderRadius10),
+                disabledColor: kPrimaryColor,
+                padding: const EdgeInsets.symmetric(vertical: 8),
+                elevation: 1,
+                child: Text(
+                  "agree".tr,
+                  style: const TextStyle(color: Colors.white, fontSize: 18, fontFamily: montserratSemiBold),
+                ),
+              ),
+            )
+          ],
+        ),
+      ),
+    );
+  }
 
+  ListTile brendFilter() {
+    return ListTile(
+      title: Text(
+        "brendler".tr,
+        style: const TextStyle(color: Colors.black, fontFamily: montserratRegular, fontSize: 18),
+      ),
+      trailing: const Icon(IconlyLight.arrowRightCircle, color: Colors.black),
+      onTap: () {
+        Get.bottomSheet(Container(
+          color: Colors.white,
+          padding: const EdgeInsets.only(bottom: 25),
+          child: Column(children: [
+            const BottomSheetName(
+              name: "brendler",
+            ),
+            const Divider(
+              height: 1,
+            ),
+            Expanded(
+              child: FutureBuilder<List<CategoryModel>>(
+                  future: CategoryModel().getBrand(),
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData) {
+                      return ListView.builder(
+                        shrinkWrap: true,
+                        itemCount: snapshot.data!.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          for (final element in snapshot.data!) {
+                            filterController.writeBrandList(
+                              element.id,
+                              element.name,
+                            );
+                          }
+
+                          return myCheckBoxBrand(index, snapshot);
+                        },
+                      );
+                    } else {
+                      return Center(
+                        child: spinKit(),
+                      );
+                    }
+                  }),
+            )
+          ]),
+        ));
+      },
+    );
+  }
+
+  StatefulBuilder myCheckBoxBrand(int index, AsyncSnapshot<List<CategoryModel>> snapshot) {
+    return StatefulBuilder(
+        builder: (BuildContext context, StateSetter setState) => Obx(() => CheckboxListTile(
+              value: filterController.brandList[index]["value"],
+              activeColor: kPrimaryColor,
+              onChanged: (value) {
+                filterController.brandList[index]["value"] = value;
+                if (filterController.brandList[index]["value"] == true) {
+                  filterController.producersID.add(filterController.brandList[index]["id"]);
+                } else {
+                  filterController.producersID.removeWhere((element) => element == filterController.brandList[index]["id"]);
+                }
+                setState(() {});
+              },
+              title: Text(
+                "${snapshot.data![index].name}",
+                style: const TextStyle(fontFamily: montserratRegular),
+              ),
+            )));
+  }
+
+  ListTile categoryFilter() {
+    return ListTile(
+      title: Text(
+        "category".tr,
+        style: const TextStyle(color: Colors.black, fontFamily: montserratRegular, fontSize: 18),
+      ),
+      trailing: const Icon(IconlyLight.arrowRightCircle, color: Colors.black),
+      onTap: () {
+        Get.bottomSheet(Container(
+          color: Colors.white,
+          padding: const EdgeInsets.only(bottom: 25),
+          child: Column(
+            children: [
+              const BottomSheetName(
+                name: "category",
+              ),
+              const Divider(
+                height: 1,
+              ),
+              Expanded(
+                child: FutureBuilder<List<CategoryModel>>(
+                    future: CategoryModel().getCategory(),
+                    builder: (context, snapshot) {
+                      if (snapshot.hasData) {
+                        return ListView.builder(
+                          shrinkWrap: true,
+                          itemCount: snapshot.data!.length,
+                          itemBuilder: (BuildContext context, int index) {
+                            return categoryName(snapshot, index);
+                          },
+                        );
+                      } else {
+                        return Center(
+                          child: spinKit(),
+                        );
+                      }
+                    }),
+              )
+            ],
+          ),
+        ));
+      },
+    );
+  }
+
+  ListTile categoryName(AsyncSnapshot<List<CategoryModel>> snapshot, int index) {
+    return ListTile(
+      title: Text(
+        "${snapshot.data![index].name}",
+        style: const TextStyle(color: Colors.black, fontFamily: montserratRegular, fontSize: 18),
+      ),
+      trailing: const Icon(IconlyLight.arrowRightCircle, color: Colors.black),
+      onTap: () {
+        for (final element in snapshot.data![index].sub!) {
+          filterController.writeCategoryList(element.id, element.name, snapshot.data![index].id!);
+        }
+
+        Get.bottomSheet(Container(
+            color: Colors.white,
+            padding: const EdgeInsets.only(bottom: 25),
+            child: Column(children: [
+              const BottomSheetName(
+                name: "subCategory",
+              ),
+              const Divider(
+                height: 1,
+              ),
+              Expanded(
+                  child: ListView.builder(
+                itemCount: snapshot.data![index].sub!.length,
+                itemBuilder: (BuildContext context, int indexx) {
+                  return myCheckBox(indexx, snapshot.data![index].sub![indexx].name, snapshot.data![index].sub![indexx].id);
+                },
+              ))
+            ])));
+      },
+    );
+  }
+
+  StatefulBuilder myCheckBox(int index, String? name, int? idd) {
+    bool valueMine = false;
+    return StatefulBuilder(builder: (BuildContext context, StateSetter setState) {
+      for (final element in filterController.categoryList) {
+        if (element["id"] == idd) {
+          valueMine = element["value"];
+        }
+      }
+      return CheckboxListTile(
+        value: valueMine,
+        activeColor: kPrimaryColor,
+        onChanged: (value) {
+          for (final element in filterController.categoryList) {
+            if (element["id"] == idd) {
+              element["value"] = value;
+              filterController.mainCategoryID.value = element["mainCategoryID"];
+              if (value == true) {
+                if (filterController.categoryID.isEmpty) {
+                  filterController.categoryID.add({"id": element["id"], "mainCategoryID": element["mainCategoryID"]});
+                } else {
+                  bool mineValue = false;
+                  for (final element3 in filterController.categoryID) {
+                    if (element["mainCategoryID"] == element3["mainCategoryID"]) {
+                      mineValue = true;
+                    }
+                  }
+                  if (mineValue == true) {
+                    filterController.categoryID.add({"id": element["id"], "mainCategoryID": element["mainCategoryID"]});
+                  } else {
+                    for (final element4 in filterController.categoryList) {
+                      element4["value"] = false;
+                    }
+                    element["value"] = value;
+                    filterController.categoryID.clear();
+                    filterController.categoryID.add({"id": element["id"], "mainCategoryID": element["mainCategoryID"]});
+                  }
+                }
+              } else {
+                filterController.categoryID.removeWhere((element2) => element["id"] == element2["id"]);
+              }
+            }
+          }
+          setState(() {});
+        },
+        title: Text(
+          "$name",
+          style: const TextStyle(fontFamily: montserratRegular),
+        ),
+      );
+    });
+  }
 }

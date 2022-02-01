@@ -52,25 +52,21 @@ class _MyAppRunState extends State<MyAppRun> {
 
   @override
   Widget build(BuildContext context) {
-    return DevicePreview(
-      builder: (BuildContext context) {
-        return GetMaterialApp(
-          initialBinding: AllControllerBindings(),
-          locale: storage.read('langCode') != null
-              ? Locale(storage.read('langCode'))
-              : const Locale(
-                  'tr',
-                ),
-          theme: ThemeData(
-            primaryColor: Colors.green.shade700,
-          ),
-          fallbackLocale: const Locale("tr"),
-          translations: MyTranslations(),
-          defaultTransition: Transition.cupertinoDialog,
-          debugShowCheckedModeBanner: false,
-          home: BottomNavBar(),
-        );
-      },
+    return GetMaterialApp(
+      initialBinding: AllControllerBindings(),
+      locale: storage.read('langCode') != null
+          ? Locale(storage.read('langCode'))
+          : const Locale(
+              'tr',
+            ),
+      theme: ThemeData(
+        primaryColor: Colors.green.shade700,
+      ),
+      fallbackLocale: const Locale("tr"),
+      translations: MyTranslations(),
+      defaultTransition: Transition.cupertinoDialog,
+      debugShowCheckedModeBanner: false,
+      home: BottomNavBar(),
     );
   }
 }

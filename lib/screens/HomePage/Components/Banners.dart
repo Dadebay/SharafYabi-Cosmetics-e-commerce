@@ -1,4 +1,4 @@
-// ignore_for_file: deprecated_member_use, file_names, avoid_types_as_parameter_names, non_constant_identifier_names
+// ignore_for_file: deprecated_member_use, file_names, avoid_types_as_parameter_names, non_constant_identifier_names, must_be_immutable
 
 import 'package:sharaf_yabi_ecommerce/components/ProductProfil.dart';
 import 'package:sharaf_yabi_ecommerce/components/ShowAllProductsPage.dart';
@@ -7,60 +7,69 @@ import 'package:sharaf_yabi_ecommerce/controllers/FilterController.dart';
 import 'package:sharaf_yabi_ecommerce/screens/HomePage/Components/packages.dart';
 
 class Banners extends StatelessWidget {
+  FilterController filterController = Get.put(FilterController());
+
+  final Future<List<BannerModel>>? banners;
+
+  Banners({Key? key, this.banners}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<List<BannerModel>>(
-        future: BannerModel().getBanners(),
+        future: banners,
         builder: (context, snapshot) {
-          if (snapshot.hasError) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return bannerCardShimmer();
+          } else if (snapshot.hasError) {
             return const SizedBox.shrink();
           } else if (snapshot.data!.isEmpty) {
             return const SizedBox.shrink();
           } else if (snapshot.hasData) {
-            return Column(
-              children: [
-                CarouselSlider.builder(
-                  itemCount: snapshot.data!.length,
-                  itemBuilder: (context, index, count) {
-                    return bannerCard(snapshot, index);
-                  },
-                  options: CarouselOptions(
-                    onPageChanged: (index, CarouselPageChangedReason) {
-                      Get.find<BannerController>().bannerSelectedIndex.value = index;
-                    },
-                    aspectRatio: 16 / 8,
-                    viewportFraction: 1.0,
-                    autoPlay: true,
-                    scrollPhysics: const BouncingScrollPhysics(),
-                    autoPlayCurve: Curves.easeInOut,
-                    autoPlayAnimationDuration: const Duration(milliseconds: 2000),
-                  ),
-                ),
-                const SizedBox(
-                  height: 8,
-                ),
-                SizedBox(
-                    height: 7,
-                    child: Center(
-                      child: ListView.builder(
-                        shrinkWrap: true,
-                        scrollDirection: Axis.horizontal,
+            return snapshot.data!.isEmpty
+                ? const SizedBox.shrink()
+                : Column(
+                    children: [
+                      CarouselSlider.builder(
                         itemCount: snapshot.data!.length,
-                        itemBuilder: (BuildContext context, int index) {
-                          return Obx(() {
-                            return AnimatedContainer(
-                              margin: const EdgeInsets.symmetric(horizontal: 10),
-                              duration: const Duration(milliseconds: 500),
-                              curve: Curves.easeInOut,
-                              width: Get.find<BannerController>().bannerSelectedIndex.value == index ? 30 : 7,
-                              decoration: BoxDecoration(color: Get.find<BannerController>().bannerSelectedIndex.value == index ? kPrimaryColor : Colors.grey[300], borderRadius: borderRadius15),
-                            );
-                          });
+                        itemBuilder: (context, index, count) {
+                          return bannerCard(snapshot, index);
                         },
+                        options: CarouselOptions(
+                          onPageChanged: (index, CarouselPageChangedReason) {
+                            Get.find<BannerController>().bannerSelectedIndex.value = index;
+                          },
+                          aspectRatio: 16 / 8,
+                          viewportFraction: 1.0,
+                          autoPlay: true,
+                          scrollPhysics: const BouncingScrollPhysics(),
+                          autoPlayCurve: Curves.fastLinearToSlowEaseIn,
+                          autoPlayAnimationDuration: const Duration(milliseconds: 2000),
+                        ),
                       ),
-                    )),
-              ],
-            );
+                      const SizedBox(
+                        height: 8,
+                      ),
+                      SizedBox(
+                          height: 7,
+                          child: Center(
+                            child: ListView.builder(
+                              shrinkWrap: true,
+                              scrollDirection: Axis.horizontal,
+                              itemCount: snapshot.data!.length,
+                              itemBuilder: (BuildContext context, int index) {
+                                return Obx(() {
+                                  return AnimatedContainer(
+                                    margin: const EdgeInsets.symmetric(horizontal: 10),
+                                    duration: const Duration(milliseconds: 500),
+                                    curve: Curves.easeInOut,
+                                    width: Get.find<BannerController>().bannerSelectedIndex.value == index ? 30 : 7,
+                                    decoration: BoxDecoration(color: Get.find<BannerController>().bannerSelectedIndex.value == index ? kPrimaryColor : Colors.grey[300], borderRadius: borderRadius15),
+                                  );
+                                });
+                              },
+                            ),
+                          )),
+                    ],
+                  );
           }
           return bannerCardShimmer();
         });
@@ -72,14 +81,18 @@ class Banners extends StatelessWidget {
       margin: const EdgeInsets.only(top: 8, left: 8, right: 8, bottom: 8),
       child: RaisedButton(
         onPressed: () {
+          filterController.categoryID.clear();
+          filterController.producersID.value = [];
+
+          final int? id = snapshot.data![index].itemID;
+
           if (snapshot.data![index].pathID == 2) {
-            Get.find<FilterController>().categoryID.add(snapshot.data![index].itemID);
+            filterController.mainCategoryID.value = id!;
             Get.to(() => const ShowAllProductsPage(
                   pageName: "SharafÝabi",
                   whichFilter: 0,
                 ));
           } else if (snapshot.data![index].pathID == 3) {
-            final int? id = snapshot.data![index].itemID;
             Get.to(() => ProductProfil(
                   id: id,
                   image: '',

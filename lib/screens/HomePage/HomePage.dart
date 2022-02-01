@@ -18,20 +18,24 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   Future<List<ProductsModel>>? newInComeFuture;
-  late final AnimationController _controller;
+  Future<List<ProductsModel>>? discountsFuture;
+  Future<List<BannerModel>>? banners;
+  FilterController filterController = Get.put(FilterController());
+
   @override
   void initState() {
     super.initState();
+    discountsFuture = ProductsModel().getProducts(
+      parametrs: {
+        "page": "1",
+        "limit": "30",
+        "discounts": "true",
+      },
+    );
+    banners = BannerModel().getBanners();
     newInComeFuture = ProductsModel().getProducts(
       parametrs: {"page": "1", "limit": "30", "new_in_come": "true"},
     );
-    _controller = AnimationController(vsync: this);
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
   }
 
   @override
@@ -51,8 +55,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Banners(),
-            dixcountPart(),
+            Banners(banners: banners),
+            discountedProducts(),
             newInCome(),
             gridViewMine(
               whichFilter: 1,
@@ -67,8 +71,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       ),
     );
   }
-
-  FilterController filterController = Get.put(FilterController());
 
   FutureBuilder<List<ProductsModel>> newInCome() {
     return FutureBuilder<List<ProductsModel>>(
@@ -88,6 +90,10 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                         namePart(
                             name: "newProducts".tr,
                             onTap: () {
+                              filterController.producersID.clear();
+                              filterController.categoryID.clear();
+                              filterController.categoryIDOnlyID.clear();
+                              filterController.mainCategoryID.value = 0;
                               Get.to(() => ShowAllProductsPage(
                                     pageName: "newProducts".tr,
                                     whichFilter: 2,
@@ -117,43 +123,13 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                     ),
                   );
           }
-          return SizedBox(
-            height: 250,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Shimmer.fromColors(
-                    baseColor: Colors.grey[300]!,
-                    period: const Duration(seconds: 2),
-                    highlightColor: Colors.grey.withOpacity(0.1),
-                    child: Container(
-                        color: Colors.white, padding: const EdgeInsets.symmetric(vertical: 5), margin: const EdgeInsets.only(left: 15, top: 20), child: const Text("asdasd;akmsodkasdjkasodasd"))),
-                Expanded(
-                  child: ListView.builder(
-                    shrinkWrap: true,
-                    physics: const BouncingScrollPhysics(),
-                    scrollDirection: Axis.horizontal,
-                    itemCount: snapshot.data?.length,
-                    itemBuilder: (BuildContext context, int index) {
-                      return shimmerHomeCard();
-                    },
-                  ),
-                ),
-              ],
-            ),
-          );
+          return shimmerListView();
         });
   }
 
-  FutureBuilder<List<ProductsModel>> dixcountPart() {
+  FutureBuilder<List<ProductsModel>> discountedProducts() {
     return FutureBuilder<List<ProductsModel>>(
-        future: ProductsModel().getProducts(
-          parametrs: {
-            "page": "1",
-            "limit": "30",
-            "discounts": "true",
-          },
-        ),
+        future: discountsFuture,
         builder: (context, snapshot) {
           if (snapshot.hasError) {
             return const SizedBox.shrink();
@@ -173,7 +149,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                               filterController.categoryID.clear();
                               filterController.categoryIDOnlyID.clear();
                               filterController.mainCategoryID.value = 0;
-
                               Get.to(() => ShowAllProductsPage(
                                     pageName: "discountedProducts".tr,
                                     whichFilter: 3,
@@ -203,31 +178,35 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                     ),
                   );
           }
-          return SizedBox(
-            height: 250,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Shimmer.fromColors(
-                    baseColor: Colors.grey[300]!,
-                    period: const Duration(seconds: 2),
-                    highlightColor: Colors.grey.withOpacity(0.1),
-                    child: Container(
-                        color: Colors.white, padding: const EdgeInsets.symmetric(vertical: 5), margin: const EdgeInsets.only(left: 15, top: 20), child: const Text("asdasd;akmsodkasdjkasodasd"))),
-                Expanded(
-                  child: ListView.builder(
-                    shrinkWrap: true,
-                    physics: const BouncingScrollPhysics(),
-                    scrollDirection: Axis.horizontal,
-                    itemCount: snapshot.data?.length,
-                    itemBuilder: (BuildContext context, int index) {
-                      return shimmerHomeCard();
-                    },
-                  ),
-                ),
-              ],
-            ),
-          );
+          return shimmerListView();
         });
+  }
+
+  SizedBox shimmerListView() {
+    return SizedBox(
+      height: 250,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Shimmer.fromColors(
+              baseColor: Colors.grey[300]!,
+              period: const Duration(seconds: 2),
+              highlightColor: Colors.grey.withOpacity(0.1),
+              child:
+                  Container(color: Colors.white, padding: const EdgeInsets.symmetric(vertical: 5), margin: const EdgeInsets.only(left: 15, top: 20), child: const Text("asdasd;akmsodkasdjkasodasd"))),
+          Expanded(
+            child: ListView.builder(
+              shrinkWrap: true,
+              physics: const BouncingScrollPhysics(),
+              scrollDirection: Axis.horizontal,
+              itemCount: 20,
+              itemBuilder: (BuildContext context, int index) {
+                return shimmerHomeCard();
+              },
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }
