@@ -1,24 +1,22 @@
-// ignore_for_file: deprecated_member_use, file_names
+// ignore_for_file: deprecated_member_use, file_names, avoid_dynamic_calls, invariant_booleans, always_use_package_imports
 
-import 'package:sharaf_yabi_ecommerce/components/compackages.dart';
-import 'package:sharaf_yabi_ecommerce/widgets/addCartButton2.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_iconly/flutter_iconly.dart';
+import 'package:get/get.dart';
+import 'package:sharaf_yabi_ecommerce/constants/constants.dart';
+import 'package:sharaf_yabi_ecommerce/constants/widgets.dart';
+import 'package:sharaf_yabi_ecommerce/controllers/Fav_Cart_Controller.dart';
+import 'package:sharaf_yabi_ecommerce/controllers/FilterController.dart';
+
+import 'ProductProfil.dart';
 
 class ProductCard2 extends StatefulWidget {
-  final int id;
-  final String name;
-  final String image;
-  final String price;
-  final int discountValue;
-  final int quantity;
-
+  final int indexx;
   const ProductCard2({
     Key? key,
-    required this.id,
-    required this.name,
-    required this.image,
-    required this.price,
-    required this.discountValue,
-    required this.quantity,
+    required this.indexx,
   }) : super(key: key);
   @override
   _ProductCard2State createState() => _ProductCard2State();
@@ -26,16 +24,21 @@ class ProductCard2 extends StatefulWidget {
 
 class _ProductCard2State extends State<ProductCard2> {
   bool favButton = false;
-  bool addCart = false;
-  int quantity = 1;
+  late FilterController _filterController;
+  @override
+  void initState() {
+    super.initState();
+    _filterController = Get.put<FilterController>(FilterController());
+  }
+
   @override
   Widget build(BuildContext context) {
     return RaisedButton(
       onPressed: () {
         Get.to(() => ProductProfil(
-              id: widget.id,
-              productName: widget.name,
-              image: "$serverImage/${widget.image}-mini.webp",
+              id: _filterController.list[widget.indexx]!["id"],
+              productName: _filterController.list[widget.indexx]["name"],
+              image: "$serverImage/${_filterController.list[widget.indexx]["image"]}-mini.webp",
             ));
       },
       shape: const RoundedRectangleBorder(borderRadius: borderRadius10),
@@ -57,13 +60,13 @@ class _ProductCard2State extends State<ProductCard2> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
-                  widget.name,
+                  _filterController.list[widget.indexx]["name"],
                   overflow: TextOverflow.ellipsis,
                   maxLines: 1,
                   style: const TextStyle(fontFamily: montserratMedium, fontSize: 16),
                 ),
                 Text(
-                  widget.name,
+                  "description",
                   overflow: TextOverflow.ellipsis,
                   maxLines: 1,
                   style: TextStyle(fontFamily: montserratMedium, fontSize: 14, color: Colors.grey[400]),
@@ -71,14 +74,108 @@ class _ProductCard2State extends State<ProductCard2> {
                 RichText(
                   overflow: TextOverflow.ellipsis,
                   text: TextSpan(children: <TextSpan>[
-                    TextSpan(text: widget.price, style: const TextStyle(fontFamily: montserratSemiBold, fontSize: 20, color: kPrimaryColor)),
+                    TextSpan(text: _filterController.list[widget.indexx]["price"], style: const TextStyle(fontFamily: montserratSemiBold, fontSize: 20, color: kPrimaryColor)),
                     const TextSpan(text: " TMT", style: TextStyle(fontFamily: montserratMedium, fontSize: 16, color: kPrimaryColor))
                   ]),
                 ),
-                AddCartButton2(
-                  id: widget.id,
-                  quantity: widget.quantity,
-                )
+                SizedBox(
+                  width: Get.size.width,
+                  child: _filterController.list[widget.indexx]["count"] != 1
+                      ? Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              GestureDetector(
+                                onTap: () {
+                                  setState(() {
+                                    Get.find<Fav_Cart_Controller>().cartList.forEach((element) {
+                                      if (element["id"] == _filterController.list[widget.indexx]["id"]) {
+                                        element["count"]--;
+                                        if (_filterController.list.isNotEmpty) {
+                                          for (final element in _filterController.list) {
+                                            if (element["id"] == _filterController.list[widget.indexx]["id"]) {
+                                              element["count"]--;
+                                            }
+                                          }
+                                        }
+                                      }
+                                    });
+                                  });
+                                },
+                                child: PhysicalModel(
+                                  elevation: 1,
+                                  color: Colors.transparent,
+                                  borderRadius: borderRadius5,
+                                  child: Container(
+                                      padding: const EdgeInsets.all(6),
+                                      decoration: const BoxDecoration(borderRadius: borderRadius5, color: kPrimaryColor),
+                                      child: const Icon(
+                                        CupertinoIcons.minus,
+                                        size: 22,
+                                        color: Colors.white,
+                                      )),
+                                ),
+                              ),
+                              GetX<FilterController>(
+                                init: FilterController(),
+                                initState: (_) {},
+                                builder: (_) {
+                                  return Text(
+                                    "${_filterController.list[widget.indexx]["count"]}",
+                                    style: const TextStyle(color: Colors.black, fontSize: 18, fontFamily: montserratSemiBold),
+                                  );
+                                },
+                              ),
+                              GestureDetector(
+                                onTap: () {
+                                  setState(() {
+                                    for (final element2 in _filterController.list) {
+                                      if (element2["id"] == _filterController.list[widget.indexx]["id"]) {
+                                        element2["count"]++;
+                                      }
+                                    }
+                                    Get.find<Fav_Cart_Controller>().addCart(_filterController.list[widget.indexx]["id"]);
+                                  });
+                                },
+                                child: PhysicalModel(
+                                  elevation: 1,
+                                  borderRadius: borderRadius5,
+                                  color: Colors.transparent,
+                                  child: Container(
+                                      padding: const EdgeInsets.all(6),
+                                      decoration: const BoxDecoration(borderRadius: borderRadius5, color: kPrimaryColor),
+                                      child: const Icon(
+                                        CupertinoIcons.add,
+                                        size: 22,
+                                        color: Colors.white,
+                                      )),
+                                ),
+                              ),
+                            ],
+                          ),
+                        )
+                      : RaisedButton(
+                          onPressed: () {
+                            setState(() {
+                              Get.find<Fav_Cart_Controller>().addCart(_filterController.list[widget.indexx]["id"]);
+                              for (final element2 in _filterController.list) {
+                                if (element2["id"] == _filterController.list[widget.indexx]["id"]) {
+                                  element2["count"]++;
+                                }
+                              }
+                            });
+                          },
+                          elevation: 0,
+                          disabledElevation: 0,
+                          shape: const RoundedRectangleBorder(borderRadius: borderRadius5),
+                          color: kPrimaryColor,
+                          child: Text(
+                            "addCart".tr,
+                            style: const TextStyle(color: Colors.white, fontFamily: montserratSemiBold),
+                          ),
+                        ),
+                ),
               ],
             ),
           ),
@@ -95,7 +192,7 @@ class _ProductCard2State extends State<ProductCard2> {
         children: [
           CachedNetworkImage(
               fadeInCurve: Curves.ease,
-              imageUrl: "$serverImage/${widget.image}-mini.webp",
+              imageUrl: "$serverImage/${_filterController.list[widget.indexx]["image"]}-mini.webp",
               imageBuilder: (context, imageProvider) => Container(
                     padding: EdgeInsets.zero,
                     decoration: BoxDecoration(
@@ -121,7 +218,7 @@ class _ProductCard2State extends State<ProductCard2> {
               onTap: () {
                 setState(() {
                   favButton = !favButton;
-                  Get.find<Fav_Cart_Controller>().toggleFav(widget.id);
+                  Get.find<Fav_Cart_Controller>().toggleFav(_filterController.list[widget.indexx]["id"]);
                 });
               },
               child: PhysicalModel(
@@ -135,14 +232,14 @@ class _ProductCard2State extends State<ProductCard2> {
               ),
             ),
           ),
-          if (widget.discountValue > 0)
+          if (_filterController.list[widget.indexx]["discountValue"] != 0)
             Positioned(
                 top: 8,
                 left: 8,
                 child: Container(
                   padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 4),
                   decoration: const BoxDecoration(color: Colors.red, borderRadius: borderRadius5),
-                  child: Text("${widget.discountValue} %", style: const TextStyle(color: Colors.white, fontFamily: montserratRegular, fontSize: 14)),
+                  child: Text("${_filterController.list[widget.indexx]["discountValue"]} %", style: const TextStyle(color: Colors.white, fontFamily: montserratRegular, fontSize: 14)),
                 ))
           else
             const SizedBox.shrink()

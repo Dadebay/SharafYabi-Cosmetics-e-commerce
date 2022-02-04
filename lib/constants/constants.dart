@@ -11,7 +11,7 @@ const String authServerUrl = "https://sharafyabi.com";
 
 const Color backgroundColor = Color(0xfff1f2f4);
 const Color kPrimaryColor = Color(0xff4C844C);
-const Color kPrimaryColor2 = Color(0xff0b1f0b);
+const Color kPrimaryColor2 = Color(0xff0b4f0b);
 
 ///BorderRadius
 const BorderRadius borderRadius5 = BorderRadius.all(Radius.circular(5));

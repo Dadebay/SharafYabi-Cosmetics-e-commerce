@@ -13,7 +13,7 @@ class Fav_Cart_Controller extends GetxController {
   RxBool promoLottieADDCoin = false.obs;
   RxBool promoLottie = false.obs;
   RxBool favBool = false.obs;
-  RxBool addCartBool = false.obs;
+  // RxBool addCartBool = false.obs;
   RxInt stockCount = 0.obs;
   RxInt quantity = 1.obs;
   final storage = GetStorage();

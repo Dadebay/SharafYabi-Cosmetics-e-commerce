@@ -1,5 +1,6 @@
 // ignore_for_file: deprecated_member_use, file_names, avoid_dynamic_calls
 
+import 'package:animations/animations.dart';
 import 'package:sharaf_yabi_ecommerce/components/compackages.dart';
 import 'package:sharaf_yabi_ecommerce/widgets/addCartButton.dart';
 
@@ -34,28 +35,29 @@ class _ProductCardState extends State<ProductCard> {
 
   @override
   Widget build(BuildContext context) {
-    return RaisedButton(
-      onPressed: () {
-        final int? a = widget.product!.id;
-        Get.to(() => ProductProfil(
-              id: a,
-              productName: widget.product?.productName,
-              image: "$serverImage/${widget.product?.imagePath}-mini.webp",
-            ));
+    return OpenContainer(
+      closedShape: const RoundedRectangleBorder(borderRadius: borderRadius10),
+      closedColor: Colors.white,
+      closedElevation: 1,
+      closedBuilder: (context, openWidget) {
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.end,
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            imageExpanded(),
+            namePartMine(),
+          ],
+        );
       },
-      shape: const RoundedRectangleBorder(borderRadius: borderRadius10),
-      color: Colors.white,
-      disabledColor: Colors.white,
-      padding: EdgeInsets.zero,
-      elevation: 1,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.end,
-        mainAxisAlignment: MainAxisAlignment.end,
-        children: [
-          imageExpanded(),
-          namePartMine(),
-        ],
-      ),
+      openBuilder: (context, closeWidget) {
+        final int? a = widget.product!.id;
+        print(a);
+        return ProductProfil(
+          id: a,
+          productName: widget.product?.productName,
+          image: "$serverImage/${widget.product?.imagePath}-mini.webp",
+        );
+      },
     );
   }
 

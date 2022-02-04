@@ -21,7 +21,6 @@ class CartPageController extends GetxController {
     for (final element in list) {
       if (element["id"] == id) {
         element["count"] += 1;
-        Get.find<Fav_Cart_Controller>().addCart(id);
       }
     }
     list.refresh();
@@ -31,7 +30,6 @@ class CartPageController extends GetxController {
     for (final element in list) {
       if (element["id"] == id) {
         element["count"] -= 1;
-        Get.find<Fav_Cart_Controller>().removeCart(id);
       }
     }
     list.removeWhere((element) => element["count"] == 0);

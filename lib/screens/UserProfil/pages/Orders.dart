@@ -24,7 +24,9 @@ class Orders extends StatelessWidget {
             } else if (snapshot.data == null || snapshot.data!.isEmpty) {
               return emptyData(imagePath: "assets/emptyState/emptyProducts.png", errorTitle: "orderEmpty", errorSubtitle: "orderEmptySubtitle");
             } else if (snapshot.hasError) {
-              return errorConnection(buttonText: "retry", onTap: () {});
+              return errorConnection(onTap: () {
+                OrdersModel().getOrders();
+              });
             }
             return ListView.builder(
               itemCount: snapshot.data!.length,

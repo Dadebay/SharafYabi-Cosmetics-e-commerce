@@ -30,3 +30,8 @@ subprojects {
 task clean(type: Delete) {
     delete rootProject.buildDir
 }
+
+dependencies {
+//      implementation 'com.yandex.android:mobmetricalib:4.1.1'
+}
+

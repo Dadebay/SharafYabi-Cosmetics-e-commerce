@@ -23,59 +23,56 @@ class MyAppBar extends StatelessWidget implements PreferredSize {
   Widget build(BuildContext context) {
     return PreferredSize(
       preferredSize: Size.fromHeight(kToolbarHeight),
-      child: ClipRRect(
-        borderRadius: BorderRadius.only(bottomLeft: Radius.circular(15), bottomRight: Radius.circular(15)),
-        child: AppBar(
-          elevation: 0.0,
-          centerTitle: true,
-          leading: backArrow
-              ? IconButton(
-                  icon: Icon(
-                    IconlyLight.arrowLeft2,
-                  ),
-                  onPressed: () {
-                    Get.back();
-                  },
-                )
-              : SizedBox.shrink(),
-          actions: [
-            if (iconRemove == false)
-              SizedBox.shrink()
-            else
-              GestureDetector(
-                onTap: onTap,
-                child: Padding(
-                  padding: const EdgeInsets.only(right: 15),
-                  child: Icon(icon, color: Colors.grey[200], size: 26),
+      child: AppBar(
+        elevation: 0.0,
+        centerTitle: true,
+        leading: backArrow
+            ? IconButton(
+                icon: Icon(
+                  IconlyLight.arrowLeft2,
                 ),
+                onPressed: () {
+                  Get.back();
+                },
               )
-          ],
-          automaticallyImplyLeading: false,
-          backgroundColor: kPrimaryColor,
-          title: addName ?? false
-              ? Text(
-                  name!.tr,
-                  maxLines: 1,
-                  textAlign: TextAlign.center,
-                  style: TextStyle(color: Colors.white, fontFamily: montserratSemiBold, fontSize: 18),
-                )
-              : Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Image.asset("assets/appLogo/greyLogo.png", height: 45, width: 45, color: Colors.white),
-                    Text(
-                      "SHARAFÝABI",
-                      maxLines: 1,
-                      textAlign: TextAlign.left,
-                      overflow: TextOverflow.ellipsis,
-                      style: TextStyle(color: Colors.white, letterSpacing: 2.0, fontFamily: montserratBold, fontSize: 18),
-                    ),
-                    SizedBox(
-                      width: iconRemove == false ? 70 : 35,
-                    )
-                  ],
-                ),
-        ),
+            : SizedBox.shrink(),
+        actions: [
+          if (iconRemove == false)
+            SizedBox.shrink()
+          else
+            GestureDetector(
+              onTap: onTap,
+              child: Padding(
+                padding: const EdgeInsets.only(right: 15),
+                child: Icon(icon, color: Colors.grey[200], size: 26),
+              ),
+            )
+        ],
+        automaticallyImplyLeading: false,
+        backgroundColor: kPrimaryColor,
+        title: addName ?? false
+            ? Text(
+                name!.tr,
+                maxLines: 1,
+                textAlign: TextAlign.center,
+                style: TextStyle(color: Colors.white, fontFamily: montserratSemiBold, fontSize: 18),
+              )
+            : Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Image.asset("assets/appLogo/greyLogo.png", height: 45, width: 45, color: Colors.white),
+                  Text(
+                    "Sharafyabi",
+                    maxLines: 1,
+                    textAlign: TextAlign.left,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(color: Colors.white, letterSpacing: 2.0, fontFamily: montserratBold, fontSize: 18),
+                  ),
+                  SizedBox(
+                    width: iconRemove == false ? 70 : 35,
+                  )
+                ],
+              ),
       ),
     );
   }

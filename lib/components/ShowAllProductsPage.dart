@@ -120,16 +120,10 @@ class _ShowAllProductsPageState extends State<ShowAllProductsPage> {
                             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2, childAspectRatio: 4 / 6),
                             itemBuilder: (BuildContext context, int index) {
                               return Padding(
-                                padding: const EdgeInsets.all(4.0),
-                                child: ProductCard2(
-                                  id: filterController.list[index]["id"],
-                                  name: filterController.list[index]["name"],
-                                  price: filterController.list[index]["price"],
-                                  image: filterController.list[index]["image"],
-                                  discountValue: filterController.list[index]["discountValue"],
-                                  quantity: filterController.list[index]["count"],
-                                ),
-                              );
+                                  padding: const EdgeInsets.all(4.0),
+                                  child: ProductCard2(
+                                    indexx: index,
+                                  ));
                             }),
                       );
                     } else if (filterController.loading.value == 2) {

@@ -24,7 +24,7 @@ class BannerModel extends ChangeNotifier {
     languageCode();
     final response = await http.get(
         Uri.parse(
-          "$serverURL/api/$lang/get-banners",
+          "$serverURL/api/$lang/get-banners/1",
         ),
         headers: <String, String>{
           HttpHeaders.contentTypeHeader: 'application/json; charset=UTF-8',

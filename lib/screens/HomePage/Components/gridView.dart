@@ -28,22 +28,12 @@ class gridViewMine extends StatelessWidget {
             } else if (snapshot.data!.isEmpty) {
               return removeText == false ? const SizedBox.shrink() : emptyData(imagePath: "", errorTitle: "emptyProducts", errorSubtitle: "emptyProductsSubtitle");
             } else if (snapshot.hasError) {
-              return removeText == false ? const SizedBox.shrink() : errorConnection(buttonText: "retry", onTap: () {});
+              return removeText == false
+                  ? const SizedBox.shrink()
+                  : errorConnection(onTap: () {
+                      ProductsModel().getProducts(parametrs: parametrs);
+                    });
             } else if (snapshot.hasData) {
-              // if (whichFilter == 1) {
-              //   filterController.recomended.value = true;
-              //   filterController.discountBool.value = false;
-              //   filterController.newInCome.value = false;
-              // } else if (whichFilter == 2) {
-              //   filterController.recomended.value = false;
-              //   filterController.discountBool.value = false;
-              //   filterController.newInCome.value = true;
-              // } else if (whichFilter == 3) {
-              //   filterController.recomended.value = false;
-              //   filterController.discountBool.value = true;
-              //   filterController.newInCome.value = false;
-              // }
-              print("mengridViewwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww");
               return Column(
                 children: [
                   if (removeText == false)

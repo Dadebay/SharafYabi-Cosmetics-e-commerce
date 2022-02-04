@@ -43,47 +43,42 @@ Future<String> languageCode() async {
   return "ru";
 }
 
-Widget errorConnection({required String buttonText, required Function() onTap}) {
+Widget errorConnection({required Function() onTap}) {
   return Center(
     child: Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        const Padding(
-          padding: EdgeInsets.symmetric(vertical: 25),
-          child: Icon(
-            CupertinoIcons.info_circle,
-            color: Colors.black,
-            size: 80,
+        Lottie.asset("assets/lottie/noconnection.json", animate: true, height: 300, width: 400),
+        Container(
+          color: Colors.white,
+          width: Get.size.width,
+          transform: Matrix4.translationValues(0, -30, 0),
+          padding: const EdgeInsets.only(left: 20, right: 20, top: 20),
+          child: Column(
+            children: [
+              Text(
+                "noConnection1".tr,
+                textAlign: TextAlign.center,
+                style: const TextStyle(color: Colors.black, fontSize: 20, fontFamily: montserratSemiBold),
+              ),
+              const SizedBox(height: 15),
+              Text(
+                "error404".tr,
+                textAlign: TextAlign.center,
+                style: const TextStyle(color: Colors.black, fontSize: 18, fontFamily: montserratMedium),
+              ),
+            ],
           ),
         ),
-        Padding(
-          padding: const EdgeInsets.only(bottom: 10, left: 20, right: 20),
+        RaisedButton(
+          onPressed: onTap,
+          shape: const RoundedRectangleBorder(borderRadius: borderRadius10),
+          color: kPrimaryColor,
           child: Text(
-            "noConnection1".tr,
-            textAlign: TextAlign.center,
-            style: const TextStyle(color: Colors.black, fontSize: 18, fontFamily: montserratSemiBold),
+            "retry".tr,
+            style: const TextStyle(color: Colors.white, fontSize: 18, fontFamily: montserratSemiBold),
           ),
         ),
-        Padding(
-          padding: const EdgeInsets.only(bottom: 20, left: 20, right: 20),
-          child: Text(
-            "error404".tr,
-            textAlign: TextAlign.center,
-            style: const TextStyle(color: Colors.black, fontSize: 16, fontFamily: montserratMedium),
-          ),
-        ),
-        if (buttonText == "")
-          const SizedBox.shrink()
-        else
-          RaisedButton(
-            onPressed: onTap,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-            color: kPrimaryColor,
-            child: Text(
-              buttonText.tr,
-              style: const TextStyle(color: Colors.white, fontSize: 16, fontFamily: montserratMedium),
-            ),
-          ),
       ],
     ),
   );

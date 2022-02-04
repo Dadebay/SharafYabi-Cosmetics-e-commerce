@@ -37,7 +37,9 @@ class _FavoritePageState extends State<FavoritePage> {
                 future: FavoriteModel().getFavorites(parametrs: {"products": jsonEncode(Get.find<Fav_Cart_Controller>().favList)}),
                 builder: (context, snapshot) {
                   if (snapshot.hasError) {
-                    return errorConnection(buttonText: "retry", onTap: () {});
+                    return errorConnection(onTap: () {
+                      FavoriteModel().getFavorites(parametrs: {"products": jsonEncode(Get.find<Fav_Cart_Controller>().favList)});
+                    });
                   } else if (snapshot.data!.isEmpty) {
                     return emptyData(imagePath: "assets/emptyState/emptyFav.png", errorTitle: "emptyFavoriteTitle", errorSubtitle: "emptyFavoriteSubtitle");
                   } else if (snapshot.hasData) {

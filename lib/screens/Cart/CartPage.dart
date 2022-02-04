@@ -38,22 +38,24 @@ class _CartPageState extends State<CartPage> {
             setState(() {});
           },
         ),
-        body: Get.find<Fav_Cart_Controller>().cartList.isEmpty
-            ? emptyData(imagePath: "assets/emptyState/emptyCart.png", errorTitle: "cartEmpty", errorSubtitle: "cartEmptySubtitle")
-            : Obx(() {
-                if (Get.find<CartPageController>().loading.value == 1) {
-                  return ListView.builder(
+        body: Obx(() {
+          if (Get.find<CartPageController>().loading.value == 1) {
+            return Get.find<Fav_Cart_Controller>().cartList.isEmpty
+                ? emptyDataLottie(imagePath: "assets/lottie/emptyCart.json", errorTitle: "cartEmpty", errorSubtitle: "cartEmptySubtitle")
+                : ListView.builder(
                     physics: const BouncingScrollPhysics(),
                     itemCount: Get.find<CartPageController>().list.length,
                     itemBuilder: (BuildContext context, int index) {
                       return CardMine(index);
                     },
                   );
-                } else if (Get.find<CartPageController>().loading.value == 2) {
-                  return errorConnection(buttonText: "retry", onTap: () {});
-                }
-                return FavCardShimmer();
-              }));
+          } else if (Get.find<CartPageController>().loading.value == 2) {
+            return emptyDataLottie(imagePath: "assets/lottie/emptyCart.json", errorTitle: "cartEmpty", errorSubtitle: "cartEmptySubtitle");
+          } else if (Get.find<CartPageController>().loading.value == 0) {
+            return FavCardShimmer();
+          }
+          return FavCardShimmer();
+        }));
   }
 
   Widget floatingActionButton() {
@@ -176,7 +178,11 @@ class _CartPageState extends State<CartPage> {
                         children: [
                           GestureDetector(
                             onTap: () {
-                              Get.find<CartPageController>().removeCard(Get.find<CartPageController>().list[index]["id"]);
+                              final int id = Get.find<CartPageController>().list[index]["id"];
+
+                              Get.find<CartPageController>().removeCard(id);
+                              Get.find<Fav_Cart_Controller>().removeCart(id);
+                              setState(() {});
                             },
                             child: Container(padding: const EdgeInsets.all(4), decoration: BoxDecoration(color: Colors.grey[200], shape: BoxShape.circle), child: const Icon(CupertinoIcons.minus)),
                           ),
@@ -191,6 +197,7 @@ class _CartPageState extends State<CartPage> {
                           GestureDetector(
                             onTap: () {
                               Get.find<CartPageController>().addToCard(Get.find<CartPageController>().list[index]["id"]);
+                              Get.find<Fav_Cart_Controller>().addCart(Get.find<CartPageController>().list[index]["id"]);
                             },
                             child: Container(
                                 padding: const EdgeInsets.all(4),

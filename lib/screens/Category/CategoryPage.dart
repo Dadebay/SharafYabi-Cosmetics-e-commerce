@@ -85,7 +85,9 @@ class _CategoryPageState extends State<CategoryPage> {
                       future: getCategory,
                       builder: (context, snapshot) {
                         if (snapshot.hasError) {
-                          return errorConnection(buttonText: "retry", onTap: () {});
+                          return errorConnection(onTap: () {
+                            CategoryModel().getCategory();
+                          });
                         } else if (snapshot.hasData) {
                           return ListView.builder(
                             itemCount: snapshot.data?.length,
@@ -101,7 +103,9 @@ class _CategoryPageState extends State<CategoryPage> {
                       future: getBrand,
                       builder: (context, snapshot) {
                         if (snapshot.hasError) {
-                          return errorConnection(buttonText: "retry", onTap: () {});
+                          return errorConnection(onTap: () {
+                            CategoryModel().getBrand();
+                          });
                         } else if (snapshot.hasData) {
                           return GridView.builder(
                             itemCount: snapshot.data?.length,

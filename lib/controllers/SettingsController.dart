@@ -8,6 +8,7 @@ import 'package:get_storage/get_storage.dart';
 
 class SettingsController extends GetxController {
   final storage = GetStorage();
+  RxBool connectionState = false.obs;
   var tm = const Locale(
     'tr',
   );

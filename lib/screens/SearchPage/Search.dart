@@ -20,6 +20,7 @@ class _SearchPageState extends State<SearchPage> {
   @override
   void initState() {
     super.initState();
+    filterController.mainCategoryID.value = 0;
     filterController.loading.value = 0;
     filterController.list.clear();
     filterController.fetchProducts();
@@ -135,17 +136,14 @@ class _SearchPageState extends State<SearchPage> {
                             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2, childAspectRatio: 4 / 6, mainAxisSpacing: 12, crossAxisSpacing: 12),
                             itemBuilder: (BuildContext context, int index) {
                               return ProductCard2(
-                                id: filterController.list[index]["id"],
-                                name: filterController.list[index]["name"],
-                                price: filterController.list[index]["price"],
-                                image: filterController.list[index]["image"],
-                                discountValue: filterController.list[index]["discountValue"],
-                                quantity: filterController.list[index]["count"],
+                                indexx: index,
                               );
                             }),
                       );
                     } else if (filterController.loading.value == 2) {
-                      return emptyDataLottie(imagePath: "assets/lottie/searchNotFound.json", errorTitle: "emptyProducts", errorSubtitle: "emptyProductsSubtitle");
+                      return SingleChildScrollView(
+                        child: Center(child: emptyDataLottie(imagePath: "assets/lottie/searchNotFound.json", errorTitle: "emptyProducts", errorSubtitle: "emptyProductsSubtitle")),
+                      );
                     } else if (filterController.loading.value == 3) {
                       return retryButton(() {
                         filterController.list.clear();

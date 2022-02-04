@@ -1,6 +1,7 @@
 {
   "project_info": {
     "project_number": "1069011072291",
+    "firebase_url": "https://sharafyabi-4293c-default-rtdb.firebaseio.com",
     "project_id": "sharafyabi-4293c",
     "storage_bucket": "sharafyabi-4293c.appspot.com"
   },
@@ -13,6 +14,14 @@
         }
       },
       "oauth_client": [
+        {
+          "client_id": "1069011072291-4np152dgj15dg6snfqjk7ph8gbmf7v5v.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.bilermennesil.sharafyabi",
+            "certificate_hash": "6d0d738f468c3d6cfa97ad5d010940a63ac36575"
+          }
+        },
         {
           "client_id": "1069011072291-8uqp9qprjbfe75e53ls3g03ft0p79r7b.apps.googleusercontent.com",
           "client_type": 3

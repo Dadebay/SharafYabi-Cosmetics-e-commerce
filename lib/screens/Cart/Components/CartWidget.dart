@@ -56,7 +56,7 @@ Future<dynamic> completeOrder() {
                   color: Colors.white,
                 ),
                 padding: const EdgeInsets.all(15),
-                child: Lottie.asset("assets/lottie/cart.json", fit: BoxFit.cover, width: 110, height: 110)),
+                child: Lottie.asset("assets/lottie/cartblack.json", fit: BoxFit.cover, width: 110, height: 110)),
           )
         ],
       ));

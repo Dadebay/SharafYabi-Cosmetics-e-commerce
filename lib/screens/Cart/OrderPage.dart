@@ -32,13 +32,16 @@ class _OrderPageState extends State<OrderPage> {
   final storage = GetStorage();
 
   final _form1Key = GlobalKey<FormState>();
-
+  double price = 0;
+  bool sendButton = false;
   @override
   void initState() {
     super.initState();
+    sendButton = false;
+    favCartController.promoDiscount.value = 0;
+    favCartController.promoLottie.value = false;
+    favCartController.promoLottieADDCoin.value = false;
     if (storage.read('data') != null) {
-      favCartController.promoLottie.value = false;
-      favCartController.promoLottieADDCoin.value = false;
       final result = storage.read('data');
       name = jsonDecode(result)["full_name"] ?? "name".tr;
       nameController.text = name.capitalizeFirst!;
@@ -58,8 +61,21 @@ class _OrderPageState extends State<OrderPage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 textFieldOthers(),
+                SizedBox(
+                  height: 20,
+                ),
                 promoCode(),
+                SizedBox(
+                  height: 20,
+                ),
+                paymentMethod(),
+                SizedBox(
+                  height: 20,
+                ),
                 dividerr(),
+                SizedBox(
+                  height: 20,
+                ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -73,23 +89,42 @@ class _OrderPageState extends State<OrderPage> {
                     )
                   ],
                 ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      "couponCodeDiscount".tr,
-                      style: TextStyle(color: Colors.grey[500], fontSize: 16, fontFamily: montserratMedium),
-                    ),
-                    Obx(() {
-                      return Text(
-                        "${favCartController.promoDiscount.value}",
-                        style: const TextStyle(color: Colors.black, fontSize: 18, fontFamily: montserratSemiBold),
-                      );
-                    })
-                  ],
-                ),
                 Padding(
-                  padding: const EdgeInsets.only(top: 15, bottom: 20),
+                  padding: const EdgeInsets.symmetric(vertical: 10),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        "couponCodeDiscount".tr,
+                        style: TextStyle(color: Colors.grey[500], fontSize: 16, fontFamily: montserratMedium),
+                      ),
+                      Obx(() {
+                        return Text(
+                          "${favCartController.promoDiscount.value}%",
+                          style: const TextStyle(color: Colors.black, fontSize: 18, fontFamily: montserratSemiBold),
+                        );
+                      })
+                    ],
+                  ),
+                ),
+                // Row(
+                //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                //   children: [
+                //     Text(
+                //       "total".tr,
+                //       style: TextStyle(color: Colors.grey[500], fontSize: 16, fontFamily: montserratMedium),
+                //     ),
+                //     RichText(
+                //       overflow: TextOverflow.ellipsis,
+                //       text: TextSpan(children: <TextSpan>[
+                //         TextSpan(text: "${widget.totalPrice}", style: const TextStyle(fontFamily: montserratSemiBold, fontSize: 20, color: Colors.black)),
+                //         const TextSpan(text: " TMT", style: TextStyle(fontFamily: montserratSemiBold, fontSize: 16, color: Colors.black))
+                //       ]),
+                //     )
+                //   ],
+                // ),
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 20),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -98,13 +133,13 @@ class _OrderPageState extends State<OrderPage> {
                         style: TextStyle(color: Colors.grey[500], fontSize: 16, fontFamily: montserratMedium),
                       ),
                       Obx(() {
-                        double price = widget.totalPrice!;
+                        price = widget.totalPrice!;
 
                         price = ((100 - favCartController.promoDiscount.value) / 100) * price;
                         return RichText(
                           overflow: TextOverflow.ellipsis,
                           text: TextSpan(children: <TextSpan>[
-                            TextSpan(text: "${price}", style: const TextStyle(fontFamily: montserratSemiBold, fontSize: 20, color: Colors.black)),
+                            TextSpan(text: "${price.toStringAsFixed(2)}", style: const TextStyle(fontFamily: montserratSemiBold, fontSize: 20, color: Colors.black)),
                             const TextSpan(text: " TMT", style: TextStyle(fontFamily: montserratSemiBold, fontSize: 16, color: Colors.black))
                           ]),
                         );
@@ -113,40 +148,113 @@ class _OrderPageState extends State<OrderPage> {
                   ),
                 ),
                 Center(
-                  child: AgreeButton(
-                    name: "order".tr,
-                    onTap: () {
-                      if (favCartController.cartList.isEmpty) {
-                        completeOrder();
-                      } else {
-                        final storage = GetStorage();
-                        final result = storage.read('data') ?? "[]";
-                        if (_form1Key.currentState!.validate()) {
-                          Get.find<AuthController>().changeSignInAnimation();
-                          OrderModel()
-                              .createOrder(
-                                  userID: jsonDecode(result)["id"],
-                                  phoneNumber: phoneController.text,
-                                  address: addressController.text,
-                                  name: nameController.text,
-                                  coupon: couponController.text,
-                                  comment: noteController.text)
-                              .then((value) {
-                            if (value == true) {
-                              completeOrder();
+                  child: Container(
+                    width: sendButton ? 70 : Get.size.width,
+                    child: RaisedButton(
+                      shape: RoundedRectangleBorder(borderRadius: borderRadius15),
+                      color: kPrimaryColor,
+                      elevation: 1,
+                      padding: EdgeInsets.symmetric(vertical: 10),
+                      onPressed: () {
+                        setState(() {
+                          if (favCartController.cartList.isEmpty) {
+                            completeOrder();
+                          } else {
+                            final storage = GetStorage();
+                            final result = storage.read('data') ?? "[]";
+
+                            if (_form1Key.currentState!.validate()) {
+                              sendButton = true;
+
+                              OrderModel()
+                                  .createOrder(
+                                      userID: result == "[]" ? "" : jsonDecode(result)["id"],
+                                      phoneNumber: phoneController.text,
+                                      address: addressController.text,
+                                      name: nameController.text,
+                                      coupon: couponController.text,
+                                      comment: noteController.text,
+                                      payment: "${nagt}")
+                                  .then((value) {
+                                if (value == true) {
+                                  completeOrder();
+                                } else {
+                                  sendButton = false;
+                                }
+                              });
+                            } else {
+                              Vibration.vibrate();
+                              sendButton = false;
                             }
-                          });
-                        } else {
-                          Vibration.vibrate();
-                        }
-                      }
-                    },
+                          }
+                        });
+                      },
+                      child: sendButton
+                          ? CircularProgressIndicator(
+                              color: Colors.white,
+                            )
+                          : Text("order".tr, style: TextStyle(color: Colors.white, fontSize: 20, fontFamily: montserratSemiBold)),
+                    ),
                   ),
                 ),
+                SizedBox(
+                  height: 20,
+                )
               ],
             ),
           ),
         ));
+  }
+
+  int nagt = 1;
+  bool buttonColor = false;
+  Padding paymentMethod() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 5),
+      child: Wrap(
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 10),
+            child: Text(
+              "paymentMethod".tr,
+              style: const TextStyle(color: Colors.black, fontFamily: montserratMedium, fontSize: 16),
+            ),
+          ),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              RaisedButton(
+                  onPressed: () {
+                    setState(() {
+                      buttonColor = false;
+                      nagt = 1;
+                    });
+                  },
+                  elevation: 0,
+                  disabledElevation: 0,
+                  color: buttonColor == true ? Colors.white : kPrimaryColor,
+                  shape: RoundedRectangleBorder(borderRadius: borderRadius5, side: BorderSide(color: buttonColor == true ? Colors.grey : kPrimaryColor, width: 2)),
+                  child: Text("cash".tr, overflow: TextOverflow.ellipsis, style: TextStyle(color: buttonColor == true ? Colors.black : Colors.white, fontFamily: montserratMedium))),
+              const SizedBox(
+                width: 10,
+              ),
+              RaisedButton(
+                  onPressed: () {
+                    setState(() {
+                      buttonColor = true;
+                      nagt = 2;
+                    });
+                  },
+                  elevation: 0,
+                  disabledElevation: 0,
+                  color: buttonColor == true ? kPrimaryColor : Colors.white,
+                  shape: RoundedRectangleBorder(borderRadius: borderRadius5, side: BorderSide(color: buttonColor == true ? kPrimaryColor : Colors.grey, width: 2)),
+                  child: Text("creditCart".tr, overflow: TextOverflow.ellipsis, style: TextStyle(color: buttonColor == true ? Colors.white : Colors.black, fontFamily: montserratMedium))),
+            ],
+          ),
+        ],
+      ),
+    );
   }
 
   Form textFieldOthers() {
@@ -311,9 +419,8 @@ class _OrderPageState extends State<OrderPage> {
                   onTap: () {
                     OrderModel().createPromo(coupon: couponController.text).then((value) {
                       if (value == false) {
-                        showSnackBar("Error ", "Error Promo Code", Colors.red);
+                        showSnackBar("erro404", "couponCodeError", Colors.red);
                       } else {
-                        print("men");
                         favCartController.promoLottie.value = true;
                         favCartController.promoDiscount.value = value;
                         Future.delayed(Duration(seconds: 2), () {

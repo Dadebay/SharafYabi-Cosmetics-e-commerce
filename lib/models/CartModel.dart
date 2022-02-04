@@ -65,7 +65,7 @@ class OrderModel extends ChangeNotifier {
 
   final int? id;
 
-  Future createOrder({String? coupon, String? name, String? userID, String? address, String? phoneNumber, String? comment}) async {
+  Future createOrder({String? coupon, String? name, String? userID, String? address, String? phoneNumber, String? comment, String? payment}) async {
     final body = json.encode({
       "products": Get.find<Fav_Cart_Controller>().cartList,
       "coupon": coupon ?? "",
@@ -74,6 +74,7 @@ class OrderModel extends ChangeNotifier {
       "user_id": userID ?? "",
       "name": name ?? "",
       "comment": comment ?? "",
+      "paymant_id": payment ?? "",
     });
     final response = await http.post(
         Uri.parse(
@@ -115,5 +116,22 @@ class OrderModel extends ChangeNotifier {
     } else {
       return false;
     }
+  }
+
+  Future addSubscription({
+    String? phoneNumber,
+  }) async {
+    final response = await http.post(
+      Uri.parse(
+        "$serverURL/api/ru/add-to-subscription",
+      ),
+      body: jsonEncode(<String, dynamic>{
+        "phone": phoneNumber,
+      }),
+      headers: <String, String>{
+        HttpHeaders.contentTypeHeader: 'application/json; charset=UTF-8',
+      },
+    );
+    return response.statusCode;
   }
 }

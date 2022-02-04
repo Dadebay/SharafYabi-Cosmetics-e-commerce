@@ -1,12 +1,15 @@
 // ignore_for_file: file_names, always_use_package_imports
 
+import 'package:flutter/cupertino.dart';
+import 'package:lottie/lottie.dart';
 import 'package:sharaf_yabi_ecommerce/components/ProductCard.dart';
+import 'package:sharaf_yabi_ecommerce/components/ProductProfil.dart';
 import 'package:sharaf_yabi_ecommerce/components/ShowAllProductsPage.dart';
 import 'package:sharaf_yabi_ecommerce/controllers/FilterController.dart';
 import 'package:sharaf_yabi_ecommerce/screens/HomePage/Components/packages.dart';
 import 'package:sharaf_yabi_ecommerce/screens/SearchPage/Search.dart';
 import 'package:sharaf_yabi_ecommerce/widgets/appBar.dart';
-
+import 'package:animations/animations.dart';
 import 'Components/gridView.dart';
 
 class HomePage extends StatefulWidget {

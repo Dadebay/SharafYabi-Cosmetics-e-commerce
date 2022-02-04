@@ -1,10 +1,10 @@
-// ignore_for_file: deprecated_member_use, file_names, always_use_package_imports, avoid_dynamic_calls, type_annotate_public_apis, always_declare_return_types
+// ignore_for_file: deprecated_member_use, file_names, always_use_package_imports, avoid_dynamic_calls, type_annotate_public_apis, always_declare_return_types, invariant_booleans
 
 import 'package:flutter/cupertino.dart';
-import 'package:lottie/lottie.dart';
 
 import 'package:sharaf_yabi_ecommerce/components/compackages.dart';
 import 'package:sharaf_yabi_ecommerce/controllers/CartPageController.dart';
+import 'package:sharaf_yabi_ecommerce/controllers/FilterController.dart';
 
 import 'PhotoView.dart';
 
@@ -20,6 +20,9 @@ class ProductProfil extends StatefulWidget {
 
 class _ProductProfilState extends State<ProductProfil> {
   Fav_Cart_Controller favCartController = Get.put(Fav_Cart_Controller());
+  FilterController filterController = Get.put(FilterController());
+  CartPageController cartPageController = Get.put(CartPageController());
+  bool addCart = false;
   String name = "";
   String imageMine = "";
   @override
@@ -30,15 +33,12 @@ class _ProductProfilState extends State<ProductProfil> {
     if (Get.find<Fav_Cart_Controller>().cartList.isNotEmpty) {
       Get.find<Fav_Cart_Controller>().cartList.forEach((element) {
         if (element["id"] == widget.id) {
-          favCartController.addCartBool.value = true;
+          addCart = true;
           favCartController.quantity.value = element["count"];
-        } else {
-          favCartController.addCartBool.value = false;
-          favCartController.quantity.value = 1;
         }
       });
     } else {
-      favCartController.addCartBool.value = false;
+      addCart = false;
       favCartController.quantity.value = 1;
     }
 
@@ -72,7 +72,6 @@ class _ProductProfilState extends State<ProductProfil> {
           child: FutureBuilder<ProductProfilModel>(
               future: ProductProfilModel().getRealEstatesById(widget.id),
               builder: (context, snapshot) {
-                print(snapshot.error);
                 if (snapshot.hasError) {
                   return Container(
                       height: Get.size.height - 200,
@@ -155,7 +154,7 @@ class _ProductProfilState extends State<ProductProfil> {
                                   RichText(
                                     overflow: TextOverflow.ellipsis,
                                     text: TextSpan(children: <TextSpan>[
-                                      TextSpan(text: "${priceMine.toStringAsFixed(2)}", style: const TextStyle(fontFamily: montserratSemiBold, fontSize: 24, color: Colors.black)),
+                                      TextSpan(text: priceMine.toStringAsFixed(2), style: const TextStyle(fontFamily: montserratSemiBold, fontSize: 24, color: Colors.black)),
                                       const TextSpan(text: " TMT", style: TextStyle(fontFamily: montserratSemiBold, fontSize: 18, color: Colors.black))
                                     ]),
                                   ),
@@ -289,85 +288,101 @@ class _ProductProfilState extends State<ProductProfil> {
   }
 
   Widget bottomSheetMine() {
-    return Obx(() {
-      return Container(
-        color: kPrimaryColor,
-        width: Get.size.width,
-        child: favCartController.addCartBool.value
-            ? Row(
-                children: [
-                  RaisedButton(
-                      padding: const EdgeInsets.symmetric(vertical: 14),
-                      color: Colors.white,
-                      elevation: 2,
-                      onPressed: () {
-                        Get.find<Fav_Cart_Controller>().cartList.forEach((element) {
-                          if (element["id"] == widget.id) {
+    return Container(
+      color: kPrimaryColor,
+      width: Get.size.width,
+      child: addCart
+          ? Row(
+              children: [
+                RaisedButton(
+                    padding: const EdgeInsets.symmetric(vertical: 14),
+                    color: Colors.white,
+                    elevation: 2,
+                    onPressed: () {
+                      Get.find<Fav_Cart_Controller>().cartList.forEach((element) {
+                        if (element["id"] == widget.id) {
+                          element["count"]--;
+                          cartPageController.removeCard(element["id"]);
+                          if (filterController.list.isNotEmpty) {
+                            for (final element in filterController.list) {
+                              if (element["id"] == widget.id) {
+                                element["count"]--;
+                              }
+                            }
+                          }
+                          if (favCartController.quantity.value == 1) {
+                            addCart = false;
+                          } else {
                             favCartController.quantity.value--;
-                            Get.find<CartPageController>().removeCard(element["id"]);
-
-                            element["count"]--;
-                            if (favCartController.quantity.value == 0) {
-                              favCartController.addCartBool.value = false;
-                            }
                           }
-                        });
-                      },
-                      child: const Icon(CupertinoIcons.minus_circled, color: kPrimaryColor, size: 34)),
-                  Expanded(
-                    child: Container(
-                        color: kPrimaryColor,
-                        child: Text(
-                          "${favCartController.quantity.value}",
-                          textAlign: TextAlign.center,
-                          style: const TextStyle(color: Colors.white, fontFamily: montserratBold, fontSize: 24),
-                        )),
-                  ),
-                  RaisedButton(
-                      padding: const EdgeInsets.symmetric(vertical: 14),
-                      color: Colors.white,
-                      elevation: 2,
-                      onPressed: () {
-                        Get.find<Fav_Cart_Controller>().cartList.forEach((element) {
-                          if (element["id"] == widget.id) {
-                            if (favCartController.stockCount.value > (element["count"] + 1)) {
-                              favCartController.quantity.value++;
-                              Get.find<CartPageController>().addToCard(element["id"]);
-                              element["count"]++;
-                            } else {
-                              showSnackBar("emptyStockMin", "emptyStockSubtitle", Colors.red);
+                        }
+                      });
+                      setState(() {});
+                    },
+                    child: const Icon(CupertinoIcons.minus_circled, color: kPrimaryColor, size: 34)),
+                Expanded(
+                  child: Container(
+                      color: kPrimaryColor,
+                      child: Text(
+                        "${favCartController.quantity.value}",
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(color: Colors.white, fontFamily: montserratBold, fontSize: 24),
+                      )),
+                ),
+                RaisedButton(
+                    padding: const EdgeInsets.symmetric(vertical: 14),
+                    color: Colors.white,
+                    elevation: 2,
+                    onPressed: () {
+                      Get.find<Fav_Cart_Controller>().cartList.forEach((element) {
+                        if (element["id"] == widget.id) {
+                          if (favCartController.stockCount.value > (element["count"] + 1)) {
+                            favCartController.quantity.value++;
+                            if (filterController.list.isNotEmpty) {
+                              for (final element2 in filterController.list) {
+                                if (element2["id"] == widget.id) {
+                                  element2["count"]++;
+                                }
+                              }
                             }
+                            cartPageController.addToCard(element["id"]);
+                            element["count"]++;
+                          } else {
+                            showSnackBar("emptyStockMin", "emptyStockSubtitle", Colors.red);
                           }
-                        });
-                      },
-                      child: const Icon(CupertinoIcons.add_circled, color: kPrimaryColor, size: 34)),
-                ],
-              )
-            : RaisedButton(
-                onPressed: () {
+                        }
+                      });
+                      setState(() {});
+                    },
+                    child: const Icon(CupertinoIcons.add_circled, color: kPrimaryColor, size: 34)),
+              ],
+            )
+          : RaisedButton(
+              onPressed: () {
+                setState(() {
                   if (priceOLD != 0.0) {
-                    favCartController.addCartBool.value = !favCartController.addCartBool.value;
+                    addCart = !addCart;
                     final int? a = widget.id;
                     Get.find<Fav_Cart_Controller>().addCart(a!);
                   } else {
                     showSnackBar("retry", "error404", Colors.red);
                   }
-                },
-                color: kPrimaryColor.withOpacity(0.8),
-                disabledColor: kPrimaryColor.withOpacity(0.8),
-                padding: const EdgeInsets.symmetric(vertical: 15),
-                highlightColor: Colors.white.withOpacity(0.4),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 10),
-                      child: Icon(IconlyLight.buy, size: 28, color: Colors.white),
-                    ),
-                    Text("addCart3".tr, textAlign: TextAlign.center, style: const TextStyle(color: Colors.white, fontFamily: montserratSemiBold, fontSize: 20)),
-                  ],
-                )),
-      );
-    });
+                });
+              },
+              color: kPrimaryColor.withOpacity(0.8),
+              disabledColor: kPrimaryColor.withOpacity(0.8),
+              padding: const EdgeInsets.symmetric(vertical: 15),
+              highlightColor: Colors.white.withOpacity(0.4),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 10),
+                    child: Icon(IconlyLight.buy, size: 28, color: Colors.white),
+                  ),
+                  Text("addCart3".tr, textAlign: TextAlign.center, style: const TextStyle(color: Colors.white, fontFamily: montserratSemiBold, fontSize: 20)),
+                ],
+              )),
+    );
   }
 }
