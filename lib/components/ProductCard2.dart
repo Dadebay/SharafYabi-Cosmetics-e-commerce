@@ -25,10 +25,21 @@ class ProductCard2 extends StatefulWidget {
 class _ProductCard2State extends State<ProductCard2> {
   bool favButton = false;
   late FilterController _filterController;
+  late Fav_Cart_Controller favCartController;
   @override
   void initState() {
     super.initState();
+    favCartController = Get.put<Fav_Cart_Controller>(Fav_Cart_Controller());
     _filterController = Get.put<FilterController>(FilterController());
+    if (favCartController.favList.isNotEmpty) {
+      favCartController.favList.forEach((element) {
+        if (element["id"] == _filterController.list[widget.indexx]!["id"]) {
+          favButton = true;
+        }
+      });
+    } else {
+      favButton = false;
+    }
   }
 
   @override
@@ -89,7 +100,7 @@ class _ProductCard2State extends State<ProductCard2> {
                               GestureDetector(
                                 onTap: () {
                                   setState(() {
-                                    Get.find<Fav_Cart_Controller>().cartList.forEach((element) {
+                                    favCartController.cartList.forEach((element) {
                                       if (element["id"] == _filterController.list[widget.indexx]["id"]) {
                                         element["count"]--;
                                         if (_filterController.list.isNotEmpty) {
@@ -135,7 +146,7 @@ class _ProductCard2State extends State<ProductCard2> {
                                         element2["count"]++;
                                       }
                                     }
-                                    Get.find<Fav_Cart_Controller>().addCart(_filterController.list[widget.indexx]["id"]);
+                                    favCartController.addCart(_filterController.list[widget.indexx]["id"]);
                                   });
                                 },
                                 child: PhysicalModel(
@@ -158,7 +169,7 @@ class _ProductCard2State extends State<ProductCard2> {
                       : RaisedButton(
                           onPressed: () {
                             setState(() {
-                              Get.find<Fav_Cart_Controller>().addCart(_filterController.list[widget.indexx]["id"]);
+                              favCartController.addCart(_filterController.list[widget.indexx]["id"]);
                               for (final element2 in _filterController.list) {
                                 if (element2["id"] == _filterController.list[widget.indexx]["id"]) {
                                   element2["count"]++;
@@ -218,7 +229,9 @@ class _ProductCard2State extends State<ProductCard2> {
               onTap: () {
                 setState(() {
                   favButton = !favButton;
-                  Get.find<Fav_Cart_Controller>().toggleFav(_filterController.list[widget.indexx]["id"]);
+                  print(favCartController.favList);
+                  favCartController.toggleFav(_filterController.list[widget.indexx]["id"]);
+                  print(favCartController.favList);
                 });
               },
               child: PhysicalModel(

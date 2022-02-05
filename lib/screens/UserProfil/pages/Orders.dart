@@ -111,10 +111,10 @@ class OrderProfile extends StatelessWidget {
                     itemCount: snapshot.data?.length,
                     physics: const NeverScrollableScrollPhysics(),
                     shrinkWrap: true,
-                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2, childAspectRatio: 3 / 4),
+                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2, childAspectRatio: 2 / 3),
                     itemBuilder: (BuildContext context, int index) {
                       return Container(
-                        margin: const EdgeInsets.symmetric(vertical: 10),
+                        margin: const EdgeInsets.only(left: 10, right: 10, top: 5, bottom: 5),
                         child: RaisedButton(
                           onPressed: () {},
                           shape: const RoundedRectangleBorder(borderRadius: borderRadius5),
@@ -148,46 +148,50 @@ class OrderProfile extends StatelessWidget {
 
   Expanded namePartMine(String? name, String? price) {
     return Expanded(
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 5),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    "$name",
-                    overflow: TextOverflow.ellipsis,
-                    maxLines: 1,
-                    style: const TextStyle(fontFamily: montserratMedium, fontSize: 16),
-                  ),
-                  RichText(
-                    overflow: TextOverflow.ellipsis,
-                    text: TextSpan(children: <TextSpan>[
-                      TextSpan(text: "$price", style: const TextStyle(fontFamily: montserratSemiBold, fontSize: 18, color: kPrimaryColor)),
-                      const TextSpan(text: " TMT", style: TextStyle(fontFamily: montserratMedium, fontSize: 14, color: kPrimaryColor))
-                    ]),
-                  ),
-                ],
+      child: Padding(
+        padding: const EdgeInsets.only(left: 5),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 5),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      "$name",
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 2,
+                      style: const TextStyle(fontFamily: montserratMedium, fontSize: 16),
+                    ),
+                    RichText(
+                      overflow: TextOverflow.ellipsis,
+                      text: TextSpan(children: <TextSpan>[
+                        TextSpan(text: "$price", style: const TextStyle(fontFamily: montserratSemiBold, fontSize: 20, color: kPrimaryColor)),
+                        const TextSpan(text: " TMT", style: TextStyle(fontFamily: montserratMedium, fontSize: 16, color: kPrimaryColor))
+                      ]),
+                    ),
+                  ],
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
 
   Expanded imageExpanded(String? image) {
     return Expanded(
-      flex: 3,
+      flex: 2,
       child: CachedNetworkImage(
           fadeInCurve: Curves.ease,
           imageUrl: "$serverImage/$image-mini.webp",
           imageBuilder: (context, imageProvider) => Container(
                 padding: EdgeInsets.zero,
+                margin: EdgeInsets.all(8),
                 decoration: BoxDecoration(
                   borderRadius: const BorderRadius.only(topRight: Radius.circular(5), topLeft: Radius.circular(5)),
                   image: DecorationImage(
@@ -197,13 +201,7 @@ class OrderProfile extends StatelessWidget {
                 ),
               ),
           placeholder: (context, url) => Center(child: spinKit()),
-          errorWidget: (context, url, error) => Padding(
-                padding: const EdgeInsets.all(30.0),
-                child: Image.asset(
-                  "assets/appLogo/greyLogo.png",
-                  color: Colors.grey,
-                ),
-              )),
+          errorWidget: (context, url, error) => noImage()),
     );
   }
 }

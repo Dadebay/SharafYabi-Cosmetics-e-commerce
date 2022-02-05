@@ -11,6 +11,7 @@ class NewsController extends GetxController {
 
   void fetchProducts() async {
     loading.value = 0;
+    print("irefreshed");
     final products = await NewsModel().getNews(parametrs: {
       "page": '${page.value}',
       "limit": '20',
@@ -37,7 +38,6 @@ class NewsController extends GetxController {
     int a = 0;
     a = pageNumberNews.value;
     if ((a / 20) > page.value + 1) {
-      page.value += 1;
       fetchProducts();
     }
   }

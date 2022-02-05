@@ -13,7 +13,7 @@ import 'package:sharaf_yabi_ecommerce/constants/widgets.dart';
 import 'package:sharaf_yabi_ecommerce/controllers/CartPageController.dart';
 import 'package:sharaf_yabi_ecommerce/controllers/Fav_Cart_Controller.dart';
 import 'package:sharaf_yabi_ecommerce/screens/Cart/OrderPage.dart';
-import 'package:sharaf_yabi_ecommerce/screens/FavoritePage/Components/FavCardShimmer.dart';
+import 'package:sharaf_yabi_ecommerce/screens/UserProfil/pages/FavoritePage/Components/FavCardShimmer.dart';
 import 'package:sharaf_yabi_ecommerce/widgets/appBar.dart';
 
 class CartPage extends StatefulWidget {

@@ -21,67 +21,90 @@ class NewsProfil extends StatelessWidget {
           builder: (context, snapshot) {
             if (snapshot.hasData) {
               return SingleChildScrollView(
-                  child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  CachedNetworkImage(
-                      fadeInCurve: Curves.ease,
-                      imageUrl: "$serverImage/${snapshot.data?.imagePath}-big.webp",
-                      imageBuilder: (context, imageProvider) => Container(
-                            padding: EdgeInsets.zero,
-                            height: 300,
-                            width: Get.size.width,
-                            decoration: BoxDecoration(
-                              borderRadius: borderRadius10,
-                              image: DecorationImage(
-                                image: imageProvider,
-                                fit: BoxFit.fill,
+                  child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    CachedNetworkImage(
+                        fadeInCurve: Curves.ease,
+                        imageUrl: "$serverImage/${snapshot.data?.imagePath}-big.webp",
+                        imageBuilder: (context, imageProvider) => Container(
+                              padding: EdgeInsets.zero,
+                              height: 250,
+                              width: Get.size.width,
+                              margin: EdgeInsets.symmetric(vertical: 10),
+                              decoration: BoxDecoration(
+                                borderRadius: borderRadius20,
+                                image: DecorationImage(
+                                  image: imageProvider,
+                                  fit: BoxFit.cover,
+                                ),
                               ),
                             ),
-                          ),
-                      placeholder: (context, url) => Center(child: spinKit()),
-                      errorWidget: (context, url, error) => Padding(
-                            padding: const EdgeInsets.all(30.0),
-                            child: Image.asset(
-                              "assets/appLogo/greyLogo.png",
-                              color: Colors.grey,
-                            ),
-                          )),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text("${snapshot.data!.title}", style: const TextStyle(color: Colors.black, fontFamily: montserratSemiBold, fontSize: 24)),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 8),
-                          child: Row(
-                            children: [
-                              Text("createdAt".tr,
-                                  style: const TextStyle(
-                                    color: Colors.black45,
-                                    fontFamily: montserratRegular,
-                                  )),
-                              Text(" : ${snapshot.data!.createdAt}",
-                                  style: const TextStyle(
-                                    color: Colors.black45,
-                                    fontFamily: montserratRegular,
-                                  )),
-                            ],
-                          ),
-                        ),
-                        const Text(
-                            // "${snapshot.data!.article}",
-                            "askjdboauiOASDHBBFJBARGIJAGJKRGKJARNPKJAGBNPRJGABNPIORJOPGAIJRBGOPABOPRGBAOPRJIHBjdboauiOASDHBBFJBARGIJAGJKRGKJARNPKJAGBNPRJGABNPIORJOPGAIJRBGOPABOPRGBAOPRJIHBGjdboauiOASDHBBFJBARGIJAGJKRGKJARNPKJAGBNPRJGABNPIORJOPGAIJRBGOPABOPRGBAOPRJIHBGjdboauiOASDHBBFJBARGIJAGJKRGKJARNPKJAGBNPRJGABNPIORJOPGAIJRBGOPABOPRGBAOPRJIHBGjdboauiOASDHBBFJBARGIJAGJKRGKJARNPKJAGBNPRJGABNPIORJOPGAIJRBGOPABOPRGBAOPRJIHBGjdboauiOASDHBBFJBARGIJAGJKRGKJARNPKJAGBNPRJGABNPIORJOPGAIJRBGOPABOPRGBAOPRJIHBGjdboauiOASDHBBFJBARGIJAGJKRGKJARNPKJAGBNPRJGABNPIORJOPGAIJRBGOPABOPRGBAOPRJIHBGjdboauiOASDHBBFJBARGIJAGJKRGKJARNPKJAGBNPRJGABNPIORJOPGAIJRBGOPABOPRGBAOPRJIHBGjdboauiOASDHBBFJBARGIJAGJKRGKJARNPKJAGBNPRJGABNPIORJOPGAIJRBGOPABOPRGBAOPRJIHBGG",
-                            style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 18,
-                              fontFamily: montserratRegular,
+                        placeholder: (context, url) => Center(child: spinKit()),
+                        errorWidget: (context, url, error) => Padding(
+                              padding: const EdgeInsets.all(30.0),
+                              child: Image.asset(
+                                "assets/appLogo/greyLogo.png",
+                                color: Colors.grey,
+                              ),
                             )),
-                      ],
+                    Container(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text("${snapshot.data!.title}", style: const TextStyle(color: Colors.black, fontFamily: montserratSemiBold, fontSize: 24)),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 15),
+                            child: Row(
+                              children: [
+                                const Padding(
+                                  padding: EdgeInsets.only(right: 15),
+                                  child: CircleAvatar(
+                                    backgroundColor: Colors.white,
+                                    maxRadius: 25,
+                                    minRadius: 24,
+                                    backgroundImage: AssetImage(
+                                      "assets/appLogo/logo.png",
+                                    ),
+                                  ),
+                                ),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    const Text("Sharafyabi", maxLines: 2, style: TextStyle(color: kPrimaryColor, fontSize: 20, fontFamily: montserratMedium)),
+                                    Row(
+                                      children: [
+                                        Text("createdAt".tr,
+                                            style: const TextStyle(
+                                              color: Colors.black45,
+                                              fontFamily: montserratRegular,
+                                            )),
+                                        Text(" : ${snapshot.data!.createdAt}",
+                                            style: const TextStyle(
+                                              color: Colors.black45,
+                                              fontFamily: montserratRegular,
+                                            )),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ),
+                          Text("${snapshot.data!.article}",
+                              style: const TextStyle(
+                                color: Colors.black,
+                                fontSize: 18,
+                                fontFamily: montserratRegular,
+                              )),
+                        ],
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ));
             }
             return Center(

@@ -22,6 +22,7 @@ class FilterController extends GetxController {
   RxBool recomended = false.obs;
   RxBool newInCome = false.obs;
   RxString search = "".obs;
+  RxInt pageNumberFilterController = 0.obs;
 
   void fetchProducts() async {
     if (categoryID.isNotEmpty) {
@@ -74,7 +75,7 @@ class FilterController extends GetxController {
 
   addPage() {
     int a = 0;
-    a = pageNumber;
+    a = pageNumberFilterController.value;
     if ((a / 20) > page.value + 1) {
       page.value += 1;
       fetchProducts();

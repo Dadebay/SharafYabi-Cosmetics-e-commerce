@@ -40,6 +40,7 @@ class OrdersModel extends ChangeNotifier {
           HttpHeaders.contentTypeHeader: 'application/json; charset=UTF-8',
           HttpHeaders.authorizationHeader: 'Bearer $token',
         });
+    print(response.body);
     if (response.statusCode == 200) {
       final responseJson = jsonDecode(response.body)["rows"];
       for (final Map product in responseJson) {

@@ -26,6 +26,9 @@ class _NewsState extends State<News> {
   @override
   void initState() {
     super.initState();
+
+    newsController.page.value = 1;
+    newsController.pageNumberNews.value = 0;
     newsController.list.clear();
     newsController.fetchProducts();
   }

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-int pageNumber = 0;
 const String langKey = "language";
 const String serverURL = "https://sharafyabi.com";
 const String serverImage = "https://sharafyabi.com";

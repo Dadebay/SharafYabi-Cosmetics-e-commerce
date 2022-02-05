@@ -13,7 +13,6 @@ class FavCardShimmer extends StatelessWidget {
           return Container(
             height: 150,
             margin: const EdgeInsets.fromLTRB(10, 10, 10, 10),
-            // ignore: deprecated_member_use
             child: RaisedButton(
               color: Colors.white,
               padding: EdgeInsets.zero,

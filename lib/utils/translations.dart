@@ -11,8 +11,9 @@ class MyTranslations extends Translations {
           "noConnection1": "Aragatnaşyk ýok",
           "noConnection2": "Internede baglanyp bolmady.Internet sazlamalryňyzy barlap gaýtadan synanşyň !",
           "noConnection3": "Täzeden synanş",
-          "aboutUsTitle":
-              "“Sharafyabi” onlaýn söwda platformasyna hoş geldiňiz! \n\n 300-den gowrak kosmetiki we arassaçylyk önümlerini satýarys. Täze doglan çagalardan başlap ýaşa çenli ilatyň ähli toparlary önümlerimiziň sarp edijileridir. \n Kompaniýa 1997-nji ýylda esaslandyryldy. \n Häzirki wagtda haryt satmak Aşgabat şäherindäki we Türkmenistanyň ähli sebitlerinde söwda nokatlarynda amala aşyrylýar.",
+          "aboutUsTitle": "“Sharafyabi” onlaýn söwda platformasyna hoş geldiňiz!",
+          "aboutUsSubtitle":
+              "300-den gowrak kosmetiki we arassaçylyk önümlerini satýarys. Täze doglan çagalardan başlap ýaşa çenli ilatyň ähli toparlary önümlerimiziň sarp edijileridir. Kompaniýa 1997-nji ýylda esaslandyryldy. Häzirki wagtda haryt satmak Aşgabat şäherindäki we Türkmenistanyň ähli sebitlerinde söwda nokatlarynda amala aşyrylýar.",
           "accepted": "Kabul edildi",
           "accountSettings": "Ulanyjy maglumatlary",
           "addCart": "Sebede goş",
@@ -150,8 +151,9 @@ class MyTranslations extends Translations {
           "noConnection1": "Нет связи",
           "noConnection2": "Невозможно подключиться к Интернету. Пожалуйста проверьте настройки Интернета и повторите попытку!",
           "noConnection3": "Попробуйте снова",
-          "aboutUsTitle":
-              "Добро пожаловать на платформу интернет-магазинов Sharafyabi! \n\n Мы реализуем более 300 видов косметических и гигиенических средств. Потребителями наших товаров являются все группы населения от новорожденных до людей в возрасте.\nКомпания основана в 1997 году. \n В настоящее время реализация товаров ведется в торговых точках в городе Ашхабаде и во всех регионах Туркменистана.",
+          "aboutUsTitle": "Добро пожаловать на платформу интернет-магазинов Sharafyabi!",
+          "aboutUsSubtitle":
+              "Мы реализуем более 300 видов косметических и гигиенических средств. Потребителями наших товаров являются все группы населения от новорожденных до людей в возрасте. Компания основана в 1997 году. В настоящее время реализация товаров ведется в торговых точках в городе Ашхабаде и во всех регионах Туркменистана.",
           "accepted": "Принятый",
           "accountSettings": "Пользователь",
           "addCart": "Добавить в корзину",
@@ -261,8 +263,9 @@ class MyTranslations extends Translations {
           "news": "News",
           "aboutUS": "About Us",
           "sameProducts": "Same Products",
-          "aboutUsTitle":
-              "Welcome to Sharafyabi Online Shopping Platform! \n \n We sell more than 300 types of cosmetic and hygiene products. All groups of the population, from newborns to people of the age, are consumers of our products. \nThe company was founded in 1997. \n Currently, the sale of goods is carried out in retail outlets in the city of Ashgabat and in all regions of Turkmenistan.",
+          "aboutUsTitle": "Welcome to Sharafyabi Online Shopping Platform!",
+          "aboutUsSubtitle":
+              "We sell more than 300 types of cosmetic and hygiene products. All groups of the population, from newborns to people of the age, are consumers of our products. The company was founded in 1997. Currently, the sale of goods is carried out in retail outlets in the city of Ashgabat and in all regions of Turkmenistan.",
           "accepted": "Accepted",
           "accountSettings": "Account Settings",
           "addCart": "Add Cart",

@@ -10,7 +10,7 @@ import 'package:sharaf_yabi_ecommerce/constants/constants.dart';
 import 'package:sharaf_yabi_ecommerce/constants/widgets.dart';
 import 'package:sharaf_yabi_ecommerce/controllers/FilterController.dart';
 import 'package:sharaf_yabi_ecommerce/models/CategoryModel.dart';
-import 'package:sharaf_yabi_ecommerce/screens/SearchPage/Search.dart';
+import 'package:sharaf_yabi_ecommerce/screens/HomePage/SearchPage/Search.dart';
 import 'package:sharaf_yabi_ecommerce/widgets/bottomSheetName.dart';
 
 class ShowAllProductsPage extends StatefulWidget {

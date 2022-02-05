@@ -1,6 +1,7 @@
 // ignore_for_file: file_names, must_be_immutable, non_constant_identifier_names
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
 import 'package:get/get.dart';
 import 'package:sharaf_yabi_ecommerce/constants/constants.dart';
@@ -59,6 +60,8 @@ class LoginPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(statusBarColor: Colors.transparent));
+
     return DefaultTabController(
       length: 2,
       child: Scaffold(

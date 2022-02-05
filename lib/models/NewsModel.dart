@@ -35,14 +35,13 @@ class NewsModel extends ChangeNotifier {
     final response = await http.get(
         Uri.parse(
           "$serverURL/api/$lang/get-news",
-        ),
+        ).replace(queryParameters: parametrs),
         headers: <String, String>{
           HttpHeaders.contentTypeHeader: 'application/json; charset=UTF-8',
         });
-    print(response.body);
 
     if (response.statusCode == 200) {
-      Get.find<NewsController>().pageNumberNews.value = 0;
+      Get.find<NewsController>().pageNumberNews.value = int.parse(jsonDecode(response.body)["rows"]["count"]);
       final responseJson = jsonDecode(response.body)["rows"]["news"] as List;
       for (final Map product in responseJson) {
         products.add(NewsModel.fromJson(product));

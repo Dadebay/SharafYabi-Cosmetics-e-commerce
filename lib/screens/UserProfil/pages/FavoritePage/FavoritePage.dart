@@ -23,31 +23,31 @@ class FavoritePage extends StatefulWidget {
 }
 
 class _FavoritePageState extends State<FavoritePage> {
+  Fav_Cart_Controller fav_cart_controller = Get.put(Fav_Cart_Controller());
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: Colors.white,
+        backgroundColor: Colors.grey[100],
         appBar: MyAppBar(
             icon: IconlyLight.delete,
             addName: true,
             name: "favorite",
             onTap: () {
-              Get.find<Fav_Cart_Controller>().clearFavList();
+              fav_cart_controller.clearFavList();
               setState(() {});
             },
             backArrow: true,
-            iconRemove: Get.find<Fav_Cart_Controller>().favList.isNotEmpty ? true : false),
-        body: Get.find<Fav_Cart_Controller>().favList.isEmpty
+            iconRemove: fav_cart_controller.favList.isNotEmpty ? true : false),
+        body: fav_cart_controller.favList.isEmpty
             ? GestureDetector(onTap: () {}, child: emptyData(imagePath: "assets/emptyState/emptyFav.png", errorTitle: "emptyFavoriteTitle", errorSubtitle: "emptyFavoriteSubtitle"))
             : FutureBuilder<List<FavoriteModel>>(
-                future: FavoriteModel().getFavorites(parametrs: {"products": jsonEncode(Get.find<Fav_Cart_Controller>().favList)}),
+                future: FavoriteModel().getFavorites(parametrs: {"products": jsonEncode(fav_cart_controller.favList)}),
                 builder: (context, snapshot) {
                   if (snapshot.hasError) {
                     return errorConnection(onTap: () {
-                      FavoriteModel().getFavorites(parametrs: {"products": jsonEncode(Get.find<Fav_Cart_Controller>().favList)});
+                      FavoriteModel().getFavorites(parametrs: {"products": jsonEncode(fav_cart_controller.favList)});
                     });
-                  } else if (snapshot.data!.isEmpty) {
-                    return emptyData(imagePath: "assets/emptyState/emptyFav.png", errorTitle: "emptyFavoriteTitle", errorSubtitle: "emptyFavoriteSubtitle");
                   } else if (snapshot.hasData) {
                     return ListView.builder(
                       itemCount: snapshot.data!.length,
@@ -60,24 +60,20 @@ class _FavoritePageState extends State<FavoritePage> {
                 }));
   }
 
-  Container CardMine(FavoriteModel product) {
-    return Container(
-      height: 150,
-      margin: const EdgeInsets.all(10),
-      child: RaisedButton(
-        color: Colors.white,
-        shape: const RoundedRectangleBorder(borderRadius: borderRadius10),
+  Widget CardMine(FavoriteModel product) {
+    return GestureDetector(
+      onTap: () {
+        Get.to(() => ProductProfil(
+              id: product.id,
+              productName: product.productName,
+              image: "$serverImage/${product.imagePath}-mini.webp",
+            ));
+      },
+      child: Container(
+        height: 150,
+        margin: const EdgeInsets.all(10),
         padding: EdgeInsets.zero,
-        disabledColor: Colors.white,
-        highlightColor: backgroundColor,
-        elevation: 0,
-        onPressed: () {
-          Get.to(() => ProductProfil(
-                id: product.id,
-                productName: product.productName,
-                image: "$serverImage/${product.imagePath}-mini.webp",
-              ));
-        },
+        decoration: const BoxDecoration(color: Colors.white, borderRadius: borderRadius20),
         child: Row(
           children: [
             Expanded(
@@ -115,7 +111,7 @@ class _FavoritePageState extends State<FavoritePage> {
                     left: 15,
                     child: GestureDetector(
                       onTap: () {
-                        Get.find<Fav_Cart_Controller>().toggleFav(product.id!);
+                        fav_cart_controller.toggleFav(product.id!);
                         setState(() {});
                       },
                       child: PhysicalModel(
@@ -151,7 +147,7 @@ class _FavoritePageState extends State<FavoritePage> {
                                     overflow: TextOverflow.ellipsis, maxLines: 1, style: const TextStyle(color: Colors.black, fontFamily: montserratMedium, fontSize: 17))),
                             GestureDetector(
                               onTap: () {
-                                Get.find<Fav_Cart_Controller>().toggleFav(product.id!);
+                                fav_cart_controller.toggleFav(product.id!);
                                 setState(() {});
                               },
                               child: const Icon(CupertinoIcons.xmark_circle, color: Colors.black, size: 24),

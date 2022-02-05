@@ -11,7 +11,7 @@ import 'package:sharaf_yabi_ecommerce/controllers/FilterController.dart';
 import 'package:sharaf_yabi_ecommerce/models/BannersModel.dart';
 import 'package:sharaf_yabi_ecommerce/models/ProductsModel.dart';
 import 'package:sharaf_yabi_ecommerce/screens/HomePage/Components/Banners.dart';
-import 'package:sharaf_yabi_ecommerce/screens/SearchPage/Search.dart';
+import 'package:sharaf_yabi_ecommerce/screens/HomePage/SearchPage/Search.dart';
 import 'package:sharaf_yabi_ecommerce/widgets/appBar.dart';
 import 'package:shimmer/shimmer.dart';
 import 'Components/gridView.dart';

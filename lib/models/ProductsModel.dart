@@ -4,9 +4,11 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:sharaf_yabi_ecommerce/constants/constants.dart';
 import 'package:sharaf_yabi_ecommerce/constants/widgets.dart';
+import 'package:sharaf_yabi_ecommerce/controllers/FilterController.dart';
 
 class ProductsModel extends ChangeNotifier {
   ProductsModel({
@@ -46,13 +48,11 @@ class ProductsModel extends ChangeNotifier {
         headers: <String, String>{
           HttpHeaders.contentTypeHeader: 'application/json; charset=UTF-8',
         });
-    // print(parametrs);
-    // print(response.body);
     if (response.statusCode == 200) {
       final responseJson = jsonDecode(response.body)["rows"]["products"];
       final responseCount = jsonDecode(response.body)["rows"]["count"];
       if (jsonDecode(response.body)["rows"]["products"] != null) {
-        pageNumber = int.parse(responseCount);
+        Get.find<FilterController>().pageNumberFilterController.value = int.parse(responseCount);
         for (final Map product in responseJson) {
           products.add(ProductsModel.fromJson(product));
         }

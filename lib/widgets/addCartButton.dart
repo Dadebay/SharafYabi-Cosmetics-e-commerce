@@ -19,6 +19,21 @@ class AddCartButton extends StatefulWidget {
 class _AddCartButtonState extends State<AddCartButton> with TickerProviderStateMixin {
   bool addCart = false;
   bool changeLottie = false;
+  Fav_Cart_Controller fav_cart_controller = Get.put(Fav_Cart_Controller());
+
+  @override
+  void initState() {
+    super.initState();
+    if (fav_cart_controller.cartList.isNotEmpty) {
+      fav_cart_controller.cartList.forEach((element) {
+        if (element["id"] == widget.id) {
+          addCart = true;
+        }
+      });
+    } else {
+      addCart = false;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {

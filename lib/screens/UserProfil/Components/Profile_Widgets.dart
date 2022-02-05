@@ -137,8 +137,12 @@ void clearCache() {
         ),
         GestureDetector(
           onTap: () async {
-            // await FlutterRestart.restartApp();
+            Auth().logout();
+            Auth().removeToken();
+            Auth().removeRefreshToken();
+            Get.back();
             Restart.restartApp();
+            Get.to(() => BottomNavBar());
           },
           child: Container(
             width: Get.size.width,

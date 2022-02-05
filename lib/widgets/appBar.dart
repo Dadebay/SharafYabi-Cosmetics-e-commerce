@@ -58,7 +58,7 @@ class MyAppBar extends StatelessWidget implements PreferredSize {
                 name!.tr,
                 maxLines: 1,
                 textAlign: TextAlign.center,
-                style: TextStyle(color: Colors.white, fontFamily: montserratSemiBold, fontSize: 18),
+                style: TextStyle(color: Colors.white, fontFamily: montserratSemiBold, fontSize: 20),
               )
             : Row(
                 mainAxisAlignment: MainAxisAlignment.center,

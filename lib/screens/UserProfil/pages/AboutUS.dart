@@ -28,7 +28,7 @@ class AboutUS extends StatelessWidget {
             maxLines: 2,
             textAlign: TextAlign.end,
             overflow: TextOverflow.ellipsis,
-            style: const TextStyle(color: kPrimaryColor, fontFamily: montserratRegular),
+            style: const TextStyle(color: kPrimaryColor, fontFamily: montserratMedium),
           ),
         ),
       ],
@@ -53,10 +53,18 @@ class AboutUS extends StatelessWidget {
               const SizedBox(
                 height: 60,
               ),
+              Text(
+                "aboutUsTitle".tr,
+                textAlign: TextAlign.center,
+                style: const TextStyle(color: kPrimaryColor, fontFamily: montserratMedium, fontSize: 18),
+              ),
+              const SizedBox(
+                height: 30,
+              ),
               Expanded(
                 child: Text(
-                  "aboutUsTitle".tr,
-                  textAlign: TextAlign.center,
+                  "aboutUsSubtitle".tr,
+                  textAlign: TextAlign.start,
                   style: const TextStyle(color: kPrimaryColor, fontFamily: montserratMedium, fontSize: 18),
                 ),
               ),

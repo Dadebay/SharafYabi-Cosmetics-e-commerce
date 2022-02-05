@@ -39,7 +39,7 @@ class FavoriteModel extends ChangeNotifier {
   final String? price;
   final String? imagePath;
 
-  Future<List<FavoriteModel>> getFavorites({Map<String, String>? parametrs}) async {
+  Future<List<FavoriteModel>> getFavorites({required Map<String, String> parametrs}) async {
     final List<FavoriteModel> products = [];
     languageCode();
     final response = await http.get(
@@ -49,6 +49,7 @@ class FavoriteModel extends ChangeNotifier {
         headers: <String, String>{
           HttpHeaders.contentTypeHeader: 'application/json; charset=UTF-8',
         });
+    print(response.body);
     if (response.statusCode == 200) {
       final responseJson = jsonDecode(response.body)["rows"];
       if (responseJson != null) {
