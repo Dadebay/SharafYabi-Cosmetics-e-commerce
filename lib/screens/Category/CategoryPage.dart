@@ -1,8 +1,13 @@
 // ignore_for_file: file_names, must_be_immutable, unnecessary_null_comparison, always_use_package_imports
 
+import 'package:flutter/material.dart';
+import 'package:flutter_iconly/flutter_iconly.dart';
+import 'package:get/get_utils/src/extensions/internacionalization.dart';
+import 'package:sharaf_yabi_ecommerce/constants/constants.dart';
+import 'package:sharaf_yabi_ecommerce/constants/widgets.dart';
 import 'package:sharaf_yabi_ecommerce/models/CategoryModel.dart';
 import 'package:sharaf_yabi_ecommerce/screens/Category/Components/CategoryCard.dart';
-import 'package:sharaf_yabi_ecommerce/screens/HomePage/Components/packages.dart';
+import 'package:sharaf_yabi_ecommerce/widgets/appBar.dart';
 
 import 'Components/BrandCard.dart';
 import 'Components/ShimmerBrands.dart';
@@ -18,7 +23,6 @@ class _CategoryPageState extends State<CategoryPage> {
   Future<List<CategoryModel>>? getBrand;
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     getCategory = CategoryModel().getCategory();
     getBrand = CategoryModel().getBrand();
@@ -30,28 +34,7 @@ class _CategoryPageState extends State<CategoryPage> {
       length: 2,
       child: Scaffold(
         backgroundColor: Colors.white,
-        appBar: AppBar(
-          elevation: 0.0,
-          centerTitle: true,
-          automaticallyImplyLeading: false,
-          backgroundColor: kPrimaryColor,
-          title: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Image.asset("assets/appLogo/greyLogo.png", height: 45, width: 45, color: Colors.white),
-              const Text(
-                "SHARAFÝABI",
-                maxLines: 1,
-                textAlign: TextAlign.left,
-                overflow: TextOverflow.ellipsis,
-                style: TextStyle(color: Colors.white, letterSpacing: 2.0, fontFamily: montserratBold, fontSize: 18),
-              ),
-              const SizedBox(
-                width: 35,
-              )
-            ],
-          ),
-        ),
+        appBar: MyAppBar(icon: IconlyLight.search, onTap: () {}, backArrow: false, iconRemove: false),
         body: Column(
           children: [
             Container(

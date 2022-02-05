@@ -1,9 +1,13 @@
 // ignore_for_file: deprecated_member_use, file_names, avoid_dynamic_calls, unnecessary_null_checks
 
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_iconly/flutter_iconly.dart';
+import 'package:get/get.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:sharaf_yabi_ecommerce/components/ProductCard2.dart';
-import 'package:sharaf_yabi_ecommerce/components/compackages.dart';
+import 'package:sharaf_yabi_ecommerce/constants/constants.dart';
+import 'package:sharaf_yabi_ecommerce/constants/widgets.dart';
 import 'package:sharaf_yabi_ecommerce/controllers/FilterController.dart';
 import 'package:sharaf_yabi_ecommerce/models/CategoryModel.dart';
 import 'package:sharaf_yabi_ecommerce/screens/SearchPage/Search.dart';

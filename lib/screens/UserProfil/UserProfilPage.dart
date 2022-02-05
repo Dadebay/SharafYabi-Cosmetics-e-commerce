@@ -1,7 +1,18 @@
-// ignore_for_file: file_names, always_use_package_imports
+// ignore_for_file: file_names, always_use_package_imports, avoid_dynamic_calls
 
-import 'package:sharaf_yabi_ecommerce/models/CartModel.dart';
-import 'package:sharaf_yabi_ecommerce/screens/UserProfil/userPackages.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_iconly/flutter_iconly.dart';
+import 'package:get/get_core/src/get_main.dart';
+import 'package:get/get_instance/src/extension_instance.dart';
+import 'package:get/get_navigation/src/extension_navigation.dart';
+import 'package:get_storage/get_storage.dart';
+import 'package:sharaf_yabi_ecommerce/constants/widgets.dart';
+import 'package:sharaf_yabi_ecommerce/controllers/AuthController.dart';
+import 'package:sharaf_yabi_ecommerce/screens/FavoritePage/FavoritePage.dart';
+import 'package:sharaf_yabi_ecommerce/screens/UserProfil/Components/Profile_Widgets.dart';
+import 'package:sharaf_yabi_ecommerce/screens/UserProfil/pages/AboutUS.dart';
+import 'package:sharaf_yabi_ecommerce/screens/UserProfil/pages/Orders.dart';
+import 'package:sharaf_yabi_ecommerce/widgets/appBar.dart';
 import 'Auth/LoginPage.dart';
 
 class UserProfil extends StatefulWidget {
@@ -55,40 +66,6 @@ class _UserProfilState extends State<UserProfil> {
               dividerr(),
               shareApp(),
               dividerr(),
-              // buttonProfile(
-              //   name: "Subscription",
-              //   icon: IconlyLight.activity,
-              //   onTap: () async {
-              //     Get.defaultDialog(
-              //         content: Container(
-              //       child: Column(
-              //         children: [
-              //           TextField(
-              //             controller: phoneController,
-              //           ),
-              //           RaisedButton.icon(
-              //               onPressed: () {
-              //                 OrderModel().addSubscription(phoneNumber: phoneController.text).then((value) {
-              //                   print(value);
-              //                   print("m,en");
-              //                   if (value == 409) {
-              //                     showSnackBar("signInErrorTitle", "singInSubtitle ", Colors.red);
-              //                   } else if (value == 200) {
-              //                     showSnackBar("True ", "Oh yeee ", Colors.green);
-              //                   } else {
-              //                     showSnackBar("Error ", "Please try again ", Colors.red);
-              //                   }
-              //                 });
-              //               },
-              //               icon: Icon(Icons.add),
-              //               label: Text("send subscription"))
-              //         ],
-              //       ),
-              //     ));
-              //   },
-            
-              // ),
-            
               buttonProfile(
                 name: "clearCache",
                 icon: IconlyLight.delete,

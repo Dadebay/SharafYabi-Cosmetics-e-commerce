@@ -1,9 +1,10 @@
 // ignore_for_file: file_names, void_checks, always_use_package_imports
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:photo_view/photo_view.dart';
-
-import 'compackages.dart';
+import 'package:sharaf_yabi_ecommerce/constants/widgets.dart';
 
 class PhotoViewPage extends StatelessWidget {
   final String? image;

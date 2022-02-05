@@ -1,12 +1,13 @@
 // ignore_for_file: file_names, always_declare_return_types, type_annotate_public_apis, unnecessary_null_comparison, avoid_void_async
 
-import 'package:sharaf_yabi_ecommerce/components/compackages.dart';
+import 'package:get/get.dart';
 import 'package:sharaf_yabi_ecommerce/models/NewsModel.dart';
 
 class NewsController extends GetxController {
   RxList list = [].obs;
   RxInt loading = 0.obs;
   RxInt page = 1.obs;
+  RxInt pageNumberNews = 0.obs;
 
   void fetchProducts() async {
     loading.value = 0;
@@ -34,7 +35,7 @@ class NewsController extends GetxController {
 
   addPage() {
     int a = 0;
-    a = pageNumber;
+    a = pageNumberNews.value;
     if ((a / 20) > page.value + 1) {
       page.value += 1;
       fetchProducts();

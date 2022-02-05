@@ -1,5 +1,9 @@
 // ignore_for_file: file_names, require_trailing_commas, must_be_immutable
-import 'package:sharaf_yabi_ecommerce/components/compackages.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:get/get.dart';
+import 'package:sharaf_yabi_ecommerce/constants/constants.dart';
+import 'package:sharaf_yabi_ecommerce/controllers/AuthController.dart';
 
 class PasswordTextFieldMine extends StatelessWidget {
   PasswordTextFieldMine({

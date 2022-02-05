@@ -1,10 +1,17 @@
-// ignore_for_file: deprecated_member_use, file_names, avoid_types_as_parameter_names, non_constant_identifier_names, must_be_immutable
+// ignore_for_file: deprecated_member_use, file_names, avoid_types_as_parameter_names, non_constant_identifier_names, must_be_immutable, avoid_dynamic_calls, unnecessary_null_checks
 
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:carousel_slider/carousel_slider.dart';
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:sharaf_yabi_ecommerce/components/ProductProfil.dart';
 import 'package:sharaf_yabi_ecommerce/components/ShowAllProductsPage.dart';
+import 'package:sharaf_yabi_ecommerce/constants/constants.dart';
+import 'package:sharaf_yabi_ecommerce/constants/widgets.dart';
 import 'package:sharaf_yabi_ecommerce/controllers/BannerController.dart';
 import 'package:sharaf_yabi_ecommerce/controllers/FilterController.dart';
-import 'package:sharaf_yabi_ecommerce/screens/HomePage/Components/packages.dart';
+import 'package:sharaf_yabi_ecommerce/models/BannersModel.dart';
+import 'package:shimmer/shimmer.dart';
 
 class Banners extends StatelessWidget {
   FilterController filterController = Get.put(FilterController());

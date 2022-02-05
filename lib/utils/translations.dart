@@ -121,8 +121,12 @@ class MyTranslations extends Translations {
           "paymentMethod": "Töleg görnüşi",
           "creditCart": "Kart",
           "cash": "Nagt",
+          "newsEmpty": "Habar ýok",
+          "newsEmptySubtitle": "Şu wagtlyk hiç hili täzelikler ýok",
         },
         'ru': {
+          "newsEmpty": "Нет новостей",
+          "newsEmptySubtitle": "На данный момент новостей нет",
           "paymentMethod": "Payment Method",
           "creditCart": "Кредитная карта",
           "cash": "Денежные средства",
@@ -242,6 +246,8 @@ class MyTranslations extends Translations {
           "emptyStockSubtitle": "Попробуйте позже!",
         },
         'en': {
+          "newsEmpty": "No news",
+          "newsEmptySubtitle": "There is no news at this time",
           "paymentMethod": "Payment Method",
           "creditCart": "Credit Card",
           "cash": "Cash",

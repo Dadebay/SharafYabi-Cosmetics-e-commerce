@@ -1,7 +1,11 @@
 // ignore_for_file: file_names
 
+import 'package:flutter/material.dart';
+import 'package:flutter_iconly/flutter_iconly.dart';
+import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
-import 'package:sharaf_yabi_ecommerce/components/compackages.dart';
+import 'package:sharaf_yabi_ecommerce/constants/constants.dart';
+import 'package:sharaf_yabi_ecommerce/controllers/Fav_Cart_Controller.dart';
 
 class AddCartButton extends StatefulWidget {
   const AddCartButton({Key? key, this.id}) : super(key: key);

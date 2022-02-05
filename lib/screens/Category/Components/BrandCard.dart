@@ -1,7 +1,11 @@
 // ignore_for_file: file_names, must_be_immutable
 
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:sharaf_yabi_ecommerce/components/ShowAllProductsPage.dart';
-import 'package:sharaf_yabi_ecommerce/components/compackages.dart';
+import 'package:sharaf_yabi_ecommerce/constants/constants.dart';
+import 'package:sharaf_yabi_ecommerce/constants/widgets.dart';
 import 'package:sharaf_yabi_ecommerce/controllers/FilterController.dart';
 import 'package:sharaf_yabi_ecommerce/models/CategoryModel.dart';
 

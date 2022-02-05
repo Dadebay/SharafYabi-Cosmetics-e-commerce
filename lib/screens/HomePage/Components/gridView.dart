@@ -1,9 +1,14 @@
-// ignore_for_file: file_names, camel_case_types, must_be_immutable
+// ignore_for_file: file_names, camel_case_types, must_be_immutable, avoid_dynamic_calls
 
+import 'package:flutter/material.dart';
+import 'package:flutter_iconly/flutter_iconly.dart';
+import 'package:get/get.dart';
 import 'package:sharaf_yabi_ecommerce/components/ProductCard.dart';
 import 'package:sharaf_yabi_ecommerce/components/ShowAllProductsPage.dart';
+import 'package:sharaf_yabi_ecommerce/constants/constants.dart';
+import 'package:sharaf_yabi_ecommerce/constants/widgets.dart';
 import 'package:sharaf_yabi_ecommerce/controllers/FilterController.dart';
-import 'package:sharaf_yabi_ecommerce/screens/HomePage/Components/packages.dart';
+import 'package:sharaf_yabi_ecommerce/models/ProductsModel.dart';
 
 class gridViewMine extends StatelessWidget {
   final Map<String, String>? parametrs;

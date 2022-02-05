@@ -2,9 +2,16 @@
 
 import 'dart:convert';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:sharaf_yabi_ecommerce/components/compackages.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_iconly/flutter_iconly.dart';
+import 'package:get/get.dart';
+import 'package:sharaf_yabi_ecommerce/components/ProductProfil.dart';
+import 'package:sharaf_yabi_ecommerce/constants/constants.dart';
+import 'package:sharaf_yabi_ecommerce/constants/widgets.dart';
 import 'package:sharaf_yabi_ecommerce/controllers/CartPageController.dart';
+import 'package:sharaf_yabi_ecommerce/controllers/Fav_Cart_Controller.dart';
 import 'package:sharaf_yabi_ecommerce/screens/Cart/OrderPage.dart';
 import 'package:sharaf_yabi_ecommerce/screens/FavoritePage/Components/FavCardShimmer.dart';
 import 'package:sharaf_yabi_ecommerce/widgets/appBar.dart';

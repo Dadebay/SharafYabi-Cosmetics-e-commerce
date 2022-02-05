@@ -4,9 +4,11 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:sharaf_yabi_ecommerce/constants/constants.dart';
 import 'package:sharaf_yabi_ecommerce/constants/widgets.dart';
+import 'package:sharaf_yabi_ecommerce/controllers/NewsController.dart';
 
 class NewsModel extends ChangeNotifier {
   NewsModel({this.id, this.imagePath, this.createdAt, this.article, this.title});
@@ -37,12 +39,15 @@ class NewsModel extends ChangeNotifier {
         headers: <String, String>{
           HttpHeaders.contentTypeHeader: 'application/json; charset=UTF-8',
         });
+    print(response.body);
+
     if (response.statusCode == 200) {
-      // ignore: avoid_dynamic_calls
+      Get.find<NewsController>().pageNumberNews.value = 0;
       final responseJson = jsonDecode(response.body)["rows"]["news"] as List;
       for (final Map product in responseJson) {
         products.add(NewsModel.fromJson(product));
       }
+
       return products;
     } else {
       return [];

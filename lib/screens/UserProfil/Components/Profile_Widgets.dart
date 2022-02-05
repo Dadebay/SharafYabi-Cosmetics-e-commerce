@@ -1,8 +1,16 @@
 // ignore_for_file: missing_return, file_names, noop_primitive_operations
 
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_iconly/flutter_iconly.dart';
+import 'package:get/get.dart';
+import 'package:restart_app/restart_app.dart';
+import 'package:sharaf_yabi_ecommerce/constants/constants.dart';
+import 'package:sharaf_yabi_ecommerce/constants/widgets.dart';
 import 'package:sharaf_yabi_ecommerce/controllers/SettingsController.dart';
-import 'package:sharaf_yabi_ecommerce/screens/UserProfil/userPackages.dart';
+import 'package:sharaf_yabi_ecommerce/models/UserModels/AuthModel.dart';
+import 'package:sharaf_yabi_ecommerce/screens/BottomNavBar.dart';
+import 'package:share/share.dart';
 
 final SettingsController _settingsController = Get.put(SettingsController());
 

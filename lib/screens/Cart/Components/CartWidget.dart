@@ -1,3 +1,5 @@
+// ignore_for_file: file_names
+
 import 'package:flutter/material.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
 import 'package:get/get.dart';
@@ -14,6 +16,7 @@ Future<dynamic> completeOrder() {
       actions: [
         SizedBox(
           width: Get.size.width / 1.5,
+          // ignore: deprecated_member_use
           child: RaisedButton(
             onPressed: () {
               Get.to(() => BottomNavBar());
@@ -31,7 +34,7 @@ Future<dynamic> completeOrder() {
         )
       ],
       content: Stack(
-        overflow: Overflow.visible,
+        clipBehavior: Clip.none,
         alignment: Alignment.center,
         children: <Widget>[
           Container(

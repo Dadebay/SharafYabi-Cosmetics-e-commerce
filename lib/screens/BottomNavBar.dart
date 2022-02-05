@@ -1,4 +1,4 @@
-// ignore_for_file: file_names, must_be_immutable, always_use_package_imports
+// ignore_for_file: file_names, must_be_immutable, always_use_package_imports, avoid_void_async
 
 import 'dart:io';
 
@@ -7,9 +7,9 @@ import 'package:flutter/services.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
 import 'package:get/get.dart';
 import 'package:sharaf_yabi_ecommerce/constants/constants.dart';
+import 'package:sharaf_yabi_ecommerce/constants/widgets.dart';
 import 'package:sharaf_yabi_ecommerce/controllers/Fav_Cart_Controller.dart';
 import 'package:sharaf_yabi_ecommerce/controllers/SettingsController.dart';
-import 'package:sharaf_yabi_ecommerce/screens/UserProfil/userPackages.dart';
 import 'Cart/CartPage.dart';
 import 'Category/CategoryPage.dart';
 import 'HomePage/HomePage.dart';
@@ -57,7 +57,7 @@ class _BottomNavBarState extends State<BottomNavBar> with TickerProviderStateMix
             physics: const NeverScrollableScrollPhysics(),
             controller: tabController,
             children: _settingsController.connectionState.value
-                ? [HomePage(), CategoryPage(), CartPage(), News(), UserProfil()]
+                ? [const HomePage(), CategoryPage(), CartPage(), News(), UserProfil()]
                 : [
                     errorConnection(onTap: () {
                       checkConnection();

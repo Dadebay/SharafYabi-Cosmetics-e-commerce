@@ -1,7 +1,14 @@
 // ignore_for_file: deprecated_member_use, file_names, avoid_dynamic_calls
 
 import 'package:animations/animations.dart';
-import 'package:sharaf_yabi_ecommerce/components/compackages.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:sharaf_yabi_ecommerce/components/ProductProfil.dart';
+import 'package:sharaf_yabi_ecommerce/constants/constants.dart';
+import 'package:sharaf_yabi_ecommerce/constants/widgets.dart';
+import 'package:sharaf_yabi_ecommerce/controllers/Fav_Cart_Controller.dart';
+import 'package:sharaf_yabi_ecommerce/models/ProductsModel.dart';
 import 'package:sharaf_yabi_ecommerce/widgets/addCartButton.dart';
 
 class ProductCard extends StatefulWidget {
@@ -51,7 +58,6 @@ class _ProductCardState extends State<ProductCard> {
       },
       openBuilder: (context, closeWidget) {
         final int? a = widget.product!.id;
-        print(a);
         return ProductProfil(
           id: a,
           productName: widget.product?.productName,

@@ -2,15 +2,16 @@
 
 import 'dart:convert';
 
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
-import 'package:lottie/lottie.dart';
-import 'package:sharaf_yabi_ecommerce/components/compackages.dart';
+import 'package:sharaf_yabi_ecommerce/constants/constants.dart';
+import 'package:sharaf_yabi_ecommerce/constants/widgets.dart';
+import 'package:sharaf_yabi_ecommerce/controllers/Fav_Cart_Controller.dart';
 import 'package:sharaf_yabi_ecommerce/models/CartModel.dart';
-import 'package:sharaf_yabi_ecommerce/screens/BottomNavBar.dart';
-import 'package:sharaf_yabi_ecommerce/widgets/agreeButton.dart';
+import 'package:sharaf_yabi_ecommerce/screens/Cart/Components/CartWidget.dart';
 import 'package:vibration/vibration.dart';
-
-import 'Components/CartWidget.dart';
 
 class OrderPage extends StatefulWidget {
   const OrderPage({Key? key, this.totalPrice, this.productCount}) : super(key: key);
@@ -61,19 +62,19 @@ class _OrderPageState extends State<OrderPage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 textFieldOthers(),
-                SizedBox(
+                const SizedBox(
                   height: 20,
                 ),
                 promoCode(),
-                SizedBox(
+                const SizedBox(
                   height: 20,
                 ),
                 paymentMethod(),
-                SizedBox(
+                const SizedBox(
                   height: 20,
                 ),
                 dividerr(),
-                SizedBox(
+                const SizedBox(
                   height: 20,
                 ),
                 Row(
@@ -107,22 +108,6 @@ class _OrderPageState extends State<OrderPage> {
                     ],
                   ),
                 ),
-                // Row(
-                //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                //   children: [
-                //     Text(
-                //       "total".tr,
-                //       style: TextStyle(color: Colors.grey[500], fontSize: 16, fontFamily: montserratMedium),
-                //     ),
-                //     RichText(
-                //       overflow: TextOverflow.ellipsis,
-                //       text: TextSpan(children: <TextSpan>[
-                //         TextSpan(text: "${widget.totalPrice}", style: const TextStyle(fontFamily: montserratSemiBold, fontSize: 20, color: Colors.black)),
-                //         const TextSpan(text: " TMT", style: TextStyle(fontFamily: montserratSemiBold, fontSize: 16, color: Colors.black))
-                //       ]),
-                //     )
-                //   ],
-                // ),
                 Padding(
                   padding: const EdgeInsets.only(bottom: 20),
                   child: Row(
@@ -139,7 +124,7 @@ class _OrderPageState extends State<OrderPage> {
                         return RichText(
                           overflow: TextOverflow.ellipsis,
                           text: TextSpan(children: <TextSpan>[
-                            TextSpan(text: "${price.toStringAsFixed(2)}", style: const TextStyle(fontFamily: montserratSemiBold, fontSize: 20, color: Colors.black)),
+                            TextSpan(text: price.toStringAsFixed(2), style: const TextStyle(fontFamily: montserratSemiBold, fontSize: 20, color: Colors.black)),
                             const TextSpan(text: " TMT", style: TextStyle(fontFamily: montserratSemiBold, fontSize: 16, color: Colors.black))
                           ]),
                         );
@@ -148,13 +133,13 @@ class _OrderPageState extends State<OrderPage> {
                   ),
                 ),
                 Center(
-                  child: Container(
+                  child: SizedBox(
                     width: sendButton ? 70 : Get.size.width,
                     child: RaisedButton(
-                      shape: RoundedRectangleBorder(borderRadius: borderRadius15),
+                      shape: const RoundedRectangleBorder(borderRadius: borderRadius15),
                       color: kPrimaryColor,
                       elevation: 1,
-                      padding: EdgeInsets.symmetric(vertical: 10),
+                      padding: const EdgeInsets.symmetric(vertical: 10),
                       onPressed: () {
                         setState(() {
                           if (favCartController.cartList.isEmpty) {
@@ -174,7 +159,7 @@ class _OrderPageState extends State<OrderPage> {
                                       name: nameController.text,
                                       coupon: couponController.text,
                                       comment: noteController.text,
-                                      payment: "${nagt}")
+                                      payment: "$nagt")
                                   .then((value) {
                                 if (value == true) {
                                   completeOrder();
@@ -190,14 +175,14 @@ class _OrderPageState extends State<OrderPage> {
                         });
                       },
                       child: sendButton
-                          ? CircularProgressIndicator(
+                          ? const CircularProgressIndicator(
                               color: Colors.white,
                             )
-                          : Text("order".tr, style: TextStyle(color: Colors.white, fontSize: 20, fontFamily: montserratSemiBold)),
+                          : Text("order".tr, style: const TextStyle(color: Colors.white, fontSize: 20, fontFamily: montserratSemiBold)),
                     ),
                   ),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 20,
                 )
               ],
@@ -283,13 +268,13 @@ class _OrderPageState extends State<OrderPage> {
                 constraints: const BoxConstraints(),
                 contentPadding: const EdgeInsets.symmetric(vertical: 15, horizontal: 15),
                 hintStyle: const TextStyle(color: Colors.grey, fontSize: 18, fontFamily: montserratMedium),
-                border: const OutlineInputBorder(borderRadius: borderRadius10, borderSide: const BorderSide(color: kPrimaryColor)),
+                border: const OutlineInputBorder(borderRadius: borderRadius10, borderSide: BorderSide(color: kPrimaryColor)),
                 enabledBorder: OutlineInputBorder(
                     borderRadius: borderRadius10,
                     borderSide: BorderSide(
                       color: Colors.grey.shade400,
                     )),
-                focusedBorder: const OutlineInputBorder(borderRadius: borderRadius10, borderSide: const BorderSide(color: kPrimaryColor, width: 2))),
+                focusedBorder: const OutlineInputBorder(borderRadius: borderRadius10, borderSide: BorderSide(color: kPrimaryColor, width: 2))),
           ),
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 15),
@@ -319,13 +304,13 @@ class _OrderPageState extends State<OrderPage> {
                   constraints: const BoxConstraints(),
                   contentPadding: const EdgeInsets.symmetric(vertical: 15, horizontal: 15),
                   hintStyle: const TextStyle(color: Colors.grey, fontSize: 18, fontFamily: montserratMedium),
-                  border: const OutlineInputBorder(borderRadius: borderRadius10, borderSide: const BorderSide(color: kPrimaryColor)),
+                  border: const OutlineInputBorder(borderRadius: borderRadius10, borderSide: BorderSide(color: kPrimaryColor)),
                   enabledBorder: OutlineInputBorder(
                       borderRadius: borderRadius10,
                       borderSide: BorderSide(
                         color: Colors.grey.shade400,
                       )),
-                  focusedBorder: const OutlineInputBorder(borderRadius: borderRadius10, borderSide: const BorderSide(color: kPrimaryColor, width: 2))),
+                  focusedBorder: const OutlineInputBorder(borderRadius: borderRadius10, borderSide: BorderSide(color: kPrimaryColor, width: 2))),
             ),
           ),
           Padding(
@@ -352,13 +337,13 @@ class _OrderPageState extends State<OrderPage> {
                   constraints: const BoxConstraints(),
                   contentPadding: const EdgeInsets.symmetric(vertical: 15, horizontal: 15),
                   hintStyle: const TextStyle(color: Colors.grey, fontSize: 18, fontFamily: montserratMedium),
-                  border: const OutlineInputBorder(borderRadius: borderRadius10, borderSide: const BorderSide(color: kPrimaryColor)),
+                  border: const OutlineInputBorder(borderRadius: borderRadius10, borderSide: BorderSide(color: kPrimaryColor)),
                   enabledBorder: OutlineInputBorder(
                       borderRadius: borderRadius10,
                       borderSide: BorderSide(
                         color: Colors.grey.shade400,
                       )),
-                  focusedBorder: const OutlineInputBorder(borderRadius: borderRadius10, borderSide: const BorderSide(color: kPrimaryColor, width: 2))),
+                  focusedBorder: const OutlineInputBorder(borderRadius: borderRadius10, borderSide: BorderSide(color: kPrimaryColor, width: 2))),
             ),
           ),
           TextField(
@@ -376,13 +361,13 @@ class _OrderPageState extends State<OrderPage> {
                 constraints: const BoxConstraints(),
                 contentPadding: const EdgeInsets.symmetric(vertical: 15, horizontal: 15),
                 hintStyle: const TextStyle(color: Colors.grey, fontSize: 18, fontFamily: montserratMedium),
-                border: const OutlineInputBorder(borderRadius: borderRadius10, borderSide: const BorderSide(color: kPrimaryColor)),
+                border: const OutlineInputBorder(borderRadius: borderRadius10, borderSide: BorderSide(color: kPrimaryColor)),
                 enabledBorder: OutlineInputBorder(
                     borderRadius: borderRadius10,
                     borderSide: BorderSide(
                       color: Colors.grey.shade400,
                     )),
-                focusedBorder: const OutlineInputBorder(borderRadius: borderRadius10, borderSide: const BorderSide(color: kPrimaryColor, width: 2))),
+                focusedBorder: const OutlineInputBorder(borderRadius: borderRadius10, borderSide: BorderSide(color: kPrimaryColor, width: 2))),
           ),
         ],
       ),
@@ -395,10 +380,10 @@ class _OrderPageState extends State<OrderPage> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-          padding: EdgeInsets.symmetric(vertical: 10),
+          padding: const EdgeInsets.symmetric(vertical: 10),
           child: Text(
             "couponCode".tr,
-            style: TextStyle(color: Colors.black, fontSize: 18, fontFamily: montserratSemiBold),
+            style: const TextStyle(color: Colors.black, fontSize: 18, fontFamily: montserratSemiBold),
           ),
         ),
         Obx(() {
@@ -423,7 +408,7 @@ class _OrderPageState extends State<OrderPage> {
                       } else {
                         favCartController.promoLottie.value = true;
                         favCartController.promoDiscount.value = value;
-                        Future.delayed(Duration(seconds: 2), () {
+                        Future.delayed(const Duration(seconds: 2), () {
                           favCartController.promoLottieADDCoin.value = true;
                         });
                       }
@@ -431,13 +416,13 @@ class _OrderPageState extends State<OrderPage> {
                   },
                   child: favCartController.promoLottie.value
                       ? favCartController.promoLottieADDCoin.value
-                          ? Icon(Icons.done, color: Colors.green)
-                          : CircularProgressIndicator()
+                          ? const Icon(Icons.done, color: Colors.green)
+                          : const CircularProgressIndicator()
                       : Padding(
-                          padding: EdgeInsets.only(right: 15),
+                          padding: const EdgeInsets.only(right: 15),
                           child: Text(
                             "couponApple".tr,
-                            style: TextStyle(color: Colors.grey, fontSize: 18, fontFamily: montserratSemiBold),
+                            style: const TextStyle(color: Colors.grey, fontSize: 18, fontFamily: montserratSemiBold),
                           ),
                         ),
                 ),
@@ -451,7 +436,7 @@ class _OrderPageState extends State<OrderPage> {
                     borderSide: BorderSide(
                       color: Colors.grey.shade400,
                     )),
-                focusedBorder: const OutlineInputBorder(borderRadius: borderRadius10, borderSide: const BorderSide(color: kPrimaryColor, width: 2))),
+                focusedBorder: const OutlineInputBorder(borderRadius: borderRadius10, borderSide: BorderSide(color: kPrimaryColor, width: 2))),
           );
         }),
       ],

@@ -1,3 +1,5 @@
+// ignore_for_file: file_names, always_use_package_imports
+
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -48,7 +50,7 @@ class _MyCustomSplashScreenState extends State with TickerProviderStateMixin {
 
     Timer(const Duration(seconds: 4), () {
       setState(() {
-        Get.to(() => BottomNavBar(), transition: Transition.fade);
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (BuildContext context) => BottomNavBar()));
       });
     });
   }
@@ -71,7 +73,7 @@ class _MyCustomSplashScreenState extends State with TickerProviderStateMixin {
               AnimatedOpacity(
                 duration: const Duration(milliseconds: 1000),
                 opacity: _textOpacity,
-                child: Text(
+                child: const Text(
                   'SHARAFYABI',
                   style: TextStyle(
                     color: Colors.white,

@@ -28,11 +28,11 @@ dependencies:
   vibration: ^1.7.4-nullsafety.0
   flutter_launcher_icons: ^0.9.2
   lottie: ^1.2.1
-  # device_preview: ^1.0.0
-  # firebase_messaging: ^11.2.6
-  # firebase_core:
-  # flutter_local_notifications:
-  # comment_tree: ^0.3.0
+  device_preview: ^1.0.0
+  firebase_messaging: ^11.2.6
+  firebase_core:
+  flutter_local_notifications:
+  comment_tree: ^0.3.0
 
 dev_dependencies:
   flutter_test:

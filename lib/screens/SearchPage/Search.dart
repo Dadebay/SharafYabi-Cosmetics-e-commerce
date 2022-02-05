@@ -1,11 +1,15 @@
-// ignore_for_file: deprecated_member_use, always_declare_return_types, duplicate_ignore, type_annotate_public_apis, avoid_dynamic_calls, file_names
+// ignore_for_file: deprecated_member_use, always_declare_return_types, duplicate_ignore, type_annotate_public_apis, avoid_dynamic_calls, file_names, unnecessary_null_checks
 
 import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_iconly/flutter_iconly.dart';
+import 'package:get/get.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:sharaf_yabi_ecommerce/components/ProductCard2.dart';
-import 'package:sharaf_yabi_ecommerce/components/compackages.dart';
+import 'package:sharaf_yabi_ecommerce/constants/constants.dart';
+import 'package:sharaf_yabi_ecommerce/constants/widgets.dart';
 import 'package:sharaf_yabi_ecommerce/controllers/FilterController.dart';
 import 'package:sharaf_yabi_ecommerce/models/CategoryModel.dart';
 import 'package:sharaf_yabi_ecommerce/widgets/bottomSheetName.dart';

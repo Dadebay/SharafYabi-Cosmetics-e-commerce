@@ -1,6 +1,16 @@
 // ignore_for_file: must_be_immutable, file_names
 
-import 'package:sharaf_yabi_ecommerce/screens/UserProfil/userPackages.dart';
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:sharaf_yabi_ecommerce/constants/constants.dart';
+import 'package:sharaf_yabi_ecommerce/constants/widgets.dart';
+import 'package:sharaf_yabi_ecommerce/controllers/AuthController.dart';
+import 'package:sharaf_yabi_ecommerce/models/UserModels/UserSignInModel.dart';
+import 'package:sharaf_yabi_ecommerce/screens/BottomNavBar.dart';
+import 'package:sharaf_yabi_ecommerce/widgets/PhoneNumber.dart';
+import 'package:sharaf_yabi_ecommerce/widgets/agreeButton.dart';
+import 'package:sharaf_yabi_ecommerce/widgets/passwordTextField.dart';
+import 'package:vibration/vibration.dart';
 
 class Login extends StatelessWidget {
   final AuthController authController = Get.put(AuthController());

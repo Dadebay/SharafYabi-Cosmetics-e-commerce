@@ -1,11 +1,8 @@
 // ignore_for_file: deprecated_member_use, duplicate_ignore, implementation_imports, avoid_positional_boolean_parameters, unnecessary_null_comparison, always_use_package_imports
 
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
@@ -167,23 +164,12 @@ Widget emptyDataLottie({required String errorTitle, required String errorSubtitl
 }
 
 Widget noImage() {
-  return Center(
-    child: Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        SvgPicture.asset(
-          "assets/icons/svgIcons/logo.svg",
-          color: Colors.grey[500],
-          width: 140,
-        ),
-        const SizedBox(
-          height: 20,
-        ),
-        Text(
-          "noImage".tr,
-          style: const TextStyle(color: Colors.black, fontFamily: montserratSemiBold),
-        )
-      ],
+  return Container(
+    padding: const EdgeInsets.all(6.0),
+    decoration: BoxDecoration(color: Colors.grey[100], borderRadius: borderRadius15),
+    child: Image.asset(
+      "assets/appLogo/greyLogo.png",
+      color: Colors.grey,
     ),
   );
 }
@@ -198,10 +184,7 @@ Widget dividerr() {
 }
 
 Widget spinKit() {
-  return const SpinKitWave(
-    color: kPrimaryColor,
-    size: 40,
-  );
+  return Lottie.asset("assets/lottie/loading....json", animate: true, width: 200, height: 200);
 }
 
 CustomFooter loadMore() {
@@ -322,39 +305,7 @@ Container shimmerHomeCard() {
   );
 }
 
-Widget image(
-  String name,
-) {
-  return Container(
-    height: Get.size.height,
-    width: Get.size.width,
-    margin: const EdgeInsets.all(4),
-    decoration: const BoxDecoration(
-      borderRadius: borderRadius10,
-    ),
-    child: CachedNetworkImage(
-        fadeInCurve: Curves.ease,
-        imageUrl: name,
-        imageBuilder: (context, imageProvider) => Container(
-              decoration: BoxDecoration(
-                borderRadius: borderRadius10,
-                image: DecorationImage(
-                  image: imageProvider,
-                  fit: BoxFit.contain,
-                ),
-              ),
-            ),
-        placeholder: (context, url) => Center(child: spinKit()),
-        errorWidget: (context, url, error) => Padding(
-              padding: const EdgeInsets.all(30.0),
-              child: Image.asset(
-                "assets/appLogo/greyLogo.png",
-                color: Colors.grey,
-              ),
-            )),
-  );
-}
-
+//
 GridView shimmer(int count) {
   return GridView.builder(
       itemCount: count,
