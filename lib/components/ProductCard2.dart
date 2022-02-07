@@ -23,7 +23,6 @@ class ProductCard2 extends StatefulWidget {
 }
 
 class _ProductCard2State extends State<ProductCard2> {
-  bool favButton = false;
   late FilterController _filterController;
   late Fav_Cart_Controller favCartController;
   @override
@@ -31,14 +30,15 @@ class _ProductCard2State extends State<ProductCard2> {
     super.initState();
     favCartController = Get.put<Fav_Cart_Controller>(Fav_Cart_Controller());
     _filterController = Get.put<FilterController>(FilterController());
+
     if (favCartController.favList.isNotEmpty) {
       favCartController.favList.forEach((element) {
         if (element["id"] == _filterController.list[widget.indexx]!["id"]) {
-          favButton = true;
+          _filterController.favButton.value = true;
         }
       });
     } else {
-      favButton = false;
+      _filterController.favButton.value = false;
     }
   }
 
@@ -46,11 +46,11 @@ class _ProductCard2State extends State<ProductCard2> {
   Widget build(BuildContext context) {
     return RaisedButton(
       onPressed: () {
-        Get.to(() => ProductProfil(
-              id: _filterController.list[widget.indexx]!["id"],
-              productName: _filterController.list[widget.indexx]["name"],
-              image: "$serverImage/${_filterController.list[widget.indexx]["image"]}-mini.webp",
-            ));
+        // Get.to(() => ProductProfil(
+        //       id: _filterController.list[widget.indexx]!["id"],
+        //       productName: _filterController.list[widget.indexx]["name"],
+        //       image: "$serverImage/${_filterController.list[widget.indexx]["image"]}-mini.webp",
+        //     ));
       },
       shape: const RoundedRectangleBorder(borderRadius: borderRadius10),
       color: Colors.white,
@@ -227,12 +227,8 @@ class _ProductCard2State extends State<ProductCard2> {
             right: 8,
             child: GestureDetector(
               onTap: () {
-                setState(() {
-                  favButton = !favButton;
-                  print(favCartController.favList);
-                  favCartController.toggleFav(_filterController.list[widget.indexx]["id"]);
-                  print(favCartController.favList);
-                });
+                _filterController.favButton.value = !_filterController.favButton.value;
+                favCartController.toggleFav(_filterController.list[widget.indexx]["id"]);
               },
               child: PhysicalModel(
                 elevation: 2,
@@ -241,7 +237,9 @@ class _ProductCard2State extends State<ProductCard2> {
                 child: Container(
                     padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 5),
                     decoration: const BoxDecoration(color: Colors.white, shape: BoxShape.circle),
-                    child: Icon(favButton ? IconlyBold.heart : IconlyLight.heart, color: Colors.red)),
+                    child: Obx(() {
+                      return Icon(_filterController.favButton.value ? IconlyBold.heart : IconlyLight.heart, color: Colors.red);
+                    })),
               ),
             ),
           ),

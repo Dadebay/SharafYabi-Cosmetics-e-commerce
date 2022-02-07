@@ -23,6 +23,7 @@ class FilterController extends GetxController {
   RxBool newInCome = false.obs;
   RxString search = "".obs;
   RxInt pageNumberFilterController = 0.obs;
+  RxBool favButton = false.obs;
 
   void fetchProducts() async {
     if (categoryID.isNotEmpty) {

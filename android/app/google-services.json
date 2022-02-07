@@ -15,11 +15,11 @@
       },
       "oauth_client": [
         {
-          "client_id": "1069011072291-4np152dgj15dg6snfqjk7ph8gbmf7v5v.apps.googleusercontent.com",
+          "client_id": "1069011072291-ansk2oib3eddamj694qdq2ili6mapo5d.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.bilermennesil.sharafyabi",
-            "certificate_hash": "6d0d738f468c3d6cfa97ad5d010940a63ac36575"
+            "certificate_hash": "1e5f9ccb4c4d4ebc2a8dda47f894f45936e6f009"
           }
         },
         {

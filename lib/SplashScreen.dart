@@ -1,8 +1,12 @@
 // ignore_for_file: file_names, always_use_package_imports
 
 import 'dart:async';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get.dart';
+import 'package:sharaf_yabi_ecommerce/screens/UserProfil/pages/AboutUS.dart';
+import 'package:sharaf_yabi_ecommerce/screens/UserProfil/pages/FavoritePage/FavoritePage.dart';
 
 import 'constants/constants.dart';
 import 'screens/BottomNavBar.dart';
@@ -20,10 +24,53 @@ class _MyCustomSplashScreenState extends State with TickerProviderStateMixin {
 
   late AnimationController _controller;
   Animation? animation1;
+  AndroidNotificationChannel channel = const AndroidNotificationChannel(
+    'high_importance_channel', // id
+    'High Importance Notifications', // title
+    description: 'This channel is used for important notifications.', // description
+    importance: Importance.high,
+  );
+
+  FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
 
   @override
   void initState() {
     super.initState();
+
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      print("waddddddddddddd");
+      flutterLocalNotificationsPlugin.show(
+        message.data.hashCode,
+        message.data['title'],
+        message.data['body'],
+        NotificationDetails(
+          android: AndroidNotificationDetails(
+            channel.id,
+            channel.name,
+            channelDescription: channel.description,
+            color: Colors.white,
+            icon: '@mipmap/ic_launcher',
+          ),
+        ),
+      );
+      // }
+    });
+
+    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage? message) {
+      print(message);
+      print("asddddddddddddddddddddddd");
+      print(message!.data);
+      Navigator.of(context).push(MaterialPageRoute(builder: (_) => FavoritePage()));
+      // Get.to(() => FavoritePage());
+    });
+    FirebaseMessaging.instance.getInitialMessage().then((RemoteMessage? message) {
+      print(message);
+      print("wawwwsssssssssssssssssss");
+      print(message!.data);
+      Navigator.of(context).push(MaterialPageRoute(builder: (_) => AboutUS()));
+
+      // Get.to(() => AboutUS());
+    });
     _controller = AnimationController(vsync: this, duration: const Duration(seconds: 3));
 
     animation1 = Tween(begin: 40, end: 20).animate(CurvedAnimation(parent: _controller, curve: Curves.fastLinearToSlowEaseIn))

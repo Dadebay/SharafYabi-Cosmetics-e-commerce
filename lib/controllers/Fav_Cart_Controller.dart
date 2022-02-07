@@ -10,7 +10,7 @@ class Fav_Cart_Controller extends GetxController {
   RxList favList = [].obs;
 
   RxInt promoDiscount = 0.obs;
-  RxBool promoLottieADDCoin = false.obs;
+  // RxBool promoLottieADDCoin = false.obs;
   RxBool promoLottie = false.obs;
   RxBool favBool = false.obs;
   // RxBool addCartBool = false.obs;

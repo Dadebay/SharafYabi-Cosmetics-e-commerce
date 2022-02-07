@@ -27,7 +27,7 @@ class _NewsState extends State<News> {
   void initState() {
     super.initState();
 
-    newsController.page.value = 1;
+    newsController.page.value = 0;
     newsController.pageNumberNews.value = 0;
     newsController.list.clear();
     newsController.fetchProducts();
@@ -46,6 +46,7 @@ class _NewsState extends State<News> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: backgroundColor.withOpacity(0.1),
       appBar: MyAppBar(icon: Icons.add, onTap: () {}, backArrow: false, iconRemove: false),
       body: SmartRefresher(
           enablePullUp: true,
@@ -160,8 +161,8 @@ class _NewsState extends State<News> {
       constraints: const BoxConstraints(
         minWidth: 55,
         minHeight: 55,
-        maxWidth: 95,
-        maxHeight: 90,
+        maxWidth: 90,
+        maxHeight: 80,
       ),
       child: CachedNetworkImage(
         fadeInCurve: Curves.ease,

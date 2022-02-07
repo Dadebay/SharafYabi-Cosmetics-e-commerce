@@ -52,14 +52,7 @@ class BrandCard extends StatelessWidget {
                         ),
                       ),
                   placeholder: (context, url) => Center(child: spinKit()),
-                  errorWidget: (context, url, error) => Padding(
-                        padding: const EdgeInsets.all(10.0),
-                        child: Image.asset(
-                          "assets/appLogo/greyLogo.png",
-                          color: Colors.grey.withOpacity(0.4),
-                          fit: BoxFit.fill,
-                        ),
-                      )),
+                  errorWidget: (context, url, error) => noImage()),
             ),
             Container(
               width: Get.size.width,

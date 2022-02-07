@@ -16,6 +16,8 @@ dependencies:
   pull_to_refresh: ^2.0.0
   http: 
   photo_view: ^0.13.0
+  pdf: ^3.7.1
+  syncfusion_flutter_pdf: ^19.4.48-beta
   get: 
   get_storage: ^2.0.3
   intl: ^0.17.0

@@ -16,6 +16,9 @@ class CartPageController extends GetxController {
   RxList list = [].obs;
   RxInt loading = 0.obs;
   RxInt productQuntity = 0.obs;
+  RxBool buttonColor = false.obs;
+  RxInt nagt = 1.obs;
+  RxInt pdfID = 0.obs;
 
   void addToCard(int id) {
     for (final element in list) {

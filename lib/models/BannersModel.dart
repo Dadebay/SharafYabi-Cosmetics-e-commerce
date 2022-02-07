@@ -40,3 +40,33 @@ class BannerModel extends ChangeNotifier {
     }
   }
 }
+
+class AboutUSModel extends ChangeNotifier {
+  final int? id;
+  final String? phoneNumber1;
+  final String? phoneNumber2;
+  final String? address;
+  final String? email;
+  AboutUSModel({this.id, this.phoneNumber1, this.phoneNumber2, this.address, this.email});
+
+  factory AboutUSModel.fromJson(Map<dynamic, dynamic> json) {
+    return AboutUSModel(id: json["id"], phoneNumber1: json["phone1"], phoneNumber2: json["phone2"], address: json["address"], email: json["email"]);
+  }
+  Future<AboutUSModel> getAboutUS() async {
+    languageCode();
+    final response = await http.get(
+        Uri.parse(
+          "$serverURL/api/$lang/get-shop-data",
+        ),
+        headers: <String, String>{
+          HttpHeaders.contentTypeHeader: 'application/json; charset=UTF-8',
+        });
+    print(response.body);
+    if (response.statusCode == 200) {
+      return AboutUSModel.fromJson(jsonDecode(response.body)["rows"]);
+      ;
+    } else {
+      return AboutUSModel();
+    }
+  }
+}

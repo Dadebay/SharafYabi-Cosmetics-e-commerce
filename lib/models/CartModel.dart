@@ -1,6 +1,7 @@
 // ignore_for_file: file_names, avoid_print, avoid_dynamic_calls
 
 import 'dart:convert';
+import 'dart:developer';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -9,6 +10,9 @@ import 'package:sharaf_yabi_ecommerce/constants/constants.dart';
 import 'package:sharaf_yabi_ecommerce/constants/widgets.dart';
 import 'package:sharaf_yabi_ecommerce/controllers/AuthController.dart';
 import 'package:sharaf_yabi_ecommerce/controllers/Fav_Cart_Controller.dart';
+import 'package:syncfusion_flutter_pdf/pdf.dart';
+
+import '../controllers/CartPageController.dart';
 
 class CartModel extends ChangeNotifier {
   CartModel({
@@ -89,12 +93,13 @@ class OrderModel extends ChangeNotifier {
           HttpHeaders.contentTypeHeader: 'application/json; charset=UTF-8',
         },
         body: body);
+    log(response.body);
     if (response.statusCode == 200) {
       Get.find<Fav_Cart_Controller>().clearCartList();
-      Get.find<AuthController>().changeSignInAnimation();
+      Get.find<CartPageController>().pdfID.value = jsonDecode(response.body)["rows"];
+      print(Get.find<CartPageController>().pdfID);
       return true;
     } else {
-      Get.find<AuthController>().changeSignInAnimation();
       showSnackBar("retry", "error404", Colors.red);
       return false;
     }
@@ -111,6 +116,7 @@ class OrderModel extends ChangeNotifier {
         HttpHeaders.contentTypeHeader: 'application/json; charset=UTF-8',
       },
     );
+    print(response.body);
     if (response.statusCode == 200) {
       if (jsonDecode(response.body)["rows"] == null) {
         return false;
@@ -118,6 +124,24 @@ class OrderModel extends ChangeNotifier {
         final responseJson = jsonDecode(response.body)["rows"]["discount_value"] ?? false;
         return responseJson ?? false;
       }
+    } else {
+      return false;
+    }
+  }
+
+  Future getPdf({int? id}) async {
+    final response = await http.get(
+      Uri.parse(
+        "$serverURL/api/ru/generate-pdf/$id",
+      ),
+      headers: <String, String>{
+        HttpHeaders.contentTypeHeader: 'application/json; charset=UTF-8',
+      },
+    );
+    print(response.body);
+    if (response.statusCode == 200) {
+      print(jsonDecode(response.body)["rows"]);
+      return response.body;
     } else {
       return false;
     }

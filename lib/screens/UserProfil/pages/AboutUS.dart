@@ -3,9 +3,16 @@
 import 'package:flutter/material.dart';
 import 'package:get/get_utils/src/extensions/internacionalization.dart';
 import 'package:sharaf_yabi_ecommerce/constants/constants.dart';
+import 'package:sharaf_yabi_ecommerce/constants/widgets.dart';
+import 'package:sharaf_yabi_ecommerce/models/BannersModel.dart';
 import 'package:sharaf_yabi_ecommerce/widgets/appBar.dart';
 
-class AboutUS extends StatelessWidget {
+class AboutUS extends StatefulWidget {
+  @override
+  State<AboutUS> createState() => _AboutUSState();
+}
+
+class _AboutUSState extends State<AboutUS> {
   Widget text(String name, name1) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -42,34 +49,48 @@ class AboutUS extends StatelessWidget {
         appBar: MyAppBar(icon: Icons.add, onTap: () {}, backArrow: true, iconRemove: false),
         body: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
-          child: Column(
-            children: [
-              text("phoneNumber", "+993 63-14-31-11"),
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 10),
-                child: text("phoneNumber", "+993 12 57 57 81 (82)"),
-              ),
-              text("email", "order@sharafyabi.com"),
-              const SizedBox(
-                height: 60,
-              ),
-              Text(
-                "aboutUsTitle".tr,
-                textAlign: TextAlign.center,
-                style: const TextStyle(color: kPrimaryColor, fontFamily: montserratMedium, fontSize: 18),
-              ),
-              const SizedBox(
-                height: 30,
-              ),
-              Expanded(
-                child: Text(
-                  "aboutUsSubtitle".tr,
-                  textAlign: TextAlign.start,
-                  style: const TextStyle(color: kPrimaryColor, fontFamily: montserratMedium, fontSize: 18),
-                ),
-              ),
-            ],
-          ),
+          child: FutureBuilder<AboutUSModel>(
+              future: AboutUSModel().getAboutUS(),
+              builder: (context, snapshot) {
+                print(snapshot.error);
+                if (snapshot.hasData) {
+                  return Column(
+                    children: [
+                      text("phoneNumber", "+993 ${snapshot.data!.phoneNumber1}"),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 10),
+                        child: text("phoneNumber", "+993  ${snapshot.data!.phoneNumber2}"),
+                      ),
+                      text("email", "${snapshot.data!.email}"),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 10),
+                        child: text("orderAddress", "${snapshot.data!.address}"),
+                      ),
+                      const SizedBox(
+                        height: 60,
+                      ),
+                      Text(
+                        "aboutUsTitle".tr,
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(color: kPrimaryColor, fontFamily: montserratMedium, fontSize: 18),
+                      ),
+                      const SizedBox(
+                        height: 30,
+                      ),
+                      Expanded(
+                        child: Text(
+                          "aboutUsSubtitle".tr,
+                          textAlign: TextAlign.start,
+                          style: const TextStyle(color: kPrimaryColor, fontFamily: montserratMedium, fontSize: 18),
+                        ),
+                      ),
+                    ],
+                  );
+                }
+                return Center(
+                  child: spinKit(),
+                );
+              }),
         ));
   }
 }

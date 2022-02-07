@@ -1,10 +1,14 @@
 // ignore_for_file: deprecated_member_use, file_names, always_use_package_imports, avoid_dynamic_calls, type_annotate_public_apis, always_declare_return_types, invariant_booleans
 
+import 'dart:math';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
 import 'package:get/get.dart';
+import 'package:sharaf_yabi_ecommerce/components/Comments.dart';
+import 'package:sharaf_yabi_ecommerce/components/ShowAllProductsPage.dart';
 
 import 'package:sharaf_yabi_ecommerce/constants/constants.dart';
 import 'package:sharaf_yabi_ecommerce/constants/widgets.dart';
@@ -18,22 +22,25 @@ import 'package:share/share.dart';
 import 'PhotoView.dart';
 
 class ProductProfil extends StatefulWidget {
-  final int? id;
-  final String? productName;
-  final String? image;
-
   const ProductProfil({Key? key, required this.id, this.productName, required this.image}) : super(key: key);
+
+  final int? id;
+  final String? image;
+  final String? productName;
+
   @override
   _ProductProfilState createState() => _ProductProfilState();
 }
 
 class _ProductProfilState extends State<ProductProfil> {
+  bool addCart = false;
+  CartPageController cartPageController = Get.put(CartPageController());
   Fav_Cart_Controller favCartController = Get.put(Fav_Cart_Controller());
   FilterController filterController = Get.put(FilterController());
-  CartPageController cartPageController = Get.put(CartPageController());
-  bool addCart = false;
-  String name = "";
   String imageMine = "";
+  String name = "";
+  double priceOLD = 0.0;
+
   @override
   void initState() {
     super.initState();
@@ -64,168 +71,9 @@ class _ProductProfilState extends State<ProductProfil> {
     }
   }
 
-  double priceOLD = 0.0;
-
   changeNameAndImage(ProductProfilModel product) {
     name = product.producerName ?? "SharafÝabi";
     imageMine = product.image ?? " ASD";
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-        backgroundColor: backgroundColor,
-        appBar: appBar(),
-        bottomSheet: bottomSheetMine(),
-        body: SingleChildScrollView(
-          child: FutureBuilder<ProductProfilModel>(
-              future: ProductProfilModel().getRealEstatesById(widget.id),
-              builder: (context, snapshot) {
-                if (snapshot.hasError) {
-                  return Container(
-                      height: Get.size.height - 200,
-                      padding: const EdgeInsets.symmetric(horizontal: 15),
-                      child: emptyData(imagePath: "assets/icons/svgIcons/EmptyPageIcon.png", errorTitle: "retry", errorSubtitle: "error404"));
-                } else if (snapshot.hasData) {
-                  double priceMine = double.parse(snapshot.data!.price!);
-
-                  if (snapshot.data!.discountValue != null || snapshot.data!.discountValue != 0) {
-                    double price = 0.0;
-                    priceOLD = priceMine;
-                    final int a = snapshot.data!.discountValue ?? 0;
-                    price = (priceMine * a) / 100;
-                    priceMine -= price;
-                  }
-                  if (widget.productName == "") {
-                    changeNameAndImage(snapshot.data!);
-                  }
-                  favCartController.stockCount.value = int.parse("${snapshot.data!.stock}");
-
-                  return Column(
-                    children: [
-                      Stack(
-                        children: [
-                          SizedBox(
-                            height: Get.size.height / 2.5,
-                            child: GestureDetector(
-                              onTap: () {
-                                Get.to(() => PhotoViewPage(
-                                      image: "$serverImage/${snapshot.data!.image}-large.webp",
-                                    ));
-                              },
-                              child: CachedNetworkImage(
-                                  fadeInCurve: Curves.ease,
-                                  imageUrl: "$serverImage/${snapshot.data!.image}-mini.webp",
-                                  imageBuilder: (context, imageProvider) => Container(
-                                        padding: EdgeInsets.zero,
-                                        margin: EdgeInsets.zero,
-                                        decoration: BoxDecoration(
-                                          color: Colors.white,
-                                          image: DecorationImage(
-                                            image: imageProvider,
-                                            fit: BoxFit.contain,
-                                          ),
-                                        ),
-                                      ),
-                                  placeholder: (context, url) => Center(child: spinKit()),
-                                  errorWidget: (context, url, error) => Padding(
-                                        padding: const EdgeInsets.all(30.0),
-                                        child: Image.asset(
-                                          "assets/appLogo/greyLogo.png",
-                                          color: Colors.grey,
-                                        ),
-                                      )),
-                            ),
-                          ),
-                          if (snapshot.data!.discountValue != 0 && snapshot.data!.discountValue != null)
-                            Positioned(
-                                bottom: 10,
-                                left: 10,
-                                child: Container(
-                                  padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-                                  decoration: const BoxDecoration(color: Colors.red, borderRadius: borderRadius5),
-                                  child: Text("- ${snapshot.data!.discountValue} %", style: const TextStyle(color: Colors.white, fontFamily: montserratMedium, fontSize: 16)),
-                                ))
-                          else
-                            const SizedBox.shrink(),
-                        ],
-                      ),
-                      Container(
-                          width: Get.size.width,
-                          padding: const EdgeInsets.all(20),
-                          margin: const EdgeInsets.only(top: 28),
-                          color: Colors.white,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                children: [
-                                  RichText(
-                                    overflow: TextOverflow.ellipsis,
-                                    text: TextSpan(children: <TextSpan>[
-                                      TextSpan(text: priceMine.toStringAsFixed(2), style: const TextStyle(fontFamily: montserratSemiBold, fontSize: 24, color: Colors.black)),
-                                      const TextSpan(text: " TMT", style: TextStyle(fontFamily: montserratSemiBold, fontSize: 18, color: Colors.black))
-                                    ]),
-                                  ),
-                                  if (snapshot.data!.discountValue != 0 && snapshot.data!.discountValue != null)
-                                    Padding(
-                                      padding: const EdgeInsets.only(left: 25),
-                                      child: RichText(
-                                        overflow: TextOverflow.ellipsis,
-                                        text: TextSpan(children: <TextSpan>[
-                                          TextSpan(text: "$priceOLD", style: const TextStyle(decoration: TextDecoration.lineThrough, fontFamily: montserratMedium, fontSize: 20, color: Colors.grey)),
-                                          const TextSpan(text: " TMT", style: TextStyle(fontFamily: montserratMedium, decoration: TextDecoration.lineThrough, fontSize: 16, color: Colors.grey))
-                                        ]),
-                                      ),
-                                    )
-                                  else
-                                    const SizedBox.shrink(),
-                                ],
-                              ),
-                              Text("${snapshot.data!.name}", style: const TextStyle(color: Colors.black, fontFamily: montserratMedium, fontSize: 18)),
-                            ],
-                          )),
-                      whitePart(Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text("spesification".tr, style: const TextStyle(color: Colors.black, fontFamily: montserratSemiBold, fontSize: 18)),
-                          specText(text1: "categoryName".tr, text2: "${snapshot.data!.categoryName}"),
-                          specText(text1: "brandName".tr, text2: "${snapshot.data!.producerName}"),
-                          const SizedBox(height: 20),
-                          Text("description".tr, style: const TextStyle(color: Colors.black, fontFamily: montserratSemiBold, fontSize: 18)),
-                          Text("${snapshot.data!.description}", style: const TextStyle(color: Colors.black, fontFamily: montserratRegular, fontSize: 18)),
-                        ],
-                      )),
-                      const SizedBox(height: 10),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.all(15.0),
-                            child: Text("sameProducts".tr, style: const TextStyle(color: Colors.black, fontFamily: montserratSemiBold, fontSize: 18)),
-                          ),
-                          gridViewMine(
-                            whichFilter: 0,
-                            parametrs: {
-                              "page": "1",
-                              "limit": "20",
-                              "product_id": "${widget.id}",
-                              "main_category_id": "${snapshot.data!.categoryId}",
-                            },
-                            removeText: true,
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 80),
-                    ],
-                  );
-                }
-                return SizedBox(
-                  height: Get.size.height,
-                  child: Center(child: spinKit()),
-                );
-              }),
-        ));
   }
 
   Padding specText({String? text1, String? text2}) {
@@ -393,5 +241,162 @@ class _ProductProfilState extends State<ProductProfil> {
                 ],
               )),
     );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+        backgroundColor: backgroundColor,
+        appBar: appBar(),
+        bottomSheet: bottomSheetMine(),
+        body: SingleChildScrollView(
+          child: FutureBuilder<ProductProfilModel>(
+              future: ProductProfilModel().getRealEstatesById(widget.id),
+              builder: (context, snapshot) {
+                if (snapshot.hasError) {
+                  return Container(
+                      height: Get.size.height - 200,
+                      padding: const EdgeInsets.symmetric(horizontal: 15),
+                      child: emptyData(imagePath: "assets/emptyState/emptyProducts.png", errorTitle: "retry", errorSubtitle: "error404"));
+                } else if (snapshot.hasData) {
+                  double priceMine = double.parse(snapshot.data!.price!);
+
+                  if (snapshot.data!.discountValue != null || snapshot.data!.discountValue != 0) {
+                    double price = 0.0;
+                    priceOLD = priceMine;
+                    final int a = snapshot.data!.discountValue ?? 0;
+                    price = (priceMine * a) / 100;
+                    priceMine -= price;
+                  }
+                  if (widget.productName == "") {
+                    changeNameAndImage(snapshot.data!);
+                  }
+                  favCartController.stockCount.value = int.parse("${snapshot.data!.stock}");
+
+                  return Column(
+                    children: [
+                      Stack(
+                        children: [
+                          SizedBox(
+                            height: Get.size.height / 2.5,
+                            child: GestureDetector(
+                              onTap: () {
+                                Get.to(() => PhotoViewPage(
+                                      image: "$serverImage/${snapshot.data!.image}-large.webp",
+                                    ));
+                              },
+                              child: CachedNetworkImage(
+                                  fadeInCurve: Curves.ease,
+                                  imageUrl: "$serverImage/${snapshot.data!.image}-mini.webp",
+                                  imageBuilder: (context, imageProvider) => Container(
+                                        padding: EdgeInsets.zero,
+                                        margin: EdgeInsets.zero,
+                                        decoration: BoxDecoration(
+                                          color: Colors.white,
+                                          image: DecorationImage(
+                                            image: imageProvider,
+                                            fit: BoxFit.contain,
+                                          ),
+                                        ),
+                                      ),
+                                  placeholder: (context, url) => Center(child: spinKit()),
+                                  errorWidget: (context, url, error) => noImage()),
+                            ),
+                          ),
+                          if (snapshot.data!.discountValue != 0 && snapshot.data!.discountValue != null)
+                            Positioned(
+                                bottom: 10,
+                                left: 10,
+                                child: Container(
+                                  padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+                                  decoration: const BoxDecoration(color: Colors.red, borderRadius: borderRadius5),
+                                  child: Text("- ${snapshot.data!.discountValue} %", style: const TextStyle(color: Colors.white, fontFamily: montserratMedium, fontSize: 16)),
+                                ))
+                          else
+                            const SizedBox.shrink(),
+                        ],
+                      ),
+                      Container(
+                          width: Get.size.width,
+                          padding: const EdgeInsets.all(20),
+                          margin: const EdgeInsets.only(top: 28),
+                          color: Colors.white,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                children: [
+                                  RichText(
+                                    overflow: TextOverflow.ellipsis,
+                                    text: TextSpan(children: <TextSpan>[
+                                      TextSpan(text: priceMine.toStringAsFixed(2), style: const TextStyle(fontFamily: montserratSemiBold, fontSize: 24, color: Colors.black)),
+                                      const TextSpan(text: " TMT", style: TextStyle(fontFamily: montserratSemiBold, fontSize: 18, color: Colors.black))
+                                    ]),
+                                  ),
+                                  if (snapshot.data!.discountValue != 0 && snapshot.data!.discountValue != null)
+                                    RotationTransition(
+                                      turns: new AlwaysStoppedAnimation(-2 / 360),
+                                      child: Padding(
+                                          padding: const EdgeInsets.only(left: 25),
+                                          child: Text("$priceOLD" + " TMT",
+                                              style: const TextStyle(decoration: TextDecoration.lineThrough, fontFamily: montserratRegular, fontSize: 18, color: Colors.grey))),
+                                    )
+                                  else
+                                    const SizedBox.shrink(),
+                                ],
+                              ),
+                              Text("${snapshot.data!.name}", style: const TextStyle(color: Colors.black, fontFamily: montserratMedium, fontSize: 18)),
+                            ],
+                          )),
+                      RaisedButton(onPressed: () {
+                        Get.to(() => CommentsPage());
+                      }),
+                      whitePart(Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text("spesification".tr, style: const TextStyle(color: Colors.black, fontFamily: montserratSemiBold, fontSize: 18)),
+                          GestureDetector(
+                              onTap: () {
+                                print(snapshot.data!.categoryId);
+                                filterController.mainCategoryID.value = snapshot.data!.categoryId ?? 0;
+                                Get.to(() => ShowAllProductsPage(pageName: "${snapshot.data!.categoryName}", whichFilter: 0));
+                              },
+                              child: specText(text1: "categoryName".tr, text2: "${snapshot.data!.categoryName}")),
+                          specText(text1: "brandName".tr, text2: "${snapshot.data!.producerName}"),
+                          const SizedBox(height: 20),
+                          Text("description".tr, style: const TextStyle(color: Colors.black, fontFamily: montserratSemiBold, fontSize: 18)),
+                          Text("${snapshot.data!.description}", style: const TextStyle(color: Colors.black, fontFamily: montserratRegular, fontSize: 18)),
+                        ],
+                      )),
+                      const SizedBox(height: 10),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.all(15.0),
+                            child: Text("sameProducts".tr, style: const TextStyle(color: Colors.black, fontFamily: montserratSemiBold, fontSize: 18)),
+                          ),
+                          gridViewMine(
+                            whichFilter: 0,
+                            parametrs: {
+                              "page": "1",
+                              "limit": "20",
+                              "product_id": "${widget.id}",
+                              "main_category_id": "${snapshot.data!.categoryId}",
+                            },
+                            removeText: true,
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 80),
+                    ],
+                  );
+                }
+                return SizedBox(
+                  height: Get.size.height,
+                  child: Center(child: spinKit()),
+                );
+              }),
+        ));
   }
 }

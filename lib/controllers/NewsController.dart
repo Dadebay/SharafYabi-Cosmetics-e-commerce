@@ -6,7 +6,7 @@ import 'package:sharaf_yabi_ecommerce/models/NewsModel.dart';
 class NewsController extends GetxController {
   RxList list = [].obs;
   RxInt loading = 0.obs;
-  RxInt page = 1.obs;
+  RxInt page = 0.obs;
   RxInt pageNumberNews = 0.obs;
 
   void fetchProducts() async {
@@ -43,7 +43,7 @@ class NewsController extends GetxController {
   }
 
   refreshPage() {
-    page.value = 1;
+    page.value = 0;
     list.clear();
     loading.value = 0;
     fetchProducts();

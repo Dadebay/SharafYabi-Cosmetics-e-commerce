@@ -81,6 +81,7 @@ class _BottomNavBarState extends State<BottomNavBar> with TickerProviderStateMix
           onTap: (index) {
             setState(() {
               selectedPageIndex = index;
+
               tabController.animateTo(selectedPageIndex);
             });
           },

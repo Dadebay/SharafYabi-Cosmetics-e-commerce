@@ -23,42 +23,42 @@ class CartPage extends StatefulWidget {
 
 class _CartPageState extends State<CartPage> {
   final CartPageController cartPageController = Get.put(CartPageController());
-
+  final Fav_Cart_Controller favCartController = Get.put(Fav_Cart_Controller());
   @override
   void initState() {
     super.initState();
-    Get.find<CartPageController>().loadData(parametrs: {"products": jsonEncode(Get.find<Fav_Cart_Controller>().cartList)});
+    cartPageController.loadData(parametrs: {"products": jsonEncode(Get.find<Fav_Cart_Controller>().cartList)});
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: backgroundColor.withOpacity(0.2),
-        floatingActionButton: Get.find<Fav_Cart_Controller>().cartList.isEmpty ? const SizedBox.shrink() : floatingActionButton(),
+        backgroundColor: backgroundColor.withOpacity(0.6),
+        floatingActionButton: favCartController.cartList.isEmpty ? const SizedBox.shrink() : floatingActionButton(),
         appBar: MyAppBar(
           backArrow: false,
-          iconRemove: Get.find<Fav_Cart_Controller>().cartList.isNotEmpty ? true : false,
+          iconRemove: favCartController.cartList.isNotEmpty ? true : false,
           icon: IconlyLight.delete,
           onTap: () {
-            Get.find<CartPageController>().list.clear();
-            Get.find<Fav_Cart_Controller>().clearCartList();
+            cartPageController.list.clear();
+            favCartController.clearCartList();
             setState(() {});
           },
         ),
         body: Obx(() {
-          if (Get.find<CartPageController>().loading.value == 1) {
-            return Get.find<Fav_Cart_Controller>().cartList.isEmpty
+          if (cartPageController.loading.value == 1) {
+            return favCartController.cartList.isEmpty
                 ? emptyDataLottie(imagePath: "assets/lottie/emptyCart.json", errorTitle: "cartEmpty", errorSubtitle: "cartEmptySubtitle")
                 : ListView.builder(
                     physics: const BouncingScrollPhysics(),
-                    itemCount: Get.find<CartPageController>().list.length,
+                    itemCount: cartPageController.list.length,
                     itemBuilder: (BuildContext context, int index) {
                       return CardMine(index);
                     },
                   );
-          } else if (Get.find<CartPageController>().loading.value == 2) {
+          } else if (cartPageController.loading.value == 2) {
             return emptyDataLottie(imagePath: "assets/lottie/emptyCart.json", errorTitle: "cartEmpty", errorSubtitle: "cartEmptySubtitle");
-          } else if (Get.find<CartPageController>().loading.value == 0) {
+          } else if (cartPageController.loading.value == 0) {
             return FavCardShimmer();
           }
           return FavCardShimmer();
@@ -68,13 +68,13 @@ class _CartPageState extends State<CartPage> {
   Widget floatingActionButton() {
     return FloatingActionButton.extended(
       elevation: 1,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+      shape: const RoundedRectangleBorder(borderRadius: borderRadius15),
       onPressed: () {
         double sum = 0.0;
         int sumCount = 0;
-        for (int i = 0; i < Get.find<CartPageController>().list.length; i++) {
-          final double a = double.parse(Get.find<CartPageController>().list[i]["price"]);
-          final int b = Get.find<CartPageController>().list[i]["count"];
+        for (int i = 0; i < cartPageController.list.length; i++) {
+          final double a = double.parse(cartPageController.list[i]["price"]);
+          final int b = cartPageController.list[i]["count"];
           sum += a * b;
           sumCount += b;
         }
@@ -84,23 +84,28 @@ class _CartPageState extends State<CartPage> {
             ));
       },
       backgroundColor: kPrimaryColor,
+      splashColor: kPrimaryColor,
+      hoverColor: Colors.white,
       extendedPadding: const EdgeInsets.symmetric(horizontal: 10),
       label: Row(
         mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
+          const Padding(
+            padding: EdgeInsets.symmetric(horizontal: 8),
+            child: Icon(
+              CupertinoIcons.shopping_cart,
+              size: 22,
+              color: Colors.white,
+            ),
+          ),
           Text(
             "order".tr,
             overflow: TextOverflow.ellipsis,
             style: const TextStyle(fontFamily: montserratSemiBold, fontSize: 18, color: Colors.white),
           ),
-          const Padding(
-            padding: EdgeInsets.symmetric(horizontal: 5),
-            child: Icon(
-              IconlyLight.arrowRightCircle,
-              size: 20,
-              color: Colors.white,
-            ),
+          const SizedBox(
+            width: 8,
           )
         ],
       ),
@@ -111,42 +116,37 @@ class _CartPageState extends State<CartPage> {
     return GestureDetector(
       onTap: () {
         Get.to(() => ProductProfil(
-              id: Get.find<CartPageController>().list[index]["id"],
-              productName: Get.find<CartPageController>().list[index]["name"],
-              image: "$serverImage/${Get.find<CartPageController>().list[index]["image"]}-mini.webp",
+              id: cartPageController.list[index]["id"],
+              productName: cartPageController.list[index]["name"],
+              image: "$serverImage/${cartPageController.list[index]["image"]}-mini.webp",
             ));
       },
       child: Container(
-        height: 150,
+        height: 140,
         margin: const EdgeInsets.fromLTRB(10, 10, 10, 10),
         decoration: const BoxDecoration(color: Colors.white, borderRadius: borderRadius20),
         child: Row(
           children: [
             Expanded(
               child: Container(
-                margin: const EdgeInsets.all(10),
-                decoration: BoxDecoration(color: backgroundColor.withOpacity(0.4), borderRadius: borderRadius15),
+                margin: const EdgeInsets.all(8.0),
+                decoration: BoxDecoration(borderRadius: borderRadius15, color: backgroundColor.withOpacity(0.6)),
                 child: CachedNetworkImage(
                     fadeInCurve: Curves.ease,
-                    imageUrl: "$serverImage/${Get.find<CartPageController>().list[index]["image"]}-mini.webp",
+                    color: Colors.black,
+                    imageUrl: "$serverImage/${cartPageController.list[index]["image"]}-mini.webp",
                     imageBuilder: (context, imageProvider) => Container(
                           padding: EdgeInsets.zero,
+                          margin: EdgeInsets.all(8),
                           decoration: BoxDecoration(
-                            borderRadius: borderRadius10,
                             image: DecorationImage(
                               image: imageProvider,
-                              fit: BoxFit.fill,
+                              fit: BoxFit.contain,
                             ),
                           ),
                         ),
                     placeholder: (context, url) => Center(child: spinKit()),
-                    errorWidget: (context, url, error) => Padding(
-                          padding: const EdgeInsets.all(30.0),
-                          child: Image.asset(
-                            "assets/appLogo/greyLogo.png",
-                            color: Colors.grey,
-                          ),
-                        )),
+                    errorWidget: (context, url, error) => noImage()),
               ),
             ),
             Expanded(
@@ -157,27 +157,12 @@ class _CartPageState extends State<CartPage> {
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Expanded(
-                              child: Text("${Get.find<CartPageController>().list[index]["name"]}",
-                                  overflow: TextOverflow.ellipsis, maxLines: 1, style: const TextStyle(color: Colors.black, fontFamily: montserratMedium, fontSize: 18))),
-                          GestureDetector(
-                            onTap: () {
-                              final int id = Get.find<CartPageController>().list[index]["id"];
-                              Get.find<CartPageController>().removeCardClear(id);
-                              setState(() {});
-                            },
-                            child: const Icon(CupertinoIcons.xmark_circle, color: Colors.black, size: 24),
-                          ),
-                        ],
-                      ),
+                      Text("${cartPageController.list[index]["name"]}",
+                          overflow: TextOverflow.ellipsis, maxLines: 2, textAlign: TextAlign.start, style: const TextStyle(color: Colors.black, fontFamily: montserratMedium, fontSize: 16)),
                       RichText(
                         overflow: TextOverflow.ellipsis,
                         text: TextSpan(children: <TextSpan>[
-                          TextSpan(text: "${Get.find<CartPageController>().list[index]["price"]}", style: const TextStyle(fontFamily: montserratSemiBold, fontSize: 20, color: Colors.black)),
+                          TextSpan(text: "${cartPageController.list[index]["price"]}", style: const TextStyle(fontFamily: montserratSemiBold, fontSize: 20, color: Colors.black)),
                           const TextSpan(text: "  TMT", style: TextStyle(fontFamily: montserratMedium, fontSize: 16, color: Colors.black))
                         ]),
                       ),
@@ -185,26 +170,33 @@ class _CartPageState extends State<CartPage> {
                         children: [
                           GestureDetector(
                             onTap: () {
-                              final int id = Get.find<CartPageController>().list[index]["id"];
-
-                              Get.find<CartPageController>().removeCard(id);
-                              Get.find<Fav_Cart_Controller>().removeCart(id);
+                              final int id = cartPageController.list[index]["id"];
+                              cartPageController.removeCard(id);
+                              favCartController.removeCart(id);
                               setState(() {});
                             },
-                            child: Container(padding: const EdgeInsets.all(4), decoration: BoxDecoration(color: Colors.grey[200], shape: BoxShape.circle), child: const Icon(CupertinoIcons.minus)),
+                            child: Container(
+                                padding: const EdgeInsets.all(4),
+                                decoration: BoxDecoration(color: Colors.grey[200], shape: BoxShape.circle),
+                                child: cartPageController.list[index]["count"] == 1
+                                    ? const Icon(
+                                        IconlyLight.delete,
+                                        color: Colors.grey,
+                                      )
+                                    : const Icon(CupertinoIcons.minus)),
                           ),
                           Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 20),
                             child: Text(
-                              "${Get.find<CartPageController>().list[index]["count"]}",
+                              "${cartPageController.list[index]["count"]}",
                               textAlign: TextAlign.center,
                               style: const TextStyle(color: Colors.black, fontFamily: montserratBold, fontSize: 18),
                             ),
                           ),
                           GestureDetector(
                             onTap: () {
-                              Get.find<CartPageController>().addToCard(Get.find<CartPageController>().list[index]["id"]);
-                              Get.find<Fav_Cart_Controller>().addCart(Get.find<CartPageController>().list[index]["id"]);
+                              cartPageController.addToCard(cartPageController.list[index]["id"]);
+                              favCartController.addCart(cartPageController.list[index]["id"]);
                             },
                             child: Container(
                                 padding: const EdgeInsets.all(4),
