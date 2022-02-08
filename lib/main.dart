@@ -1,6 +1,5 @@
 // ignore_for_file: always_declare_return_types, type_annotate_public_apis
 
-import 'dart:convert';
 import 'dart:io';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -10,11 +9,9 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:sharaf_yabi_ecommerce/SplashScreen.dart';
-import 'package:sharaf_yabi_ecommerce/components/ProductProfil.dart';
 import 'package:sharaf_yabi_ecommerce/constants/constants.dart';
 import 'package:sharaf_yabi_ecommerce/controllers/AllContollerBindings.dart';
-import 'package:sharaf_yabi_ecommerce/screens/UserProfil/pages/AboutUS.dart';
-import 'package:sharaf_yabi_ecommerce/screens/UserProfil/pages/FavoritePage/FavoritePage.dart';
+import 'package:sharaf_yabi_ecommerce/screens/BottomNavBar.dart';
 import 'package:sharaf_yabi_ecommerce/utils/translations.dart';
 
 class MyHttpOverrides extends HttpOverrides {
@@ -24,9 +21,14 @@ class MyHttpOverrides extends HttpOverrides {
   }
 }
 
-late AndroidNotificationChannel channel;
+AndroidNotificationChannel channel = const AndroidNotificationChannel(
+  'high_importance_channel', // id
+  'High Importance Notifications', // title
+  description: 'This channel is used for important notifications.', // description
+  importance: Importance.high,
+);
 
-late FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
+FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
 
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp(
@@ -67,14 +69,7 @@ Future<void> main() async {
       // ),
       );
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
-  channel = const AndroidNotificationChannel(
-    'high_importance_channel', // id
-    'High Importance Notifications', // title
-    description: 'This channel is used for important notifications.', // description
-    importance: Importance.high,
-  );
 
-  flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
   await flutterLocalNotificationsPlugin.resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()?.createNotificationChannel(channel);
   await FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(
     alert: true,
@@ -108,7 +103,6 @@ class _MyAppRunState extends State<MyAppRun> {
     super.initState();
     FirebaseMessaging.instance.subscribeToTopic('Events');
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-      print("waddddddddddddd");
       flutterLocalNotificationsPlugin.show(
         message.data.hashCode,
         message.data['title'],
@@ -127,16 +121,10 @@ class _MyAppRunState extends State<MyAppRun> {
     });
 
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage? message) {
-      print(message);
-      print("asddddddddddddddddddddddd");
-      print(message!.data);
-      Get.to(() => FavoritePage());
+      Get.to(() => BottomNavBar());
     });
     FirebaseMessaging.instance.getInitialMessage().then((RemoteMessage? message) {
-      print(message);
-      print("wawwwsssssssssssssssssss");
-      print(message!.data);
-      Get.to(() => AboutUS());
+      Get.to(() => BottomNavBar());
     });
   }
 

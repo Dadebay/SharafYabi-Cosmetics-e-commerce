@@ -39,8 +39,6 @@ class NewsModel extends ChangeNotifier {
         headers: <String, String>{
           HttpHeaders.contentTypeHeader: 'application/json; charset=UTF-8',
         });
-    print(parametrs);
-    print(response.body);
     if (response.statusCode == 200) {
       Get.find<NewsController>().pageNumberNews.value = int.parse(jsonDecode(response.body)["rows"]["count"]);
       final responseJson = jsonDecode(response.body)["rows"]["news"] as List;

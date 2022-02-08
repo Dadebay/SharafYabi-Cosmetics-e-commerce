@@ -1,7 +1,5 @@
 // ignore_for_file: deprecated_member_use, file_names, always_use_package_imports, avoid_dynamic_calls, type_annotate_public_apis, always_declare_return_types, invariant_booleans
 
-import 'dart:math';
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -335,7 +333,7 @@ class _ProductProfilState extends State<ProductProfil> {
                                   ),
                                   if (snapshot.data!.discountValue != 0 && snapshot.data!.discountValue != null)
                                     RotationTransition(
-                                      turns: new AlwaysStoppedAnimation(-2 / 360),
+                                      turns: const AlwaysStoppedAnimation(-2 / 360),
                                       child: Padding(
                                           padding: const EdgeInsets.only(left: 25),
                                           child: Text("$priceOLD" + " TMT",
@@ -348,22 +346,35 @@ class _ProductProfilState extends State<ProductProfil> {
                               Text("${snapshot.data!.name}", style: const TextStyle(color: Colors.black, fontFamily: montserratMedium, fontSize: 18)),
                             ],
                           )),
-                      RaisedButton(onPressed: () {
-                        Get.to(() => CommentsPage());
-                      }),
                       whitePart(Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text("spesification".tr, style: const TextStyle(color: Colors.black, fontFamily: montserratSemiBold, fontSize: 18)),
                           GestureDetector(
                               onTap: () {
-                                print(snapshot.data!.categoryId);
                                 filterController.mainCategoryID.value = snapshot.data!.categoryId ?? 0;
                                 Get.to(() => ShowAllProductsPage(pageName: "${snapshot.data!.categoryName}", whichFilter: 0));
                               },
                               child: specText(text1: "categoryName".tr, text2: "${snapshot.data!.categoryName}")),
                           specText(text1: "brandName".tr, text2: "${snapshot.data!.producerName}"),
                           const SizedBox(height: 20),
+                          GestureDetector(
+                            onTap: () {
+                              Get.to(() => CommentsPage(
+                                    productID: widget.id!,
+                                  ));
+                            },
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 8),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text("comments".tr, style: const TextStyle(color: Colors.black, fontFamily: montserratSemiBold, fontSize: 18)),
+                                  const Icon(IconlyLight.arrowRightCircle, color: Colors.black)
+                                ],
+                              ),
+                            ),
+                          ),
                           Text("description".tr, style: const TextStyle(color: Colors.black, fontFamily: montserratSemiBold, fontSize: 18)),
                           Text("${snapshot.data!.description}", style: const TextStyle(color: Colors.black, fontFamily: montserratRegular, fontSize: 18)),
                         ],

@@ -1,8 +1,7 @@
-// ignore_for_file: must_be_immutable, deprecated_member_use, file_names, avoid_dynamic_calls, avoid_bool_literals_in_conditional_expressions
+// ignore_for_file: must_be_immutable, deprecated_member_use, file_names, avoid_dynamic_calls, avoid_bool_literals_in_conditional_expressions, avoid_positional_boolean_parameters
 
 import 'dart:async';
 import 'dart:convert';
-import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
@@ -15,7 +14,6 @@ import 'package:sharaf_yabi_ecommerce/controllers/CartPageController.dart';
 import 'package:sharaf_yabi_ecommerce/controllers/Fav_Cart_Controller.dart';
 import 'package:sharaf_yabi_ecommerce/models/CartModel.dart';
 import 'package:sharaf_yabi_ecommerce/screens/BottomNavBar.dart';
-import 'package:syncfusion_flutter_pdf/pdf.dart';
 import 'package:vibration/vibration.dart';
 
 class OrderPage extends StatefulWidget {
@@ -153,9 +151,8 @@ class _OrderPageState extends State<OrderPage> {
                           payment: "${cartPageController.nagt.value}")
                       .then((value) {
                     if (value == true) {
-                      OrderModel().getPdf(id: cartPageController.pdfID.value);
-
                       completeOrder();
+                      showSnackBar("orderComplete", "orderCompleteSubtitle", kPrimaryColor);
                       sendButton = false;
                     } else {
                       sendButton = false;
@@ -247,9 +244,9 @@ class _OrderPageState extends State<OrderPage> {
         onTap: () {
           Get.defaultDialog(
               radius: 8,
-              titlePadding: EdgeInsets.only(top: 15, left: 15, right: 15),
+              titlePadding: const EdgeInsets.only(top: 15, left: 15, right: 15),
               title: dialogTitle.tr,
-              contentPadding: EdgeInsets.symmetric(horizontal: 10),
+              contentPadding: const EdgeInsets.symmetric(horizontal: 10),
               titleStyle: const TextStyle(color: Colors.black, fontSize: 20, fontFamily: montserratMedium),
               content: customTextField(labelText, controllermine, textLength));
         },
@@ -257,7 +254,7 @@ class _OrderPageState extends State<OrderPage> {
     );
   }
 
-  customTextField(String hintText, TextEditingController controller, int lenght) {
+  Column customTextField(String hintText, TextEditingController controller, int lenght) {
     return Column(
       children: [
         Padding(
@@ -304,7 +301,7 @@ class _OrderPageState extends State<OrderPage> {
           width: Get.size.width,
           child: RaisedButton(
             color: kPrimaryColor,
-            shape: RoundedRectangleBorder(borderRadius: borderRadius10),
+            shape: const RoundedRectangleBorder(borderRadius: borderRadius10),
             onPressed: () {
               if (_form1Key.currentState!.validate()) {
                 if (controller == couponController) {
@@ -317,7 +314,7 @@ class _OrderPageState extends State<OrderPage> {
                     }
                   });
                 }
-                Future.delayed(Duration(seconds: 5), () {
+                Future.delayed(const Duration(seconds: 5), () {
                   favCartController.promoLottie.value = false;
                 });
                 setState(() {});
@@ -326,17 +323,17 @@ class _OrderPageState extends State<OrderPage> {
                 Vibration.vibrate();
               }
             },
-            padding: EdgeInsets.symmetric(
+            padding: const EdgeInsets.symmetric(
               vertical: 10,
             ),
-            child: Text("agree".tr, style: TextStyle(color: Colors.white, fontSize: 18, fontFamily: montserratSemiBold)),
+            child: Text("agree".tr, style: const TextStyle(color: Colors.white, fontSize: 18, fontFamily: montserratSemiBold)),
           ),
         ),
       ],
     );
   }
 
-  phoneNumberTextField() {
+  TextFormField phoneNumberTextField() {
     return TextFormField(
       controller: phoneController,
       keyboardType: TextInputType.number,
@@ -425,7 +422,7 @@ class _OrderPageState extends State<OrderPage> {
                           "assets/lottie/coupon_falling_confetti.json",
                           animate: true,
                         )
-                      : SizedBox.shrink());
+                      : const SizedBox.shrink());
             }),
           ],
         ));

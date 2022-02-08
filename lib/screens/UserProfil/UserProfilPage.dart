@@ -6,7 +6,6 @@ import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_instance/src/extension_instance.dart';
 import 'package:get/get_navigation/src/extension_navigation.dart';
 import 'package:get_storage/get_storage.dart';
-import 'package:lottie/lottie.dart';
 import 'package:sharaf_yabi_ecommerce/constants/widgets.dart';
 import 'package:sharaf_yabi_ecommerce/controllers/AuthController.dart';
 import 'package:sharaf_yabi_ecommerce/screens/UserProfil/Components/Profile_Widgets.dart';

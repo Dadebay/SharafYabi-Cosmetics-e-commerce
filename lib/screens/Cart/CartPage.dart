@@ -137,7 +137,7 @@ class _CartPageState extends State<CartPage> {
                     imageUrl: "$serverImage/${cartPageController.list[index]["image"]}-mini.webp",
                     imageBuilder: (context, imageProvider) => Container(
                           padding: EdgeInsets.zero,
-                          margin: EdgeInsets.all(8),
+                          margin: const EdgeInsets.all(8),
                           decoration: BoxDecoration(
                             image: DecorationImage(
                               image: imageProvider,

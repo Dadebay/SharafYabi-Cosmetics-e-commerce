@@ -8,11 +8,7 @@ import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:sharaf_yabi_ecommerce/constants/constants.dart';
 import 'package:sharaf_yabi_ecommerce/constants/widgets.dart';
-import 'package:sharaf_yabi_ecommerce/controllers/AuthController.dart';
 import 'package:sharaf_yabi_ecommerce/controllers/Fav_Cart_Controller.dart';
-import 'package:syncfusion_flutter_pdf/pdf.dart';
-
-import '../controllers/CartPageController.dart';
 
 class CartModel extends ChangeNotifier {
   CartModel({
@@ -96,8 +92,6 @@ class OrderModel extends ChangeNotifier {
     log(response.body);
     if (response.statusCode == 200) {
       Get.find<Fav_Cart_Controller>().clearCartList();
-      Get.find<CartPageController>().pdfID.value = jsonDecode(response.body)["rows"];
-      print(Get.find<CartPageController>().pdfID);
       return true;
     } else {
       showSnackBar("retry", "error404", Colors.red);

@@ -61,10 +61,8 @@ class AboutUSModel extends ChangeNotifier {
         headers: <String, String>{
           HttpHeaders.contentTypeHeader: 'application/json; charset=UTF-8',
         });
-    print(response.body);
     if (response.statusCode == 200) {
       return AboutUSModel.fromJson(jsonDecode(response.body)["rows"]);
-      ;
     } else {
       return AboutUSModel();
     }

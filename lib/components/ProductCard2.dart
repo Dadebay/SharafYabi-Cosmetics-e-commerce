@@ -10,8 +10,6 @@ import 'package:sharaf_yabi_ecommerce/constants/widgets.dart';
 import 'package:sharaf_yabi_ecommerce/controllers/Fav_Cart_Controller.dart';
 import 'package:sharaf_yabi_ecommerce/controllers/FilterController.dart';
 
-import 'ProductProfil.dart';
-
 class ProductCard2 extends StatefulWidget {
   final int indexx;
   const ProductCard2({
@@ -32,11 +30,11 @@ class _ProductCard2State extends State<ProductCard2> {
     _filterController = Get.put<FilterController>(FilterController());
 
     if (favCartController.favList.isNotEmpty) {
-      favCartController.favList.forEach((element) {
+      for (final element in favCartController.favList) {
         if (element["id"] == _filterController.list[widget.indexx]!["id"]) {
           _filterController.favButton.value = true;
         }
-      });
+      }
     } else {
       _filterController.favButton.value = false;
     }
@@ -100,7 +98,7 @@ class _ProductCard2State extends State<ProductCard2> {
                               GestureDetector(
                                 onTap: () {
                                   setState(() {
-                                    favCartController.cartList.forEach((element) {
+                                    for (final element in favCartController.cartList) {
                                       if (element["id"] == _filterController.list[widget.indexx]["id"]) {
                                         element["count"]--;
                                         if (_filterController.list.isNotEmpty) {
@@ -111,7 +109,7 @@ class _ProductCard2State extends State<ProductCard2> {
                                           }
                                         }
                                       }
-                                    });
+                                    }
                                   });
                                 },
                                 child: PhysicalModel(

@@ -191,7 +191,7 @@ class OrderProfile extends StatelessWidget {
           imageUrl: "$serverImage/$image-mini.webp",
           imageBuilder: (context, imageProvider) => Container(
                 padding: EdgeInsets.zero,
-                margin: EdgeInsets.all(8),
+                margin: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
                   borderRadius: const BorderRadius.only(topRight: Radius.circular(5), topLeft: Radius.circular(5)),
                   image: DecorationImage(

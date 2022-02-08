@@ -1,6 +1,5 @@
 // ignore_for_file: file_names, always_use_package_imports, avoid_dynamic_calls
 
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
 import 'package:get/get.dart';

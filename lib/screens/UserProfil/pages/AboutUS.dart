@@ -52,7 +52,6 @@ class _AboutUSState extends State<AboutUS> {
           child: FutureBuilder<AboutUSModel>(
               future: AboutUSModel().getAboutUS(),
               builder: (context, snapshot) {
-                print(snapshot.error);
                 if (snapshot.hasData) {
                   return Column(
                     children: [

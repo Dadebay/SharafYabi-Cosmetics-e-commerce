@@ -1,4 +1,4 @@
-// ignore_for_file: file_names
+// ignore_for_file: file_names, non_constant_identifier_names, avoid_dynamic_calls
 
 import 'package:flutter/material.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
@@ -25,11 +25,11 @@ class _AddCartButtonState extends State<AddCartButton> with TickerProviderStateM
   void initState() {
     super.initState();
     if (fav_cart_controller.cartList.isNotEmpty) {
-      fav_cart_controller.cartList.forEach((element) {
+      for (final element in fav_cart_controller.cartList) {
         if (element["id"] == widget.id) {
           addCart = true;
         }
-      });
+      }
     } else {
       addCart = false;
     }

@@ -1,7 +1,6 @@
 // ignore_for_file: file_names, always_declare_return_types, type_annotate_public_apis, unnecessary_null_comparison, avoid_void_async, avoid_dynamic_calls, unrelated_type_equality_checks
 
 import 'package:get/get.dart';
-import 'package:sharaf_yabi_ecommerce/constants/constants.dart';
 import 'package:sharaf_yabi_ecommerce/controllers/Fav_Cart_Controller.dart';
 import 'package:sharaf_yabi_ecommerce/models/ProductsModel.dart';
 

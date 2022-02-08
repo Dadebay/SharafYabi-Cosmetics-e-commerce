@@ -33,7 +33,7 @@ class NewsProfil extends StatelessWidget {
                               padding: EdgeInsets.zero,
                               height: 250,
                               width: Get.size.width,
-                              margin: EdgeInsets.symmetric(vertical: 10),
+                              margin: const EdgeInsets.symmetric(vertical: 10),
                               decoration: BoxDecoration(
                                 borderRadius: borderRadius20,
                                 image: DecorationImage(

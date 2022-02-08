@@ -11,7 +11,6 @@ class NewsController extends GetxController {
 
   void fetchProducts() async {
     loading.value = 0;
-    print("irefreshed");
     final products = await NewsModel().getNews(parametrs: {
       "page": '${page.value}',
       "limit": '20',

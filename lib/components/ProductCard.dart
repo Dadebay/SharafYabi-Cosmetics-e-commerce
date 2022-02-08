@@ -24,20 +24,20 @@ class ProductCard extends StatefulWidget {
 class _ProductCardState extends State<ProductCard> {
   bool addCart = false;
   bool favButton = false;
-
+  final Fav_Cart_Controller favCartController = Get.put(Fav_Cart_Controller());
   @override
   void initState() {
     super.initState();
-    Get.find<Fav_Cart_Controller>().cartList.forEach((element) {
+    for (final element in favCartController.cartList) {
       if (element["id"] == widget.product?.id) {
         addCart = true;
       }
-    });
-    Get.find<Fav_Cart_Controller>().favList.forEach((element) {
+    }
+    for (final element in favCartController.favList) {
       if (element["id"] == widget.product?.id) {
         favButton = true;
       }
-    });
+    }
   }
 
   @override
