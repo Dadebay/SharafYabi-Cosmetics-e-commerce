@@ -8,21 +8,28 @@ import 'package:sharaf_yabi_ecommerce/components/ProductProfil.dart';
 import 'package:sharaf_yabi_ecommerce/components/ShowAllProductsPage.dart';
 import 'package:sharaf_yabi_ecommerce/constants/constants.dart';
 import 'package:sharaf_yabi_ecommerce/constants/widgets.dart';
-import 'package:sharaf_yabi_ecommerce/controllers/BannerController.dart';
 import 'package:sharaf_yabi_ecommerce/controllers/FilterController.dart';
 import 'package:sharaf_yabi_ecommerce/models/BannersModel.dart';
 import 'package:shimmer/shimmer.dart';
 
-class Banners extends StatelessWidget {
-  FilterController filterController = Get.put(FilterController());
-
+class Banners extends StatefulWidget {
   final Future<List<BannerModel>>? banners;
 
   Banners({Key? key, this.banners}) : super(key: key);
+
+  @override
+  State<Banners> createState() => _BannersState();
+}
+
+class _BannersState extends State<Banners> {
+  FilterController filterController = Get.put(FilterController());
+
+  int selectedIndex = 0;
+
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<List<BannerModel>>(
-        future: banners,
+        future: widget.banners,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return bannerCardShimmer();
@@ -38,22 +45,22 @@ class Banners extends StatelessWidget {
                       CarouselSlider.builder(
                         itemCount: snapshot.data!.length,
                         itemBuilder: (context, index, count) {
-                          return bannerCard(snapshot, index);
+                          return bannerCard(index,snapshot.data![index].itemID,snapshot.data![index].pathID,snapshot.data![index].imagePath);
                         },
                         options: CarouselOptions(
                           onPageChanged: (index, CarouselPageChangedReason) {
-                            Get.find<BannerController>().bannerSelectedIndex.value = index;
+                            setState(() {
+                              selectedIndex = index;
+                            });
                           },
                           aspectRatio: 16 / 8,
+                          initialPage: 0,
                           viewportFraction: 1.0,
                           autoPlay: true,
                           scrollPhysics: const BouncingScrollPhysics(),
                           autoPlayCurve: Curves.fastLinearToSlowEaseIn,
                           autoPlayAnimationDuration: const Duration(milliseconds: 2000),
                         ),
-                      ),
-                      const SizedBox(
-                        height: 8,
                       ),
                       SizedBox(
                           height: 7,
@@ -63,18 +70,17 @@ class Banners extends StatelessWidget {
                               scrollDirection: Axis.horizontal,
                               itemCount: snapshot.data!.length,
                               itemBuilder: (BuildContext context, int index) {
-                                return Obx(() {
-                                  return AnimatedContainer(
-                                    margin: const EdgeInsets.symmetric(horizontal: 10),
-                                    duration: const Duration(milliseconds: 500),
-                                    curve: Curves.easeInOut,
-                                    width: Get.find<BannerController>().bannerSelectedIndex.value == index ? 30 : 7,
-                                    decoration: BoxDecoration(color: Get.find<BannerController>().bannerSelectedIndex.value == index ? kPrimaryColor : Colors.grey[300], borderRadius: borderRadius15),
-                                  );
-                                });
+                                return AnimatedContainer(
+                                  margin: const EdgeInsets.symmetric(horizontal: 10),
+                                  duration: const Duration(milliseconds: 500),
+                                  curve: Curves.easeInOut,
+                                  width: selectedIndex == index ? 30 : 7,
+                                  decoration: BoxDecoration(color: selectedIndex == index ? kPrimaryColor : Colors.grey[300], borderRadius: borderRadius15),
+                                );
                               },
                             ),
                           )),
+                   
                     ],
                   );
           }
@@ -82,7 +88,7 @@ class Banners extends StatelessWidget {
         });
   }
 
-  Container bannerCard(AsyncSnapshot<List<BannerModel>> snapshot, int index) {
+  Container bannerCard( int? index,int? itemID,int? pathID,String? image) {
     return Container(
       width: Get.size.width,
       margin: const EdgeInsets.only(top: 8, left: 8, right: 8, bottom: 8),
@@ -91,15 +97,15 @@ class Banners extends StatelessWidget {
           filterController.categoryID.clear();
           filterController.producersID.value = [];
 
-          final int? id = snapshot.data![index].itemID;
+          final int? id = itemID;
 
-          if (snapshot.data![index].pathID == 2) {
+          if (pathID == 2) {
             filterController.mainCategoryID.value = id!;
             Get.to(() => const ShowAllProductsPage(
                   pageName: "SharafÝabi",
                   whichFilter: 0,
                 ));
-          } else if (snapshot.data![index].pathID == 3) {
+          } else if (pathID == 3) {
             Get.to(() => ProductProfil(
                   id: id,
                   image: '',
@@ -117,7 +123,7 @@ class Banners extends StatelessWidget {
           borderRadius: borderRadius10,
           child: CachedNetworkImage(
               fadeInCurve: Curves.ease,
-              imageUrl: "$serverImage/${snapshot.data![index].imagePath}-big.webp",
+              imageUrl: "$serverImage/$image-big.webp",
               imageBuilder: (context, imageProvider) => Container(
                     padding: EdgeInsets.zero,
                     decoration: BoxDecoration(
@@ -129,13 +135,7 @@ class Banners extends StatelessWidget {
                     ),
                   ),
               placeholder: (context, url) => Center(child: spinKit()),
-              errorWidget: (context, url, error) => Padding(
-                    padding: const EdgeInsets.all(30.0),
-                    child: Image.asset(
-                      "assets/appLogo/greyLogo.png",
-                      color: Colors.grey,
-                    ),
-                  )),
+              errorWidget: (context, url, error) => noImage()),
         ),
       ),
     );

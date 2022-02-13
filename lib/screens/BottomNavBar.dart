@@ -23,11 +23,10 @@ class BottomNavBar extends StatefulWidget {
 
 class _BottomNavBarState extends State<BottomNavBar> with TickerProviderStateMixin {
   late TabController tabController;
-  late SettingsController _settingsController;
+  late SettingsController _settingsController = Get.put<SettingsController>(SettingsController());
   @override
   void initState() {
     super.initState();
-    _settingsController = Get.put<SettingsController>(SettingsController());
     Get.find<Fav_Cart_Controller>().returnFavList();
     Get.find<Fav_Cart_Controller>().returnCartList();
     tabController = TabController(vsync: this, length: 5);

@@ -54,7 +54,7 @@ class SingIN extends StatelessWidget {
                           showSnackBar("signIntitle", "signInSubtitle", Colors.green);
                           Get.to(() => BottomNavBar());
                         } else if (value == 409) {
-                          showSnackBar("signInErrorTitle", "singInSubtitle ", Colors.red);
+                          showSnackBar("signInErrorTitle", "singInErrorSubtitle", Colors.red);
                           signInPhoneController.clear();
                         } else if (value == 500) {
                           showSnackBar("retry", "error404", Colors.red);

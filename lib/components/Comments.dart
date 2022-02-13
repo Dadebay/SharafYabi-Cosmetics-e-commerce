@@ -40,82 +40,9 @@ class _CommentsPageState extends State<CommentsPage> {
     return Scaffold(
       appBar: MyAppBar(
         icon: Icons.comment_outlined,
-        onTap: () async {
-          final String? token = await Auth().getToken();
-          if (token == null) {
-            showSnackBar("retry", "pleaseLogin", Colors.red);
-          } else {
-            Get.defaultDialog(
-              radius: 4,
-              title: "writeComment".tr,
-              titleStyle: const TextStyle(color: Colors.black, fontFamily: montserratSemiBold, fontSize: 24),
-              content: Column(
-                children: [
-                  TextFormField(
-                    controller: controller,
-                    textCapitalization: TextCapitalization.sentences,
-                    cursorColor: kPrimaryColor,
-                    maxLines: 3,
-                    inputFormatters: [
-                      LengthLimitingTextInputFormatter(70),
-                    ],
-                    style: const TextStyle(color: Colors.black, fontSize: 18, fontFamily: montserratMedium),
-                    validator: (value) {
-                      if (value!.isEmpty) {
-                        return "errorEmpty".tr;
-                      } else {
-                        return null;
-                      }
-                    },
-                    decoration: InputDecoration(
-                        label: Text("writeComment".tr),
-                        alignLabelWithHint: true,
-                        prefixIconConstraints: const BoxConstraints.tightForFinite(),
-                        labelStyle: const TextStyle(color: Colors.grey, fontFamily: montserratMedium),
-                        constraints: const BoxConstraints(),
-                        contentPadding: const EdgeInsets.symmetric(vertical: 15, horizontal: 15),
-                        hintStyle: const TextStyle(color: Colors.grey, fontSize: 18, fontFamily: montserratMedium),
-                        border: const OutlineInputBorder(borderRadius: borderRadius10, borderSide: BorderSide(color: kPrimaryColor)),
-                        enabledBorder: OutlineInputBorder(
-                            borderRadius: borderRadius10,
-                            borderSide: BorderSide(
-                              color: Colors.grey.shade400,
-                            )),
-                        focusedBorder: const OutlineInputBorder(borderRadius: borderRadius10, borderSide: BorderSide(color: kPrimaryColor, width: 2))),
-                  ),
-                  const SizedBox(height: 20),
-                  SizedBox(
-                    width: Get.size.width,
-                    // ignore: deprecated_member_use
-                    child: RaisedButton(
-                        onPressed: () {
-                          CommentModel()
-                              .writeComment(
-                            id: widget.productID,
-                            comment: controller.text,
-                          )
-                              .then((value) {
-                            if (value == true) {
-                              Get.back();
-                              showSnackBar("commentAdded", "commentAddedSubtitle", kPrimaryColor);
-                              controller.clear();
-                            } else {
-                              Vibration.vibrate();
-                              showSnackBar("retry", "error404", kPrimaryColor);
-                              controller.clear();
-                            }
-                          });
-                        },
-                        color: kPrimaryColor,
-                        child: Text("send".tr, style: const TextStyle(color: Colors.white, fontFamily: montserratSemiBold, fontSize: 20))),
-                  )
-                ],
-              ),
-            );
-          }
-        },
+        onTap: () async {},
         backArrow: true,
-        iconRemove: true,
+        iconRemove: false,
         name: "comments",
         addName: true,
       ),
@@ -125,26 +52,122 @@ class _CommentsPageState extends State<CommentsPage> {
               future: CommentModel().getComment(id: widget.productID),
               builder: (context, snapshot) {
                 if (snapshot.hasData == true) {
-                  return ListView.builder(
-                    itemCount: snapshot.data!.comments!.length,
-                    itemBuilder: (BuildContext context, int index) {
-                      return Wrap(
-                        direction: Axis.vertical,
-                        children: [
-                          commentCard("${snapshot.data!.comments![index].fullName}", "${snapshot.data!.comments![index].commentMine}", true, snapshot.data!.comments![index].id),
-                          Padding(
-                            padding: const EdgeInsets.only(left: 25),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: List.generate(snapshot.data!.comments![index].subComment!.length, (indexx) {
-                                return commentCard("${snapshot.data!.comments![index].subComment![indexx].fullName}", "${snapshot.data!.comments![index].subComment![indexx].commentMine}", false,
-                                    snapshot.data!.comments![index].id);
-                              }),
-                            ),
-                          )
-                        ],
-                      );
-                    },
+                  return Stack(
+                    children: [
+                      ListView.builder(
+                        itemCount: snapshot.data!.comments!.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          return Column(
+                            // direction: Axis.vertical,
+                            children: [
+                              commentCard("${snapshot.data!.comments![index].fullName}", "${snapshot.data!.comments![index].commentMine}", true, snapshot.data!.comments![index].id),
+                              Padding(
+                                padding: const EdgeInsets.only(left: 25),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: List.generate(snapshot.data!.comments![index].subComment!.length, (indexx) {
+                                    return commentCard("${snapshot.data!.comments![index].subComment![indexx].fullName}", "${snapshot.data!.comments![index].subComment![indexx].commentMine}", false,
+                                        snapshot.data!.comments![index].id);
+                                  }),
+                                ),
+                              )
+                            ],
+                          );
+                        },
+                      ),
+                      Align(
+                        alignment: Alignment.bottomCenter,
+                        child: RaisedButton(
+                          onPressed: () async {
+                            final String? token = await Auth().getToken();
+                            if (token == null) {
+                              showSnackBar("retry", "pleaseLogin", Colors.red);
+                            } else {
+                              Get.defaultDialog(
+                                radius: 4,
+                                title: "writeComment".tr,
+                                titleStyle: const TextStyle(color: Colors.black, fontFamily: montserratSemiBold, fontSize: 24),
+                                content: Column(
+                                  children: [
+                                    TextFormField(
+                                      controller: controller,
+                                      textCapitalization: TextCapitalization.sentences,
+                                      cursorColor: kPrimaryColor,
+                                      maxLines: 3,
+                                      inputFormatters: [
+                                        LengthLimitingTextInputFormatter(70),
+                                      ],
+                                      style: const TextStyle(color: Colors.black, fontSize: 18, fontFamily: montserratMedium),
+                                      validator: (value) {
+                                        if (value!.isEmpty) {
+                                          return "errorEmpty".tr;
+                                        } else {
+                                          return null;
+                                        }
+                                      },
+                                      decoration: InputDecoration(
+                                          label: Text("writeComment".tr),
+                                          alignLabelWithHint: true,
+                                          prefixIconConstraints: const BoxConstraints.tightForFinite(),
+                                          labelStyle: const TextStyle(color: Colors.grey, fontFamily: montserratMedium),
+                                          constraints: const BoxConstraints(),
+                                          contentPadding: const EdgeInsets.symmetric(vertical: 15, horizontal: 15),
+                                          hintStyle: const TextStyle(color: Colors.grey, fontSize: 18, fontFamily: montserratMedium),
+                                          border: const OutlineInputBorder(borderRadius: borderRadius10, borderSide: BorderSide(color: kPrimaryColor)),
+                                          enabledBorder: OutlineInputBorder(
+                                              borderRadius: borderRadius10,
+                                              borderSide: BorderSide(
+                                                color: Colors.grey.shade400,
+                                              )),
+                                          focusedBorder: const OutlineInputBorder(borderRadius: borderRadius10, borderSide: BorderSide(color: kPrimaryColor, width: 2))),
+                                    ),
+                                    const SizedBox(height: 20),
+                                    SizedBox(
+                                      width: Get.size.width,
+                                      // ignore: deprecated_member_use
+                                      child: RaisedButton(
+                                          onPressed: () {
+                                            CommentModel()
+                                                .writeComment(
+                                              id: widget.productID,
+                                              comment: controller.text,
+                                            )
+                                                .then((value) {
+                                              if (value == true) {
+                                                Get.back();
+                                                showSnackBar("commentAdded", "commentAddedSubtitle", kPrimaryColor);
+                                                controller.clear();
+                                              } else {
+                                                Vibration.vibrate();
+                                                showSnackBar("retry", "error404", kPrimaryColor);
+                                                controller.clear();
+                                              }
+                                            });
+                                          },
+                                          color: kPrimaryColor,
+                                          child: Text("send".tr, style: const TextStyle(color: Colors.white, fontFamily: montserratSemiBold, fontSize: 20))),
+                                    )
+                                  ],
+                                ),
+                              );
+                            }
+                          },
+                          color: kPrimaryColor,
+                          shape: RoundedRectangleBorder(borderRadius: borderRadius10),
+                          padding: EdgeInsets.symmetric(vertical: 15, horizontal: 15),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 8),
+                                child: Icon(Icons.comment_outlined, color: Colors.white, size: 24),
+                              ),
+                              Text("writeComment".tr, style: TextStyle(color: Colors.white, fontFamily: montserratSemiBold, fontSize: 18)),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
                   );
                 }
                 if (snapshot.connectionState == ConnectionState.waiting) {
@@ -152,9 +175,7 @@ class _CommentsPageState extends State<CommentsPage> {
                     child: spinKit(),
                   );
                 }
-                return Center(
-                  child: spinKit(),
-                );
+                return emptyDataLottie(errorTitle: "assets/lottie/searchNotFound.json", errorSubtitle: "nocomment");
               })),
     );
   }
@@ -171,116 +192,118 @@ class _CommentsPageState extends State<CommentsPage> {
             decoration: BoxDecoration(color: Colors.primaries[Random().nextInt(Colors.primaries.length)].withOpacity(0.3), shape: BoxShape.circle),
             child: Text(userName.substring(0, 1).toUpperCase(), style: const TextStyle(color: Colors.black, fontFamily: montserratSemiBold, fontSize: 22)),
           ),
-          Padding(
-            padding: const EdgeInsets.only(top: 15),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Container(
-                  padding: const EdgeInsets.all(8),
-                  decoration:
-                      const BoxDecoration(color: backgroundColor, borderRadius: BorderRadius.only(topRight: Radius.circular(15), bottomLeft: Radius.circular(15), bottomRight: Radius.circular(15))),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.only(right: 10),
-                        child: Text(userName, style: const TextStyle(color: Colors.black, fontFamily: montserratSemiBold, fontSize: 18)),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 5),
-                        child: Text(userDescription, maxLines: 8, style: const TextStyle(color: Colors.black87, fontFamily: montserratRegular, fontSize: 16)),
-                      )
-                    ],
-                  ),
-                ),
-                if (addReply)
-                  GestureDetector(
-                    onTap: () async {
-                      final String? token = await Auth().getToken();
-                      if (token == null) {
-                        showSnackBar("retry", "pleaseLogin", Colors.red);
-                      } else {
-                        Get.defaultDialog(
-                          radius: 4,
-                          title: "writeComment".tr,
-                          titleStyle: const TextStyle(color: Colors.black, fontFamily: montserratSemiBold, fontSize: 24),
-                          content: Column(
-                            children: [
-                              TextFormField(
-                                controller: controller,
-                                textCapitalization: TextCapitalization.sentences,
-                                cursorColor: kPrimaryColor,
-                                maxLines: 3,
-                                inputFormatters: [
-                                  LengthLimitingTextInputFormatter(70),
-                                ],
-                                style: const TextStyle(color: Colors.black, fontSize: 18, fontFamily: montserratMedium),
-                                validator: (value) {
-                                  if (value!.isEmpty) {
-                                    return "errorEmpty".tr;
-                                  } else {
-                                    return null;
-                                  }
-                                },
-                                decoration: InputDecoration(
-                                    label: Text("writeComment".tr),
-                                    alignLabelWithHint: true,
-                                    prefixIconConstraints: const BoxConstraints.tightForFinite(),
-                                    labelStyle: const TextStyle(color: Colors.grey, fontFamily: montserratMedium),
-                                    constraints: const BoxConstraints(),
-                                    contentPadding: const EdgeInsets.symmetric(vertical: 15, horizontal: 15),
-                                    hintStyle: const TextStyle(color: Colors.grey, fontSize: 18, fontFamily: montserratMedium),
-                                    border: const OutlineInputBorder(borderRadius: borderRadius10, borderSide: BorderSide(color: kPrimaryColor)),
-                                    enabledBorder: OutlineInputBorder(
-                                        borderRadius: borderRadius10,
-                                        borderSide: BorderSide(
-                                          color: Colors.grey.shade400,
-                                        )),
-                                    focusedBorder: const OutlineInputBorder(borderRadius: borderRadius10, borderSide: BorderSide(color: kPrimaryColor, width: 2))),
-                              ),
-                              const SizedBox(height: 20),
-                              SizedBox(
-                                width: Get.size.width,
-                                child: RaisedButton(
-                                    onPressed: () {
-                                      CommentModel().writeSubComment(id: widget.productID, comment: controller.text, commentID: commentIDMine).then((value) {
-                                        if (value == true) {
-                                          Get.back();
-                                          showSnackBar("commentAdded", "commentAddedSubtitle", kPrimaryColor);
-                                          controller.clear();
-                                        } else {
-                                          Vibration.vibrate();
-                                          showSnackBar("retry", "error404", kPrimaryColor);
-                                          controller.clear();
-                                        }
-                                      });
-                                    },
-                                    color: kPrimaryColor,
-                                    child: Text("send".tr, style: const TextStyle(color: Colors.white, fontFamily: montserratSemiBold, fontSize: 20))),
-                              )
-                            ],
-                          ),
-                        );
-                      }
-                    },
-                    child: Padding(
-                      padding: const EdgeInsets.only(left: 5),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          const Padding(
-                            padding: EdgeInsets.only(right: 8),
-                            child: Icon(Icons.comment_outlined, color: Colors.black54, size: 18),
-                          ),
-                          Text("reply".tr, style: const TextStyle(color: Colors.black54, fontFamily: montserratSemiBold, fontSize: 14)),
-                        ],
-                      ),
+          Flexible(
+            child: Padding(
+              padding: const EdgeInsets.only(top: 15),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(8),
+                    decoration:
+                        const BoxDecoration(color: backgroundColor, borderRadius: BorderRadius.only(topRight: Radius.circular(15), bottomLeft: Radius.circular(15), bottomRight: Radius.circular(15))),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(right: 10),
+                          child: Text(userName, style: const TextStyle(color: Colors.black, fontFamily: montserratSemiBold, fontSize: 18)),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 5),
+                          child: Text(userDescription, maxLines: 8, style: const TextStyle(color: Colors.black87, fontFamily: montserratRegular, fontSize: 16)),
+                        )
+                      ],
                     ),
-                  )
-                else
-                  const SizedBox.shrink()
-              ],
+                  ),
+                  if (addReply)
+                    GestureDetector(
+                      onTap: () async {
+                        final String? token = await Auth().getToken();
+                        if (token == null) {
+                          showSnackBar("retry", "pleaseLogin", Colors.red);
+                        } else {
+                          Get.defaultDialog(
+                            radius: 4,
+                            title: "writeComment".tr,
+                            titleStyle: const TextStyle(color: Colors.black, fontFamily: montserratSemiBold, fontSize: 24),
+                            content: Column(
+                              children: [
+                                TextFormField(
+                                  controller: controller,
+                                  textCapitalization: TextCapitalization.sentences,
+                                  cursorColor: kPrimaryColor,
+                                  maxLines: 3,
+                                  inputFormatters: [
+                                    LengthLimitingTextInputFormatter(70),
+                                  ],
+                                  style: const TextStyle(color: Colors.black, fontSize: 18, fontFamily: montserratMedium),
+                                  validator: (value) {
+                                    if (value!.isEmpty) {
+                                      return "errorEmpty".tr;
+                                    } else {
+                                      return null;
+                                    }
+                                  },
+                                  decoration: InputDecoration(
+                                      label: Text("writeComment".tr),
+                                      alignLabelWithHint: true,
+                                      prefixIconConstraints: const BoxConstraints.tightForFinite(),
+                                      labelStyle: const TextStyle(color: Colors.grey, fontFamily: montserratMedium),
+                                      constraints: const BoxConstraints(),
+                                      contentPadding: const EdgeInsets.symmetric(vertical: 15, horizontal: 15),
+                                      hintStyle: const TextStyle(color: Colors.grey, fontSize: 18, fontFamily: montserratMedium),
+                                      border: const OutlineInputBorder(borderRadius: borderRadius10, borderSide: BorderSide(color: kPrimaryColor)),
+                                      enabledBorder: OutlineInputBorder(
+                                          borderRadius: borderRadius10,
+                                          borderSide: BorderSide(
+                                            color: Colors.grey.shade400,
+                                          )),
+                                      focusedBorder: const OutlineInputBorder(borderRadius: borderRadius10, borderSide: BorderSide(color: kPrimaryColor, width: 2))),
+                                ),
+                                const SizedBox(height: 20),
+                                SizedBox(
+                                  width: Get.size.width,
+                                  child: RaisedButton(
+                                      onPressed: () {
+                                        CommentModel().writeSubComment(id: widget.productID, comment: controller.text, commentID: commentIDMine).then((value) {
+                                          if (value == true) {
+                                            Get.back();
+                                            showSnackBar("commentAdded", "commentAddedSubtitle", kPrimaryColor);
+                                            controller.clear();
+                                          } else {
+                                            Vibration.vibrate();
+                                            showSnackBar("retry", "error404", kPrimaryColor);
+                                            controller.clear();
+                                          }
+                                        });
+                                      },
+                                      color: kPrimaryColor,
+                                      child: Text("send".tr, style: const TextStyle(color: Colors.white, fontFamily: montserratSemiBold, fontSize: 20))),
+                                )
+                              ],
+                            ),
+                          );
+                        }
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.only(left: 5),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            const Padding(
+                              padding: EdgeInsets.only(right: 8),
+                              child: Icon(Icons.comment_outlined, color: Colors.black54, size: 18),
+                            ),
+                            Text("reply".tr, style: const TextStyle(color: Colors.black54, fontFamily: montserratSemiBold, fontSize: 14)),
+                          ],
+                        ),
+                      ),
+                    )
+                  else
+                    const SizedBox.shrink()
+                ],
+              ),
             ),
           ),
         ],

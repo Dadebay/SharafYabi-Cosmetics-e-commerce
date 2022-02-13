@@ -31,6 +31,7 @@ AndroidNotificationChannel channel = const AndroidNotificationChannel(
 FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
 
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+
   await Firebase.initializeApp(
       // options: const FirebaseOptions(
       //   apiKey: 'AIzaSyAGOPaUjBwRsNQbCMndUaqJNC6RHXBQstQ',
@@ -39,6 +40,8 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
       //   projectId: 'sharafyabi-4293c',
       // ),
       );
+      await FirebaseMessaging.instance.requestPermission();
+
   flutterLocalNotificationsPlugin.show(
     message.data.hashCode,
     message.data['title'],
@@ -68,6 +71,8 @@ Future<void> main() async {
       //   projectId: 'sharafyabi-4293c',
       // ),
       );
+      await FirebaseMessaging.instance.requestPermission();
+
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
 
   await flutterLocalNotificationsPlugin.resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()?.createNotificationChannel(channel);
@@ -102,6 +107,10 @@ class _MyAppRunState extends State<MyAppRun> {
   void initState() {
     super.initState();
     FirebaseMessaging.instance.subscribeToTopic('Events');
+    FirebaseMessaging.instance.getToken().then((value){
+      print("token");
+      print(value);
+    });
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       flutterLocalNotificationsPlugin.show(
         message.data.hashCode,
@@ -117,15 +126,12 @@ class _MyAppRunState extends State<MyAppRun> {
           ),
         ),
       );
-      // }
     });
 
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage? message) {
-      Get.to(() => BottomNavBar());
+      Get.to(() => MyCustomSplashScreen());
     });
-    FirebaseMessaging.instance.getInitialMessage().then((RemoteMessage? message) {
-      Get.to(() => BottomNavBar());
-    });
+   
   }
 
   @override

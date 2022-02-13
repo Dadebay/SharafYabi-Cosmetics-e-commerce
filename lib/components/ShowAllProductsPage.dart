@@ -10,8 +10,10 @@ import 'package:sharaf_yabi_ecommerce/constants/constants.dart';
 import 'package:sharaf_yabi_ecommerce/constants/widgets.dart';
 import 'package:sharaf_yabi_ecommerce/controllers/FilterController.dart';
 import 'package:sharaf_yabi_ecommerce/models/CategoryModel.dart';
-import 'package:sharaf_yabi_ecommerce/screens/HomePage/SearchPage/Search.dart';
+import 'package:sharaf_yabi_ecommerce/widgets/agreeButton.dart';
 import 'package:sharaf_yabi_ecommerce/widgets/bottomSheetName.dart';
+
+import 'filterButton.dart';
 
 class ShowAllProductsPage extends StatefulWidget {
   final String pageName;
@@ -31,6 +33,22 @@ class _ShowAllProductsPageState extends State<ShowAllProductsPage> {
   @override
   void initState() {
     super.initState();
+    whenPageLoad();
+  }
+
+  final RefreshController _refreshController = RefreshController();
+
+  void _onRefresh() {
+    filterController.refreshPage();
+    _refreshController.refreshCompleted();
+  }
+
+  void _onLoading() {
+    filterController.addPage();
+    _refreshController.loadComplete();
+  }
+
+  void whenPageLoad() {
     if (widget.whichFilter == 1) {
       filterController.recomended.value = true;
       filterController.discountBool.value = false;
@@ -57,18 +75,6 @@ class _ShowAllProductsPageState extends State<ShowAllProductsPage> {
     filterController.categoryList.clear();
   }
 
-  final RefreshController _refreshController = RefreshController();
-
-  void _onRefresh() {
-    filterController.refreshPage();
-    _refreshController.refreshCompleted();
-  }
-
-  void _onLoading() {
-    filterController.addPage();
-    _refreshController.loadComplete();
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -78,20 +84,13 @@ class _ShowAllProductsPageState extends State<ShowAllProductsPage> {
           centerTitle: true,
           title: Text(
             widget.pageName,
-            style: const TextStyle(color: Colors.black, fontFamily: montserratSemiBold),
+            style: const TextStyle(color: kPrimaryColor, fontFamily: montserratSemiBold),
           ),
           leading: IconButton(
               onPressed: () {
                 Get.back();
               },
               icon: const Icon(IconlyLight.arrowLeft, color: Colors.black)),
-          actions: [
-            IconButton(
-                onPressed: () {
-                  Get.to(() => SearchPage());
-                },
-                icon: const Icon(IconlyLight.search, color: Colors.black)),
-          ],
           elevation: 0,
         ),
         body: Column(
@@ -154,67 +153,24 @@ class _ShowAllProductsPageState extends State<ShowAllProductsPage> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-          Expanded(
-            child: RaisedButton(
-              onPressed: () {
-                filterBottomSheet();
-              },
-              color: Colors.white,
-              disabledColor: Colors.white,
-              elevation: 0,
-              splashColor: backgroundColor.withOpacity(0.2),
-              disabledElevation: 0,
-              highlightElevation: 0,
-              padding: const EdgeInsets.symmetric(vertical: 15),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 8),
-                    child: Icon(IconlyLight.filter, color: Colors.black),
-                  ),
-                  Text(
-                    "filter".tr,
-                    style: const TextStyle(color: Colors.black, fontFamily: montserratSemiBold),
-                  )
-                ],
-              ),
-            ),
+          FilterButton(
+            name: "filter",
+            icon: IconlyLight.filter,
+            onTap: () {
+              filterBottomSheet();
+            },
           ),
           Container(
             color: backgroundColor,
             width: 1,
           ),
-          Expanded(
-            child: RaisedButton(
-              onPressed: () {
-                sortBottomSheet();
-              },
-              color: Colors.white,
-              disabledColor: Colors.white,
-              elevation: 0,
-              splashColor: backgroundColor.withOpacity(0.2),
-              disabledElevation: 0,
-              highlightElevation: 0,
-              padding: const EdgeInsets.symmetric(vertical: 15),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 8),
-                    child: Icon(
-                      Icons.sort_rounded,
-                      color: Colors.black,
-                    ),
-                  ),
-                  Text(
-                    "sort".tr,
-                    style: const TextStyle(color: Colors.black, fontFamily: montserratSemiBold),
-                  )
-                ],
-              ),
-            ),
-          )
+          FilterButton(
+            name: "sort",
+            icon: Icons.sort_rounded,
+            onTap: () {
+              filterBottomSheet();
+            },
+          ),
         ],
       ),
     );
@@ -236,25 +192,7 @@ class _ShowAllProductsPageState extends State<ShowAllProductsPage> {
                 decoration: const BoxDecoration(color: Colors.white, borderRadius: BorderRadius.only(topLeft: Radius.circular(40.0), topRight: Radius.circular(40.0))),
                 child: Wrap(
                   children: [
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(20, 12, 20, 12),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          const SizedBox(),
-                          Text(
-                            "sort".tr,
-                            textAlign: TextAlign.center,
-                            style: const TextStyle(color: Colors.black, fontFamily: montserratSemiBold, fontSize: 18, fontWeight: FontWeight.w700),
-                          ),
-                          GestureDetector(
-                              onTap: () {
-                                Get.back();
-                              },
-                              child: const Icon(CupertinoIcons.xmark_circle, color: Colors.black))
-                        ],
-                      ),
-                    ),
+                    const BottomSheetName(name: "sort"),
                     const Divider(
                       height: 0,
                     ),
@@ -314,44 +252,39 @@ class _ShowAllProductsPageState extends State<ShowAllProductsPage> {
             ),
             if (widget.whichFilter == 4) const SizedBox.shrink() else brendFilter(),
             categoryFilter(),
-            Obx(() {
-              return SwitchListTile.adaptive(
-                value: filterController.discountBool.value,
-                onChanged: (value) {
-                  filterController.discountBool.value = value;
-                },
-                activeColor: kPrimaryColor,
-                title: Text(
-                  "discount".tr,
-                  style: const TextStyle(color: Colors.black, fontFamily: montserratRegular, fontSize: 18),
-                ),
-              );
-            }),
-            Container(
-              margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-              width: Get.size.width,
-              child: RaisedButton(
-                onPressed: () {
+            discountButton(),
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 14),
+              child: AgreeButton(
+                name: 'agree',
+                onTap: () {
                   filterController.loading.value = 0;
                   filterController.list.clear();
                   filterController.fetchProducts();
                   Get.back();
                 },
-                color: kPrimaryColor,
-                shape: const RoundedRectangleBorder(borderRadius: borderRadius10),
-                disabledColor: kPrimaryColor,
-                padding: const EdgeInsets.symmetric(vertical: 8),
-                elevation: 1,
-                child: Text(
-                  "agree".tr,
-                  style: const TextStyle(color: Colors.white, fontSize: 18, fontFamily: montserratSemiBold),
-                ),
               ),
-            )
+            ),
           ],
         ),
       ),
     );
+  }
+
+  Obx discountButton() {
+    return Obx(() {
+      return SwitchListTile.adaptive(
+        value: filterController.discountBool.value,
+        onChanged: (value) {
+          filterController.discountBool.value = value;
+        },
+        activeColor: kPrimaryColor,
+        title: Text(
+          "discount".tr,
+          style: const TextStyle(color: Colors.black, fontFamily: montserratRegular, fontSize: 18),
+        ),
+      );
+    });
   }
 
   ListTile brendFilter() {
@@ -364,7 +297,7 @@ class _ShowAllProductsPageState extends State<ShowAllProductsPage> {
       onTap: () {
         Get.bottomSheet(Container(
           color: Colors.white,
-          padding: const EdgeInsets.only(bottom: 25),
+          padding: const EdgeInsets.only(bottom: 10),
           child: Column(children: [
             const BottomSheetName(
               name: "brendler",
@@ -404,7 +337,20 @@ class _ShowAllProductsPageState extends State<ShowAllProductsPage> {
                       );
                     }
                   }),
-            )
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 14),
+              child: AgreeButton(
+                name: 'agree',
+                onTap: () {
+                  filterController.loading.value = 0;
+                  filterController.list.clear();
+                  filterController.fetchProducts();
+                  Get.back();
+                  Get.back();
+                },
+              ),
+            ),
           ]),
         ));
       },

@@ -32,6 +32,9 @@ class _SearchPageState extends State<SearchPage> {
     filterController.search.value = "";
     filterController.brandList.clear();
     filterController.categoryList.clear();
+    filterController.recomended.value = false;
+    filterController.newInCome.value = false;
+    filterController.discountBool.value = false;
   }
 
   final RefreshController _refreshController = RefreshController();
@@ -49,7 +52,6 @@ class _SearchPageState extends State<SearchPage> {
 
   Timer? searchOnStoppedTyping;
 
-  // ignore: always_declare_return_types
   _onChangeHandler(String value) {
     const duration = Duration(seconds: 1);
     if (searchOnStoppedTyping != null) {

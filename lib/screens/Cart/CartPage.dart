@@ -27,6 +27,7 @@ class _CartPageState extends State<CartPage> {
   @override
   void initState() {
     super.initState();
+
     cartPageController.loadData(parametrs: {"products": jsonEncode(Get.find<Fav_Cart_Controller>().cartList)});
   }
 

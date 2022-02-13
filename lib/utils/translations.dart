@@ -136,7 +136,7 @@ class MyTranslations extends Translations {
           "signIntitle": "Hoşgeldiňiz",
           "singInErrorSubtitle": "Telefon belgiňiz biziň ulgamymyzda bar",
           "sort": "Yzygiderlik",
-          "spesification": "Häsiýetnamasy",
+          "spesification": "Häsiýetleri",
           "subCategory": "Kiçi kategoriýa",
           "sum": "Jemi :",
           "total": "Jemi :",
@@ -146,9 +146,11 @@ class MyTranslations extends Translations {
           "waiting": "Garaşýlýar",
           "writeComment": "Teswir ýaz",
           "yes": "Hawwa",
+          "nocomment": "Hiç hili teswir ýok"
         },
         'ru': {
           "aboutUS": "О нас",
+          "nocomment": "В этом товаре нет комментариев",
           "aboutUsSubtitle":
               "Мы реализуем более 300 видов косметических и гигиенических средств. Потребителями наших товаров являются все группы населения от новорожденных до людей в возрасте. Компания основана в 1997 году. В настоящее время реализация товаров ведется в торговых точках в городе Ашхабаде и во всех регионах Туркменистана.",
           "aboutUsTitle": "Добро пожаловать на платформу интернет-магазинов Sharafyabi!",
@@ -293,6 +295,7 @@ class MyTranslations extends Translations {
         },
         'en': {
           "aboutUS": "About Us",
+          "nocomment": "There is no comment in this products",
           "aboutUsSubtitle":
               "We sell more than 300 types of cosmetic and hygiene products. All groups of the population, from newborns to people of the age, are consumers of our products. The company was founded in 1997. Currently, the sale of goods is carried out in retail outlets in the city of Ashgabat and in all regions of Turkmenistan.",
           "aboutUsTitle": "Welcome to Sharafyabi Online Shopping Platform!",

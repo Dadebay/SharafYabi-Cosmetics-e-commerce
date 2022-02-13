@@ -11,14 +11,7 @@ import 'package:sharaf_yabi_ecommerce/constants/widgets.dart';
 import 'package:sharaf_yabi_ecommerce/controllers/FilterController.dart';
 
 class ProductsModel extends ChangeNotifier {
-  ProductsModel({
-    this.id,
-    this.productName,
-    this.minValue,
-    this.discountValue,
-    this.price,
-    this.imagePath,
-  });
+  ProductsModel({this.id, this.productName, this.minValue, this.discountValue, this.price, this.imagePath, this.categoryName});
 
   factory ProductsModel.fromJson(Map<dynamic, dynamic> json) {
     return ProductsModel(
@@ -28,6 +21,7 @@ class ProductsModel extends ChangeNotifier {
       discountValue: json["discount_value"],
       price: json["price"],
       imagePath: json["destination"],
+      categoryName: json["category_name"],
     );
   }
 
@@ -37,6 +31,7 @@ class ProductsModel extends ChangeNotifier {
   final String? productName;
   final String? price;
   final String? imagePath;
+  final String? categoryName;
 
   Future<List<ProductsModel>> getProducts({Map<String, dynamic>? parametrs}) async {
     final List<ProductsModel> products = [];
@@ -48,6 +43,7 @@ class ProductsModel extends ChangeNotifier {
         headers: <String, String>{
           HttpHeaders.contentTypeHeader: 'application/json; charset=UTF-8',
         });
+    print(parametrs);
     if (response.statusCode == 200) {
       final responseJson = jsonDecode(response.body)["rows"]["products"];
       final responseCount = jsonDecode(response.body)["rows"]["count"];

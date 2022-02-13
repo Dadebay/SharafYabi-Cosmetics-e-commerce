@@ -152,8 +152,11 @@ class _OrderPageState extends State<OrderPage> {
                       .then((value) {
                     if (value == true) {
                       completeOrder();
-                      showSnackBar("orderComplete", "orderCompleteSubtitle", kPrimaryColor);
+                      setState(() {
                       sendButton = false;
+                        
+                      });
+                      showSnackBar("orderComplete", "orderCompleteSubtitle", kPrimaryColor);
                     } else {
                       sendButton = false;
                     }
@@ -445,7 +448,7 @@ Future<dynamic> completeOrder() {
             shape: const RoundedRectangleBorder(borderRadius: borderRadius15),
             color: kPrimaryColor,
             padding: const EdgeInsets.symmetric(vertical: 10),
-            child: Text("agree".tr,
+            child: Text("homePage".tr,
                 style: const TextStyle(
                   color: Colors.white,
                   fontSize: 18,

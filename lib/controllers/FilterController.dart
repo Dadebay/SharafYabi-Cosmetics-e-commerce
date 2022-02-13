@@ -22,7 +22,6 @@ class FilterController extends GetxController {
   RxBool newInCome = false.obs;
   RxString search = "".obs;
   RxInt pageNumberFilterController = 0.obs;
-  RxBool favButton = false.obs;
 
   void fetchProducts() async {
     if (categoryID.isNotEmpty) {
@@ -60,6 +59,7 @@ class FilterController extends GetxController {
           "name": element.productName ?? "Ady",
           "price": element.price ?? "0",
           "image": element.imagePath ?? "",
+          "categoryName": element.categoryName ?? "",
           "discountValue": element.discountValue ?? 0,
           "count": addCart
         });

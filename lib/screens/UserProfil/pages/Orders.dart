@@ -1,4 +1,4 @@
-// ignore_for_file: file_names, deprecated_member_use, avoid_print
+// ignore_for_file: file_names, deprecated_member_use, avoid_print, avoid_void_async
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -7,9 +7,29 @@ import 'package:get/get.dart';
 import 'package:sharaf_yabi_ecommerce/constants/constants.dart';
 import 'package:sharaf_yabi_ecommerce/constants/widgets.dart';
 import 'package:sharaf_yabi_ecommerce/models/OrdersModel.dart';
+import 'package:sharaf_yabi_ecommerce/models/UserModels/AuthModel.dart';
 import 'package:sharaf_yabi_ecommerce/widgets/appBar.dart';
 
-class Orders extends StatelessWidget {
+class Orders extends StatefulWidget {
+  @override
+  State<Orders> createState() => _OrdersState();
+}
+
+class _OrdersState extends State<Orders> {
+  String? token = "";
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getToken();
+  }
+
+  void getToken() async {
+    print(token);
+    token = await Auth().getToken();
+    print(token);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -22,73 +42,76 @@ class Orders extends StatelessWidget {
         addName: true,
         name: "orders",
       ),
-      body: FutureBuilder<List<OrdersModel>>(
-          future: OrdersModel().getOrders(),
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return Center(child: spinKit());
-            } else if (snapshot.data == null || snapshot.data!.isEmpty) {
-              return emptyData(imagePath: "assets/emptyState/emptyProducts.png", errorTitle: "orderEmpty", errorSubtitle: "orderEmptySubtitle");
-            } else if (snapshot.hasError) {
-              return errorConnection(onTap: () {
-                OrdersModel().getOrders();
-              });
-            }
-            return ListView.builder(
-              itemCount: snapshot.data!.length,
-              shrinkWrap: true,
-              reverse: true,
-              itemBuilder: (BuildContext context, int index) {
-                return Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 15),
-                  child: RaisedButton(
-                    shape: const RoundedRectangleBorder(borderRadius: borderRadius5),
-                    color: Colors.white,
-                    disabledColor: Colors.white,
-                    elevation: 2,
-                    padding: const EdgeInsets.fromLTRB(10, 10, 0, 10),
-                    onPressed: () {
-                      Get.to(() => OrderProfile(
-                            id: snapshot.data![index].id,
-                          ));
-                    },
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: Text("${"orderHistory".tr} ${index + 1}",
-                              textAlign: TextAlign.start,
-                              style: const TextStyle(
-                                fontFamily: montserratSemiBold,
-                                color: Colors.black,
-                              )),
-                        ),
-                        Expanded(
-                          child: Text("${snapshot.data![index].createdAT}".substring(0, 10), textAlign: TextAlign.center, style: const TextStyle(color: Colors.grey, fontFamily: montserratRegular)),
-                        ),
-                        Expanded(
-                          child: Text(
-                            "${snapshot.data![index].totalPrice} " + "TMT",
-                            textAlign: TextAlign.end,
-                            style: const TextStyle(fontFamily: montserratMedium, color: Colors.black),
-                          ),
-                        ),
-                        GestureDetector(
-                          onTap: () {},
-                          child: const Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 5),
-                            child: Icon(
-                              IconlyLight.arrowRightCircle,
-                              color: Colors.black,
+      body: token == null
+          ? const Center(child: Text("Fucked up"))
+          : FutureBuilder<List<OrdersModel>>(
+              future: OrdersModel().getOrders(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return Center(child: spinKit());
+                } else if (snapshot.data == null || snapshot.data!.isEmpty) {
+                  return emptyData(imagePath: "assets/emptyState/emptyProducts.png", errorTitle: "orderEmpty", errorSubtitle: "orderEmptySubtitle");
+                } else if (snapshot.hasError) {
+                  return errorConnection(onTap: () {
+                    OrdersModel().getOrders();
+                  });
+                }
+                return ListView.builder(
+                  itemCount: snapshot.data!.length,
+                  shrinkWrap: true,
+                  reverse: true,
+                  itemBuilder: (BuildContext context, int index) {
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 15),
+                      child: RaisedButton(
+                        shape: const RoundedRectangleBorder(borderRadius: borderRadius5),
+                        color: Colors.white,
+                        disabledColor: Colors.white,
+                        elevation: 2,
+                        padding: const EdgeInsets.fromLTRB(10, 10, 0, 10),
+                        onPressed: () {
+                          Get.to(() => OrderProfile(
+                                id: snapshot.data![index].id,
+                              ));
+                        },
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: Text("${"orderHistory".tr} ${index + 1}",
+                                  textAlign: TextAlign.start,
+                                  style: const TextStyle(
+                                    fontFamily: montserratSemiBold,
+                                    color: Colors.black,
+                                  )),
                             ),
-                          ),
-                        )
-                      ],
-                    ),
-                  ),
+                            Expanded(
+                              child:
+                                  Text("${snapshot.data![index].createdAT}".substring(0, 10), textAlign: TextAlign.center, style: const TextStyle(color: Colors.grey, fontFamily: montserratRegular)),
+                            ),
+                            Expanded(
+                              child: Text(
+                                "${snapshot.data![index].totalPrice} " + "TMT",
+                                textAlign: TextAlign.end,
+                                style: const TextStyle(fontFamily: montserratMedium, color: Colors.black),
+                              ),
+                            ),
+                            GestureDetector(
+                              onTap: () {},
+                              child: const Padding(
+                                padding: EdgeInsets.symmetric(horizontal: 5),
+                                child: Icon(
+                                  IconlyLight.arrowRightCircle,
+                                  color: Colors.black,
+                                ),
+                              ),
+                            )
+                          ],
+                        ),
+                      ),
+                    );
+                  },
                 );
-              },
-            );
-          }),
+              }),
     );
   }
 }

@@ -66,14 +66,14 @@ class _UserProfilState extends State<UserProfil> {
               dividerr(),
               shareApp(),
               dividerr(),
-              buttonProfile(
-                name: "clearCache",
-                icon: IconlyLight.delete,
-                onTap: () async {
-                  clearCache();
-                },
-              ),
-              dividerr(),
+              // buttonProfile(
+              //   name: "clearCache",
+              //   icon: IconlyLight.delete,
+              //   onTap: () async {
+              //     clearCache();
+              //   },
+              // ),
+              // dividerr(),
               buttonProfile(
                 name: "aboutUS",
                 icon: IconlyLight.infoSquare,

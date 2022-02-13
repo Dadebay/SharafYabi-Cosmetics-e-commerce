@@ -1,5 +1,6 @@
 // ignore_for_file: deprecated_member_use, file_names, avoid_dynamic_calls, invariant_booleans, always_use_package_imports
 
+import 'package:animations/animations.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -9,6 +10,8 @@ import 'package:sharaf_yabi_ecommerce/constants/constants.dart';
 import 'package:sharaf_yabi_ecommerce/constants/widgets.dart';
 import 'package:sharaf_yabi_ecommerce/controllers/Fav_Cart_Controller.dart';
 import 'package:sharaf_yabi_ecommerce/controllers/FilterController.dart';
+
+import 'ProductProfil.dart';
 
 class ProductCard2 extends StatefulWidget {
   final int indexx;
@@ -21,172 +24,188 @@ class ProductCard2 extends StatefulWidget {
 }
 
 class _ProductCard2State extends State<ProductCard2> {
-  late FilterController _filterController;
-  late Fav_Cart_Controller favCartController;
+  FilterController _filterController = Get.put<FilterController>(FilterController());
+  Fav_Cart_Controller favCartController = Get.put<Fav_Cart_Controller>(Fav_Cart_Controller());
+  bool favButton = false;
+  bool addCart = false;
   @override
   void initState() {
     super.initState();
-    favCartController = Get.put<Fav_Cart_Controller>(Fav_Cart_Controller());
-    _filterController = Get.put<FilterController>(FilterController());
-
     if (favCartController.favList.isNotEmpty) {
       for (final element in favCartController.favList) {
         if (element["id"] == _filterController.list[widget.indexx]!["id"]) {
-          _filterController.favButton.value = true;
+          favButton = true;
         }
       }
     } else {
-      _filterController.favButton.value = false;
+      favButton = false;
+    }
+    if (favCartController.cartList.isNotEmpty) {
+      for (final element in favCartController.cartList) {
+        if (element["id"] == _filterController.list[widget.indexx]!["id"]) {
+          addCart = true;
+        }
+      }
+    } else {
+      addCart = false;
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return RaisedButton(
-      onPressed: () {
-        // Get.to(() => ProductProfil(
-        //       id: _filterController.list[widget.indexx]!["id"],
-        //       productName: _filterController.list[widget.indexx]["name"],
-        //       image: "$serverImage/${_filterController.list[widget.indexx]["image"]}-mini.webp",
-        //     ));
+    return OpenContainer(
+      closedShape: const RoundedRectangleBorder(borderRadius: borderRadius10),
+      closedColor: Colors.white,
+      closedElevation: 1,
+      closedBuilder: (context, openWidget) {
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            imageExpanded(),
+            nameAndButtonPart(),
+          ],
+        );
       },
-      shape: const RoundedRectangleBorder(borderRadius: borderRadius10),
-      color: Colors.white,
-      disabledColor: Colors.white,
-      padding: EdgeInsets.zero,
-      elevation: 1,
-      highlightColor: backgroundColor.withOpacity(0.2),
-      highlightElevation: 1,
+      openBuilder: (context, closeWidget) {
+        return ProductProfil(
+          id: _filterController.list[widget.indexx]!["id"],
+          productName: _filterController.list[widget.indexx]["name"],
+          image: "$serverImage/${_filterController.list[widget.indexx]["image"]}-mini.webp",
+        );
+      },
+    );
+  }
+
+  Padding nameAndButtonPart() {
+    return Padding(
+      padding: const EdgeInsets.only(left: 7, right: 7, bottom: 3, top: 7),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.end,
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          imageExpanded(),
-          Padding(
-            padding: const EdgeInsets.only(left: 7, right: 7, bottom: 3, top: 7),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  _filterController.list[widget.indexx]["name"],
-                  overflow: TextOverflow.ellipsis,
-                  maxLines: 1,
-                  style: const TextStyle(fontFamily: montserratMedium, fontSize: 16),
-                ),
-                Text(
-                  "description",
-                  overflow: TextOverflow.ellipsis,
-                  maxLines: 1,
-                  style: TextStyle(fontFamily: montserratMedium, fontSize: 14, color: Colors.grey[400]),
-                ),
-                RichText(
-                  overflow: TextOverflow.ellipsis,
-                  text: TextSpan(children: <TextSpan>[
-                    TextSpan(text: _filterController.list[widget.indexx]["price"], style: const TextStyle(fontFamily: montserratSemiBold, fontSize: 20, color: kPrimaryColor)),
-                    const TextSpan(text: " TMT", style: TextStyle(fontFamily: montserratMedium, fontSize: 16, color: kPrimaryColor))
-                  ]),
-                ),
-                SizedBox(
-                  width: Get.size.width,
-                  child: _filterController.list[widget.indexx]["count"] != 1
-                      ? Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              GestureDetector(
-                                onTap: () {
-                                  setState(() {
-                                    for (final element in favCartController.cartList) {
-                                      if (element["id"] == _filterController.list[widget.indexx]["id"]) {
-                                        element["count"]--;
-                                        if (_filterController.list.isNotEmpty) {
-                                          for (final element in _filterController.list) {
-                                            if (element["id"] == _filterController.list[widget.indexx]["id"]) {
-                                              element["count"]--;
-                                            }
-                                          }
-                                        }
-                                      }
-                                    }
-                                  });
-                                },
-                                child: PhysicalModel(
-                                  elevation: 1,
-                                  color: Colors.transparent,
-                                  borderRadius: borderRadius5,
-                                  child: Container(
-                                      padding: const EdgeInsets.all(6),
-                                      decoration: const BoxDecoration(borderRadius: borderRadius5, color: kPrimaryColor),
-                                      child: const Icon(
-                                        CupertinoIcons.minus,
-                                        size: 22,
-                                        color: Colors.white,
-                                      )),
-                                ),
-                              ),
-                              GetX<FilterController>(
-                                init: FilterController(),
-                                initState: (_) {},
-                                builder: (_) {
-                                  return Text(
-                                    "${_filterController.list[widget.indexx]["count"]}",
-                                    style: const TextStyle(color: Colors.black, fontSize: 18, fontFamily: montserratSemiBold),
-                                  );
-                                },
-                              ),
-                              GestureDetector(
-                                onTap: () {
-                                  setState(() {
-                                    for (final element2 in _filterController.list) {
-                                      if (element2["id"] == _filterController.list[widget.indexx]["id"]) {
-                                        element2["count"]++;
-                                      }
-                                    }
-                                    favCartController.addCart(_filterController.list[widget.indexx]["id"]);
-                                  });
-                                },
-                                child: PhysicalModel(
-                                  elevation: 1,
-                                  borderRadius: borderRadius5,
-                                  color: Colors.transparent,
-                                  child: Container(
-                                      padding: const EdgeInsets.all(6),
-                                      decoration: const BoxDecoration(borderRadius: borderRadius5, color: kPrimaryColor),
-                                      child: const Icon(
-                                        CupertinoIcons.add,
-                                        size: 22,
-                                        color: Colors.white,
-                                      )),
-                                ),
-                              ),
-                            ],
-                          ),
-                        )
-                      : RaisedButton(
-                          onPressed: () {
+          Text(
+            _filterController.list[widget.indexx]["name"],
+            overflow: TextOverflow.ellipsis,
+            maxLines: 1,
+            style: const TextStyle(fontFamily: montserratMedium, fontSize: 16),
+          ),
+          Text(
+            _filterController.list[widget.indexx]["categoryName"],
+            overflow: TextOverflow.ellipsis,
+            maxLines: 1,
+            style: TextStyle(fontFamily: montserratMedium, fontSize: 14, color: Colors.grey[400]),
+          ),
+          RichText(
+            overflow: TextOverflow.ellipsis,
+            text: TextSpan(children: <TextSpan>[
+              TextSpan(text: _filterController.list[widget.indexx]["price"], style: const TextStyle(fontFamily: montserratSemiBold, fontSize: 20, color: kPrimaryColor)),
+              const TextSpan(text: " TMT", style: TextStyle(fontFamily: montserratMedium, fontSize: 16, color: kPrimaryColor))
+            ]),
+          ),
+          SizedBox(
+            width: Get.size.width,
+            child: addCart
+                ? Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        GestureDetector(
+                          onTap: () {
                             setState(() {
-                              favCartController.addCart(_filterController.list[widget.indexx]["id"]);
+                              if (favCartController.cartList.isEmpty) {
+                                addCart = false;
+                              } else {
+                                for (final element in _filterController.list) {
+                                  if (element["id"] == _filterController.list[widget.indexx]["id"]) {
+                                    _filterController.list[widget.indexx]["count"]--;
+                                    if (element["count"] == 0) {
+                                      addCart = false;
+                                    }
+                                  }
+                                }
+                              }
+                              favCartController.removeCart(_filterController.list[widget.indexx]["id"]);
+                            });
+                          },
+                          child: PhysicalModel(
+                            elevation: 1,
+                            color: Colors.transparent,
+                            borderRadius: borderRadius5,
+                            child: Container(
+                                padding: const EdgeInsets.all(6),
+                                decoration: const BoxDecoration(borderRadius: borderRadius5, color: kPrimaryColor),
+                                child: const Icon(
+                                  CupertinoIcons.minus,
+                                  size: 22,
+                                  color: Colors.white,
+                                )),
+                          ),
+                        ),
+                        GetX<FilterController>(
+                          init: FilterController(),
+                          initState: (_) {},
+                          builder: (_) {
+                            return Text(
+                              "${_filterController.list[widget.indexx]["count"]}",
+                              style: const TextStyle(color: Colors.black, fontSize: 18, fontFamily: montserratSemiBold),
+                            );
+                          },
+                        ),
+                        GestureDetector(
+                          onTap: () {
+                            setState(() {
                               for (final element2 in _filterController.list) {
                                 if (element2["id"] == _filterController.list[widget.indexx]["id"]) {
                                   element2["count"]++;
+                                  favCartController.addCart(_filterController.list[widget.indexx]["id"]);
                                 }
                               }
                             });
                           },
-                          elevation: 0,
-                          disabledElevation: 0,
-                          shape: const RoundedRectangleBorder(borderRadius: borderRadius5),
-                          color: kPrimaryColor,
-                          child: Text(
-                            "addCart".tr,
-                            style: const TextStyle(color: Colors.white, fontFamily: montserratSemiBold),
+                          child: PhysicalModel(
+                            elevation: 1,
+                            borderRadius: borderRadius5,
+                            color: Colors.transparent,
+                            child: Container(
+                                padding: const EdgeInsets.all(6),
+                                decoration: const BoxDecoration(borderRadius: borderRadius5, color: kPrimaryColor),
+                                child: const Icon(
+                                  CupertinoIcons.add,
+                                  size: 22,
+                                  color: Colors.white,
+                                )),
                           ),
                         ),
-                ),
-              ],
-            ),
+                      ],
+                    ),
+                  )
+                : RaisedButton(
+                    onPressed: () {
+                      setState(() {
+                        addCart = !addCart;
+                        if (_filterController.list[widget.indexx]["count"] == 0) {
+                          _filterController.list[widget.indexx]["count"]++;
+// for (final element2 in _filterController.list) {
+                          //   if (element2["id"] == _filterController.list[widget.indexx]["id"]) {
+                          //     element2["count"]++;
+                          //     }
+                          //   }
+                        } else {
+                          favCartController.addCart(_filterController.list[widget.indexx]["id"]);
+                        }
+                      });
+                    },
+                    elevation: 0,
+                    disabledElevation: 0,
+                    shape: const RoundedRectangleBorder(borderRadius: borderRadius5),
+                    color: kPrimaryColor,
+                    child: Text(
+                      "addCart".tr,
+                      style: const TextStyle(color: Colors.white, fontFamily: montserratSemiBold),
+                    ),
+                  ),
           ),
         ],
       ),
@@ -204,6 +223,7 @@ class _ProductCard2State extends State<ProductCard2> {
               imageUrl: "$serverImage/${_filterController.list[widget.indexx]["image"]}-mini.webp",
               imageBuilder: (context, imageProvider) => Container(
                     padding: EdgeInsets.zero,
+                    margin: const EdgeInsets.all(8),
                     decoration: BoxDecoration(
                       borderRadius: const BorderRadius.only(topRight: Radius.circular(5), topLeft: Radius.circular(5)),
                       image: DecorationImage(
@@ -225,8 +245,10 @@ class _ProductCard2State extends State<ProductCard2> {
             right: 8,
             child: GestureDetector(
               onTap: () {
-                _filterController.favButton.value = !_filterController.favButton.value;
-                favCartController.toggleFav(_filterController.list[widget.indexx]["id"]);
+                setState(() {
+                  favButton = !favButton;
+                  favCartController.toggleFav(_filterController.list[widget.indexx]["id"]);
+                });
               },
               child: PhysicalModel(
                 elevation: 2,
@@ -235,9 +257,7 @@ class _ProductCard2State extends State<ProductCard2> {
                 child: Container(
                     padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 5),
                     decoration: const BoxDecoration(color: Colors.white, shape: BoxShape.circle),
-                    child: Obx(() {
-                      return Icon(_filterController.favButton.value ? IconlyBold.heart : IconlyLight.heart, color: Colors.red);
-                    })),
+                    child: Icon(favButton ? IconlyBold.heart : IconlyLight.heart, color: Colors.red)),
               ),
             ),
           ),

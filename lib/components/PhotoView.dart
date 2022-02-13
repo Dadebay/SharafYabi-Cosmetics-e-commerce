@@ -19,7 +19,7 @@ class PhotoViewPage extends StatelessWidget {
           children: [
             Center(
                 child: PhotoView(
-              enableRotation: true,
+              enableRotation: false,
               minScale: 0.4,
               maxScale: 2.0,
               imageProvider: CachedNetworkImageProvider(
