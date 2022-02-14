@@ -10,10 +10,10 @@ import 'package:sharaf_yabi_ecommerce/constants/constants.dart';
 import 'package:sharaf_yabi_ecommerce/constants/widgets.dart';
 import 'package:sharaf_yabi_ecommerce/controllers/Fav_Cart_Controller.dart';
 import 'package:sharaf_yabi_ecommerce/controllers/SettingsController.dart';
+import 'package:sharaf_yabi_ecommerce/screens/News/TabbarViewPage.dart';
 import 'Cart/CartPage.dart';
 import 'Category/CategoryPage.dart';
 import 'HomePage/HomePage.dart';
-import 'News/News.dart';
 import 'UserProfil/UserProfilPage.dart';
 
 class BottomNavBar extends StatefulWidget {
@@ -23,7 +23,7 @@ class BottomNavBar extends StatefulWidget {
 
 class _BottomNavBarState extends State<BottomNavBar> with TickerProviderStateMixin {
   late TabController tabController;
-  late SettingsController _settingsController = Get.put<SettingsController>(SettingsController());
+  final SettingsController _settingsController = Get.put<SettingsController>(SettingsController());
   @override
   void initState() {
     super.initState();
@@ -56,7 +56,7 @@ class _BottomNavBarState extends State<BottomNavBar> with TickerProviderStateMix
             physics: const NeverScrollableScrollPhysics(),
             controller: tabController,
             children: _settingsController.connectionState.value
-                ? [const HomePage(), CategoryPage(), CartPage(), News(), UserProfil()]
+                ? [const HomePage(), CategoryPage(), CartPage(), const TabbarViewPage(), UserProfil()]
                 : [
                     errorConnection(onTap: () {
                       checkConnection();

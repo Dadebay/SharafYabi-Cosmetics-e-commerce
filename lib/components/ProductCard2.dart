@@ -24,7 +24,7 @@ class ProductCard2 extends StatefulWidget {
 }
 
 class _ProductCard2State extends State<ProductCard2> {
-  FilterController _filterController = Get.put<FilterController>(FilterController());
+  final FilterController _filterController = Get.put<FilterController>(FilterController());
   Fav_Cart_Controller favCartController = Get.put<Fav_Cart_Controller>(Fav_Cart_Controller());
   bool favButton = false;
   bool addCart = false;

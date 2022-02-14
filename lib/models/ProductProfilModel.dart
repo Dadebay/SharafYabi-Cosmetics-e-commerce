@@ -1,6 +1,6 @@
 // ignoreforfile: filenames, prefertypinguninitializedvariables, typeannotatepublicapis
 
-// ignore_for_file: file_names, avoid_dynamic_calls
+// ignore_for_file: file_names, avoid_dynamic_calls, type_annotate_public_apis, prefer_typing_uninitialized_variables, unnecessary_null_comparison
 
 import 'dart:convert';
 import 'dart:io';
@@ -24,9 +24,17 @@ class ProductProfilModel extends ChangeNotifier {
     this.categoryName,
     this.discountValue,
     this.minValue,
+    this.images,
   });
 
   factory ProductProfilModel.fromJson(Map<dynamic, dynamic> json) {
+    List<dynamic> _images;
+    if (json["images"] == null) {
+      _images = [""];
+    } else {
+      _images = json["images"].map((value) => value).toList();
+    }
+
     return ProductProfilModel(
       id: json['id'],
       price: json['price'],
@@ -35,15 +43,17 @@ class ProductProfilModel extends ChangeNotifier {
       categoryId: json['category_id'],
       producerId: json['producer_id'],
       name: json['name'],
+      images: _images,
       description: json['description'],
       producerName: json['producer_name'],
       categoryName: json['category_name'],
-      discountValue: json['discount_value'],
+      discountValue: json['discount_value'] ?? 0,
       minValue: json['min_value'],
     );
   }
 
   final int? id;
+  var images;
   final String? price;
   final String? stock;
   final String? image;

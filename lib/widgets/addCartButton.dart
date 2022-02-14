@@ -44,11 +44,9 @@ class _AddCartButtonState extends State<AddCartButton> with TickerProviderStateM
           if (addCart == true) {
             Get.find<Fav_Cart_Controller>().addCart(widget.id!);
           } else {
-            print(Get.find<Fav_Cart_Controller>().cartList);
             Get.find<Fav_Cart_Controller>().removeCartClear(
               widget.id!,
             );
-            print(Get.find<Fav_Cart_Controller>().cartList);
           }
         });
       },

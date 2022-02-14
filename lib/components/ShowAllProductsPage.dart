@@ -1,6 +1,5 @@
-// ignore_for_file: deprecated_member_use, file_names, avoid_dynamic_calls, unnecessary_null_checks
+// ignore_for_file: deprecated_member_use, file_names, avoid_dynamic_calls, unnecessary_null_checks, always_use_package_imports
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
 import 'package:get/get.dart';

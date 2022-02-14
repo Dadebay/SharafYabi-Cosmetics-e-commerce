@@ -1,8 +1,9 @@
-// ignore_for_file: deprecated_member_use, file_names, always_use_package_imports, avoid_dynamic_calls, type_annotate_public_apis, always_declare_return_types, invariant_booleans, avoid_positional_boolean_parameters, unnecessary_null_comparison
+// ignore_for_file: deprecated_member_use, file_names, always_use_package_imports, avoid_dynamic_calls, type_annotate_public_apis, always_declare_return_types, invariant_booleans, avoid_positional_boolean_parameters, unnecessary_null_comparison, avoid_types_as_parameter_names, non_constant_identifier_names
 
 import 'dart:math';
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -38,37 +39,48 @@ class ProductProfil extends StatefulWidget {
 }
 
 class _ProductProfilState extends State<ProductProfil> {
+  bool addCartBool = false;
   CartPageController cartPageController = Get.put(CartPageController());
   TextEditingController controller = TextEditingController();
+  double discountedPrice = 0.0;
   Fav_Cart_Controller favCartController = Get.put(Fav_Cart_Controller());
   FilterController filterController = Get.put(FilterController());
-  ProductProfilController productProfilController = Get.put(ProductProfilController());
-
+  late Future<CommentModel> getComment;
+  late Future<ProductProfilModel> getProduct;
   String imageMine = "";
   String name = "";
   double priceMine = 0.0;
   double priceOLD = 0.0;
-  double discountedPrice = 0.0;
+  ProductProfilController productProfilController = Get.put(ProductProfilController());
+  int selectedIndex = 0;
 
   @override
   void initState() {
     super.initState();
     whenPageLoad();
+    getProduct = ProductProfilModel().getRealEstatesById(widget.id);
+    getComment = CommentModel().getComment(id: widget.id);
   }
 
   whenPageLoad() {
     name = widget.productName ?? "SharafÝabi";
     imageMine = widget.image ?? "asd";
     if (favCartController.cartList.isNotEmpty) {
+      bool mine = false;
       for (final element in favCartController.cartList) {
         final int a = element["count"];
         if (a < 0) {
           element["count"] = 1;
         }
         if (element["id"] == widget.id) {
+          mine = true;
           productProfilController.addCartBool.value = true;
           productProfilController.quantity.value = element["count"];
         }
+      }
+      if (mine == false) {
+        productProfilController.addCartBool.value = false;
+        productProfilController.quantity.value = 1;
       }
     } else {
       productProfilController.addCartBool.value = false;
@@ -150,85 +162,93 @@ class _ProductProfilState extends State<ProductProfil> {
   Widget bottomSheetMine() {
     return Obx(() {
       return Container(
-        color: kPrimaryColor,
-        width: Get.size.width,
-        child: productProfilController.addCartBool.value
-            ? Row(
-                children: [
-                  RaisedButton(
-                      padding: const EdgeInsets.symmetric(vertical: 14),
-                      color: Colors.white,
-                      elevation: 2,
-                      onPressed: () {
-                        favCartController.removeCart(widget.id!);
-                        cartPageController.removeCard(widget.id!);
-                        if (productProfilController.quantity.value > 1) {
-                          productProfilController.quantity.value--;
-                        } else {
-                          productProfilController.addCartBool.value = false;
-                        }
-                      },
-                      child: const Icon(CupertinoIcons.minus_circled, color: kPrimaryColor, size: 34)),
-                  Expanded(
-                    child: Container(
-                        color: kPrimaryColor,
+          child: productProfilController.addCartBool.value
+              ? Container(
+                  decoration: const BoxDecoration(
+                    borderRadius: borderRadius10,
+                    color: kPrimaryColor,
+                  ),
+                  child: Row(
+                    children: [
+                      GestureDetector(
+                        onTap: () {
+                          favCartController.removeCart(widget.id!);
+                          cartPageController.removeCard(widget.id!);
+                          if (productProfilController.quantity.value > 1) {
+                            if (filterController.list.isNotEmpty) {
+                              for (final element2 in filterController.list) {
+                                if (element2["id"] == widget.id) {
+                                  element2["count"]--;
+                                }
+                              }
+                            }
+                            productProfilController.quantity.value--;
+                          } else {
+                            productProfilController.addCartBool.value = false;
+                            showSnackBar("", "removedFromCartSubtitle", Colors.red);
+                          }
+                        },
+                        child: const Padding(
+                          padding: EdgeInsets.all(8.0),
+                          child: Icon(CupertinoIcons.minus_circled, color: Colors.white, size: 25),
+                        ),
+                      ),
+                      Container(
+                        margin: const EdgeInsets.symmetric(horizontal: 15),
                         child: Text(
                           "${productProfilController.quantity.value}",
                           textAlign: TextAlign.center,
-                          style: const TextStyle(color: Colors.white, fontFamily: montserratBold, fontSize: 24),
-                        )),
-                  ),
-                  RaisedButton(
-                      padding: const EdgeInsets.symmetric(vertical: 14),
-                      color: Colors.white,
-                      elevation: 2,
-                      onPressed: () {
-                        if (productProfilController.stockCount.value > (productProfilController.quantity.value + 1)) {
-                          favCartController.addCart(widget.id!);
-                          cartPageController.addToCard(widget.id!);
+                          style: const TextStyle(color: Colors.white, fontFamily: montserratBold, fontSize: 26),
+                        ),
+                      ),
+                      GestureDetector(
+                        onTap: () {
+                          if (productProfilController.stockCount.value > (productProfilController.quantity.value + 1)) {
+                            favCartController.addCart(widget.id!);
+                            cartPageController.addToCard(widget.id!);
 
-                          productProfilController.quantity.value++;
-                          if (filterController.list.isNotEmpty) {
-                            for (final element2 in filterController.list) {
-                              if (element2["id"] == widget.id) {
-                                element2["count"]++;
+                            productProfilController.quantity.value++;
+                            if (filterController.list.isNotEmpty) {
+                              for (final element2 in filterController.list) {
+                                if (element2["id"] == widget.id) {
+                                  element2["count"]++;
+                                }
                               }
                             }
+                          } else {
+                            Vibration.vibrate();
+                            showSnackBar("emptyStockMin", "emptyStockSubtitle", Colors.red);
                           }
-                        }
-                        {
-                          Vibration.vibrate();
-                          showSnackBar("emptyStockMin", "emptyStockSubtitle", Colors.red);
-                        }
-                      },
-                      child: const Icon(CupertinoIcons.add_circled, color: kPrimaryColor, size: 34)),
-                ],
-              )
-            : RaisedButton(
-                onPressed: () {
-                  if (priceOLD != 0.0) {
-                    productProfilController.addCartBool.value = !productProfilController.addCartBool.value;
-                    final int? a = widget.id;
-                    favCartController.addCart(a!);
-                  } else {
-                    showSnackBar("retry", "error404", Colors.red);
-                  }
-                },
-                color: kPrimaryColor.withOpacity(0.8),
-                disabledColor: kPrimaryColor.withOpacity(0.8),
-                padding: const EdgeInsets.symmetric(vertical: 15),
-                highlightColor: Colors.white.withOpacity(0.4),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 10),
-                      child: Icon(IconlyLight.buy, size: 28, color: Colors.white),
-                    ),
-                    Text("addCart3".tr, textAlign: TextAlign.center, style: const TextStyle(color: Colors.white, fontFamily: montserratSemiBold, fontSize: 20)),
-                  ],
-                )),
-      );
+                        },
+                        child: const Padding(
+                          padding: EdgeInsets.all(8.0),
+                          child: Icon(CupertinoIcons.add_circled, color: Colors.white, size: 25),
+                        ),
+                      ),
+                    ],
+                  ),
+                )
+              : GestureDetector(
+                  onTap: () {
+                    if (productProfilController.stockCount.value > 2) {
+                      if (priceOLD != 0.0) {
+                        productProfilController.addCartBool.value = !productProfilController.addCartBool.value;
+                        final int? a = widget.id;
+                        favCartController.addCart(a!);
+                        showSnackBar("addedToCardTitle", "addedToCardSubtitle", kPrimaryColor);
+                      } else {
+                        showSnackBar("retry", "error404", Colors.red);
+                      }
+                    }
+                  },
+                  child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
+                      decoration: const BoxDecoration(
+                        color: kPrimaryColor,
+                        borderRadius: borderRadius10,
+                      ),
+                      child: Text("addCart3".tr, textAlign: TextAlign.center, style: const TextStyle(color: Colors.white, fontFamily: montserratMedium, fontSize: 18))),
+                ));
     });
   }
 
@@ -263,25 +283,34 @@ class _ProductProfilState extends State<ProductProfil> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Row(
-              children: [
-                RichText(
-                  overflow: TextOverflow.ellipsis,
-                  text: TextSpan(children: <TextSpan>[
-                    TextSpan(text: priceMine.toStringAsFixed(2), style: const TextStyle(fontFamily: montserratSemiBold, fontSize: 24, color: Colors.black)),
-                    const TextSpan(text: " TMT", style: TextStyle(fontFamily: montserratSemiBold, fontSize: 18, color: Colors.black))
-                  ]),
-                ),
-                if (snapshot.data!.discountValue != 0 && snapshot.data!.discountValue != null)
-                  RotationTransition(
-                    turns: const AlwaysStoppedAnimation(-2 / 360),
-                    child: Padding(
-                        padding: const EdgeInsets.only(left: 25),
-                        child: Text("$priceOLD" + " TMT", style: const TextStyle(decoration: TextDecoration.lineThrough, fontFamily: montserratRegular, fontSize: 18, color: Colors.grey))),
-                  )
-                else
-                  const SizedBox.shrink(),
-              ],
+            Padding(
+              padding: const EdgeInsets.only(bottom: 15),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Row(
+                    children: [
+                      RichText(
+                        overflow: TextOverflow.ellipsis,
+                        text: TextSpan(children: <TextSpan>[
+                          TextSpan(text: priceMine.toStringAsFixed(2), style: const TextStyle(fontFamily: montserratSemiBold, fontSize: 24, color: Colors.black)),
+                          const TextSpan(text: " TMT", style: TextStyle(fontFamily: montserratSemiBold, fontSize: 18, color: Colors.black))
+                        ]),
+                      ),
+                      if (snapshot.data!.discountValue != 0 && snapshot.data!.discountValue != null)
+                        RotationTransition(
+                          turns: const AlwaysStoppedAnimation(-2 / 360),
+                          child: Padding(
+                              padding: const EdgeInsets.only(left: 25),
+                              child: Text("$priceOLD" + " TMT", style: const TextStyle(decoration: TextDecoration.lineThrough, fontFamily: montserratRegular, fontSize: 18, color: Colors.grey))),
+                        )
+                      else
+                        const SizedBox.shrink(),
+                    ],
+                  ),
+                  bottomSheetMine(),
+                ],
+              ),
             ),
             Text("${snapshot.data!.name}", style: const TextStyle(color: Colors.black, fontFamily: montserratMedium, fontSize: 18)),
           ],
@@ -291,31 +320,72 @@ class _ProductProfilState extends State<ProductProfil> {
   Stack imagePart(AsyncSnapshot<ProductProfilModel> snapshot) {
     return Stack(
       children: [
-        SizedBox(
-          height: Get.size.height / 2.5,
-          child: GestureDetector(
-            onTap: () {
-              Get.to(() => PhotoViewPage(
-                    image: "$serverImage/${snapshot.data!.image}-large.webp",
-                  ));
-            },
-            child: CachedNetworkImage(
-                fadeInCurve: Curves.ease,
-                imageUrl: "$serverImage/${snapshot.data!.image}-mini.webp",
-                imageBuilder: (context, imageProvider) => Container(
-                      padding: EdgeInsets.zero,
-                      margin: EdgeInsets.zero,
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        image: DecorationImage(
-                          image: imageProvider,
-                          fit: BoxFit.contain,
-                        ),
-                      ),
-                    ),
-                placeholder: (context, url) => Center(child: spinKit()),
-                errorWidget: (context, url, error) => noImage()),
+        if (snapshot.data!.images.length == 1)
+          noImage()
+        else
+          Container(
+            color: Colors.white,
+            padding: const EdgeInsets.all(20),
+            child: CarouselSlider.builder(
+              itemCount: snapshot.data!.images.length,
+              options: CarouselOptions(
+                height: Get.size.height / 2.5,
+                viewportFraction: 1.0,
+                onPageChanged: (index, CarouselPageChangedReason) {
+                  setState(() {
+                    selectedIndex = index;
+                  });
+                },
+              ),
+              itemBuilder: (BuildContext context, int index, int realIndex) {
+                return GestureDetector(
+                  onTap: () {
+                    Get.to(() => PhotoViewPage(
+                          image: "$serverImage/${snapshot.data!.images[index]["destination"]}-mini.webp",
+                        ));
+                  },
+                  child: CachedNetworkImage(
+                      fadeInCurve: Curves.ease,
+                      imageUrl: "$serverImage/${snapshot.data!.images[index]["destination"]}-mini.webp",
+                      imageBuilder: (context, imageProvider) => Container(
+                            padding: EdgeInsets.zero,
+                            margin: EdgeInsets.zero,
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              image: DecorationImage(
+                                image: imageProvider,
+                                fit: BoxFit.contain,
+                              ),
+                            ),
+                          ),
+                      placeholder: (context, url) => Center(child: spinKit()),
+                      errorWidget: (context, url, error) => noImage()),
+                );
+              },
+            ),
           ),
+        Positioned(
+          bottom: 15,
+          left: 0,
+          right: 0,
+          child: SizedBox(
+              height: 7,
+              child: Center(
+                child: ListView.builder(
+                  shrinkWrap: true,
+                  scrollDirection: Axis.horizontal,
+                  itemCount: snapshot.data!.images.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    return AnimatedContainer(
+                      margin: const EdgeInsets.symmetric(horizontal: 10),
+                      duration: const Duration(milliseconds: 500),
+                      curve: Curves.easeInOut,
+                      width: selectedIndex == index ? 30 : 7,
+                      decoration: BoxDecoration(color: selectedIndex == index ? kPrimaryColor : Colors.grey[300], borderRadius: borderRadius15),
+                    );
+                  },
+                ),
+              )),
         ),
         if (snapshot.data!.discountValue != 0 && snapshot.data!.discountValue != null)
           Positioned(
@@ -483,10 +553,10 @@ class _ProductProfilState extends State<ProductProfil> {
     return Scaffold(
         backgroundColor: backgroundColor,
         appBar: appBar(),
-        bottomSheet: bottomSheetMine(),
+        // bottomSheet: bottomSheetMine(),
         body: SingleChildScrollView(
           child: FutureBuilder<ProductProfilModel>(
-              future: ProductProfilModel().getRealEstatesById(widget.id),
+              future: getProduct,
               builder: (context, snapshot) {
                 if (snapshot.hasError) {
                   return Container(
@@ -535,7 +605,10 @@ class _ProductProfilState extends State<ProductProfil> {
                             height: 30,
                           ),
                           Text("description".tr, style: const TextStyle(color: Colors.black, fontFamily: montserratSemiBold, fontSize: 17)),
-                          Text("${snapshot.data!.description}", style: const TextStyle(color: Colors.black, fontFamily: montserratRegular, fontSize: 16)),
+                          Padding(
+                            padding: const EdgeInsets.only(top: 15),
+                            child: Text("${snapshot.data!.description}", style: const TextStyle(color: Colors.black, fontFamily: montserratRegular, fontSize: 16)),
+                          ),
                         ],
                       )),
                       customContainer(ExpansionTile(
@@ -553,7 +626,7 @@ class _ProductProfilState extends State<ProductProfil> {
                           SizedBox(
                             height: 400,
                             child: FutureBuilder<CommentModel>(
-                                future: CommentModel().getComment(id: widget.id),
+                                future: getComment,
                                 builder: (context, snapshot) {
                                   if (snapshot.connectionState == ConnectionState.waiting) {
                                     return Center(

@@ -4,6 +4,7 @@ class MyTranslations extends Translations {
   @override
   Map<String, Map<String, String>> get keys => {
         'tr': {
+          "video": "Wideolar",
           "aboutUS": "Biz barada",
           "aboutUsSubtitle":
               "300-den gowrak kosmetiki we arassaçylyk önümlerini satýarys. Täze doglan çagalardan başlap ýaşa çenli ilatyň ähli toparlary önümlerimiziň sarp edijileridir. Kompaniýa 1997-nji ýylda esaslandyryldy. Häzirki wagtda haryt satmak Aşgabat şäherindäki we Türkmenistanyň ähli sebitlerinde söwda nokatlarynda amala aşyrylýar.",
@@ -146,9 +147,20 @@ class MyTranslations extends Translations {
           "waiting": "Garaşýlýar",
           "writeComment": "Teswir ýaz",
           "yes": "Hawwa",
-          "nocomment": "Hiç hili teswir ýok"
+          "nocomment": "Hiç hili teswir ýok",
+          "noVideoTitle": "Wideo ýok!",
+          "noVideoSubtitle": "Bagyşlaň wideo ýok",
+          "addedToCardTitle": "Sebede goşuldy.",
+          "addedToCardSubtitle": "Haryt sebedeiňize goşuldy.",
+          "removedFromCartSubtitle": "Haryt sebediňizden aýryldy.",
         },
         'ru': {
+          "removedFromCartSubtitle": "Ваш товар был удален из вашей корзины.",
+          "addedToCardTitle": "Добавлено в корзину.",
+          "addedToCardSubtitle": "Товар добавлен в вашу корзину.",
+          "noVideoTitle": "Нет видео !",
+          "noVideoSubtitle": "Жаль нет видео для просмотра",
+          "video": "Видео",
           "aboutUS": "О нас",
           "nocomment": "В этом товаре нет комментариев",
           "aboutUsSubtitle":
@@ -294,6 +306,12 @@ class MyTranslations extends Translations {
           "yes": "Да",
         },
         'en': {
+          "removedFromCartSubtitle": "Your item has been removed from your cart.",
+          "addedToCardTitle": "Added to cart.",
+          "addedToCardSubtitle": "Product added to your cart.",
+          "noVideoTitle": "No Video !",
+          "noVideoSubtitle": "Sorry there is no video to view",
+          "video": "Videos",
           "aboutUS": "About Us",
           "nocomment": "There is no comment in this products",
           "aboutUsSubtitle":

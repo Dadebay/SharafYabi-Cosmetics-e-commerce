@@ -15,7 +15,7 @@ import 'package:shimmer/shimmer.dart';
 class Banners extends StatefulWidget {
   final Future<List<BannerModel>>? banners;
 
-  Banners({Key? key, this.banners}) : super(key: key);
+  const Banners({Key? key, this.banners}) : super(key: key);
 
   @override
   State<Banners> createState() => _BannersState();
@@ -45,7 +45,7 @@ class _BannersState extends State<Banners> {
                       CarouselSlider.builder(
                         itemCount: snapshot.data!.length,
                         itemBuilder: (context, index, count) {
-                          return bannerCard(index,snapshot.data![index].itemID,snapshot.data![index].pathID,snapshot.data![index].imagePath);
+                          return bannerCard(index, snapshot.data![index].itemID, snapshot.data![index].pathID, snapshot.data![index].imagePath);
                         },
                         options: CarouselOptions(
                           onPageChanged: (index, CarouselPageChangedReason) {
@@ -54,7 +54,6 @@ class _BannersState extends State<Banners> {
                             });
                           },
                           aspectRatio: 16 / 8,
-                          initialPage: 0,
                           viewportFraction: 1.0,
                           autoPlay: true,
                           scrollPhysics: const BouncingScrollPhysics(),
@@ -80,7 +79,6 @@ class _BannersState extends State<Banners> {
                               },
                             ),
                           )),
-                   
                     ],
                   );
           }
@@ -88,7 +86,7 @@ class _BannersState extends State<Banners> {
         });
   }
 
-  Container bannerCard( int? index,int? itemID,int? pathID,String? image) {
+  Container bannerCard(int? index, int? itemID, int? pathID, String? image) {
     return Container(
       width: Get.size.width,
       margin: const EdgeInsets.only(top: 8, left: 8, right: 8, bottom: 8),

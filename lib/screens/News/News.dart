@@ -9,7 +9,6 @@ import 'package:sharaf_yabi_ecommerce/constants/constants.dart';
 import 'package:sharaf_yabi_ecommerce/constants/widgets.dart';
 import 'package:sharaf_yabi_ecommerce/controllers/NewsController.dart';
 import 'package:sharaf_yabi_ecommerce/screens/Category/Components/ShimmerCategory.dart';
-import 'package:sharaf_yabi_ecommerce/widgets/appBar.dart';
 
 import 'NewsProfil.dart';
 
@@ -46,44 +45,42 @@ class _NewsState extends State<News> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: backgroundColor.withOpacity(0.1),
-      appBar: MyAppBar(icon: Icons.add, onTap: () {}, backArrow: false, iconRemove: false),
-      body: SmartRefresher(
-          enablePullUp: true,
-          physics: const BouncingScrollPhysics(),
-          header: const MaterialClassicHeader(
-            color: kPrimaryColor,
-          ),
-          footer: loadMore(),
-          controller: _refreshController,
-          onRefresh: _onRefresh,
-          onLoading: _onLoading,
-          child: Obx(() {
-            if (newsController.loading.value == 1) {
-              return Padding(
-                padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 10),
-                child: ListView.separated(
-                  separatorBuilder: (BuildContext context, int index) => const Divider(),
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  itemCount: newsController.list.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    return newCard(index);
-                  },
-                ),
-              );
-            } else if (newsController.loading.value == 2) {
-              return emptyDataLottie(imagePath: "assets/lottie/noNews.json", errorTitle: "newsEmpty", errorSubtitle: "newsEmptySubtitle");
-            } else if (newsController.loading.value == 3) {
-              return retryButton(() {
-                newsController.fetchProducts();
-              });
-            } else if (newsController.loading.value == 0) {
-              return const ShimmerCategory();
-            }
-            return const Text("Loading...", style: TextStyle(color: Colors.black, fontFamily: montserratSemiBold));
-          })),
-    );
+        backgroundColor: backgroundColor.withOpacity(0.1),
+        body: SmartRefresher(
+            enablePullUp: true,
+            physics: const BouncingScrollPhysics(),
+            header: const MaterialClassicHeader(
+              color: kPrimaryColor,
+            ),
+            footer: loadMore(),
+            controller: _refreshController,
+            onRefresh: _onRefresh,
+            onLoading: _onLoading,
+            child: Obx(() {
+              if (newsController.loading.value == 1) {
+                return Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 10),
+                  child: ListView.separated(
+                    separatorBuilder: (BuildContext context, int index) => const Divider(),
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemCount: newsController.list.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      return newCard(index);
+                    },
+                  ),
+                );
+              } else if (newsController.loading.value == 2) {
+                return emptyDataLottie(imagePath: "assets/lottie/noNews.json", errorTitle: "newsEmpty", errorSubtitle: "newsEmptySubtitle");
+              } else if (newsController.loading.value == 3) {
+                return retryButton(() {
+                  newsController.fetchProducts();
+                });
+              } else if (newsController.loading.value == 0) {
+                return const ShimmerCategory();
+              }
+              return const Text("Loading...", style: TextStyle(color: Colors.black, fontFamily: montserratSemiBold));
+            })));
   }
 
   ListTile newCard(int index) {

@@ -33,8 +33,6 @@ class UserSignInModel {
           "phone": phoneNumber,
           "password": password,
         }));
-        print(response.body);
-        print(response.statusCode);
     if (response.statusCode == 200) {
       final responseJson = json.decode(response.body);
       Auth().setToken(responseJson["token"]);

@@ -1,6 +1,7 @@
 // ignore_for_file: always_declare_return_types, type_annotate_public_apis
 
 import 'dart:io';
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
@@ -11,7 +12,6 @@ import 'package:get_storage/get_storage.dart';
 import 'package:sharaf_yabi_ecommerce/SplashScreen.dart';
 import 'package:sharaf_yabi_ecommerce/constants/constants.dart';
 import 'package:sharaf_yabi_ecommerce/controllers/AllContollerBindings.dart';
-import 'package:sharaf_yabi_ecommerce/screens/BottomNavBar.dart';
 import 'package:sharaf_yabi_ecommerce/utils/translations.dart';
 
 class MyHttpOverrides extends HttpOverrides {
@@ -31,16 +31,8 @@ AndroidNotificationChannel channel = const AndroidNotificationChannel(
 FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
 
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-
-  await Firebase.initializeApp(
-      // options: const FirebaseOptions(
-      //   apiKey: 'AIzaSyAGOPaUjBwRsNQbCMndUaqJNC6RHXBQstQ',
-      //   appId: '1:1069011072291:android:6e2314726c7a71c94f8896',
-      //   messagingSenderId: '1069011072291',
-      //   projectId: 'sharafyabi-4293c',
-      // ),
-      );
-      await FirebaseMessaging.instance.requestPermission();
+  await Firebase.initializeApp();
+  await FirebaseMessaging.instance.requestPermission();
 
   flutterLocalNotificationsPlugin.show(
     message.data.hashCode,
@@ -71,7 +63,7 @@ Future<void> main() async {
       //   projectId: 'sharafyabi-4293c',
       // ),
       );
-      await FirebaseMessaging.instance.requestPermission();
+  await FirebaseMessaging.instance.requestPermission();
 
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
 
@@ -103,14 +95,13 @@ class MyAppRun extends StatefulWidget {
 
 class _MyAppRunState extends State<MyAppRun> {
   final storage = GetStorage();
+  static FirebaseAnalytics analytics = FirebaseAnalytics.instance;
+  static FirebaseAnalyticsObserver observer = FirebaseAnalyticsObserver(analytics: analytics);
+
   @override
   void initState() {
     super.initState();
     FirebaseMessaging.instance.subscribeToTopic('Events');
-    FirebaseMessaging.instance.getToken().then((value){
-      print("token");
-      print(value);
-    });
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       flutterLocalNotificationsPlugin.show(
         message.data.hashCode,
@@ -131,7 +122,6 @@ class _MyAppRunState extends State<MyAppRun> {
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage? message) {
       Get.to(() => MyCustomSplashScreen());
     });
-   
   }
 
   @override
@@ -147,6 +137,7 @@ class _MyAppRunState extends State<MyAppRun> {
         primaryColor: Colors.green.shade700,
       ),
       fallbackLocale: const Locale("tr"),
+      navigatorObservers: <NavigatorObserver>[observer],
       translations: MyTranslations(),
       defaultTransition: Transition.cupertinoDialog,
       debugShowCheckedModeBanner: false,

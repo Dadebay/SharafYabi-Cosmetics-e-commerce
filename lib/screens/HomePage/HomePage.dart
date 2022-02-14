@@ -26,6 +26,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   Future<List<ProductsModel>>? newInComeFuture;
   Future<List<ProductsModel>>? discountsFuture;
+  Future<List<ProductsModel>>? getGridView;
   Future<List<BannerModel>>? banners;
   FilterController filterController = Get.put(FilterController());
 
@@ -41,6 +42,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       },
     );
     banners = BannerModel().getBanners();
+    getGridView = ProductsModel().getProducts(
+      parametrs: {"page": "1", "limit": "30", "recomended": "true"},
+    );
     newInComeFuture = ProductsModel().getProducts(
       parametrs: {"page": "1", "limit": "30", "new_in_come": "true"},
     );
@@ -66,17 +70,86 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
             Banners(banners: banners),
             discountedProducts(),
             newInCome(),
-            gridViewMine(
-              whichFilter: 1,
-              parametrs: const {"page": "1", "limit": "30", "recomended": "true"},
-              removeText: false,
-            ),
+            getGridViewItems(),
             const SizedBox(
               height: 25,
             )
           ],
         ),
       ),
+    );
+  }
+
+  Padding getGridViewItems() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 15),
+      child: FutureBuilder<List<ProductsModel>>(
+          future: getGridView,
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return Padding(
+                padding: const EdgeInsets.symmetric(vertical: 15),
+                child: Center(child: spinKit()),
+              );
+            } else if (snapshot.data!.isEmpty) {
+              return emptyData(imagePath: "", errorTitle: "emptyProducts", errorSubtitle: "emptyProductsSubtitle");
+            } else if (snapshot.hasError) {
+              return errorConnection(onTap: () {
+                ProductsModel().getProducts(parametrs: {"page": "1", "limit": "30", "recomended": "true"});
+              });
+            } else if (snapshot.hasData) {
+              return Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(top: 30, bottom: 15),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text("popularProducts".tr, style: const TextStyle(color: Colors.black, fontFamily: montserratSemiBold, fontSize: 18)),
+                        GestureDetector(
+                          onTap: () {
+                            filterController.producersID.clear();
+                            filterController.categoryID.clear();
+                            filterController.categoryIDOnlyID.clear();
+                            filterController.mainCategoryID.value = 0;
+                            Get.to(() => ShowAllProductsPage(
+                                  pageName: "popularProducts".tr,
+                                  whichFilter: 1,
+                                ));
+                          },
+                          child: Row(
+                            children: [
+                              Text("all".tr, style: const TextStyle(color: kPrimaryColor, fontFamily: montserratMedium, fontSize: 14)),
+                              const SizedBox(
+                                width: 8,
+                              ),
+                              const Icon(IconlyLight.arrowRightCircle, size: 20, color: kPrimaryColor),
+                            ],
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                  GridView.builder(
+                    itemCount: snapshot.data?.length,
+                    physics: const NeverScrollableScrollPhysics(),
+                    shrinkWrap: true,
+                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2, childAspectRatio: 3 / 4),
+                    itemBuilder: (BuildContext context, int index) {
+                      return Padding(
+                        padding: const EdgeInsets.only(top: 8, right: 8, bottom: 8),
+                        child: ProductCard(
+                          product: snapshot.data?[index],
+                        ),
+                      );
+                    },
+                  ),
+                ],
+              );
+            } else {
+              return spinKit();
+            }
+          }),
     );
   }
 

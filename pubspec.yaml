@@ -30,6 +30,10 @@ dependencies:
   share: ^2.0.4
   shimmer: null
   vibration: ^1.7.4-nullsafety.0
+  firebase_analytics: ^9.1.0
+  video_player: ^2.2.18
+  flick_video_player:
+
 
 dev_dependencies:
   flutter_test:

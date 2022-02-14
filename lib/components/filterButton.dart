@@ -1,5 +1,6 @@
+// ignore_for_file: file_names
+
 import 'package:flutter/material.dart';
-import 'package:flutter_iconly/flutter_iconly.dart';
 import 'package:get/get.dart';
 import 'package:sharaf_yabi_ecommerce/constants/constants.dart';
 
@@ -11,6 +12,7 @@ class FilterButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Expanded(
+      // ignore: deprecated_member_use
       child: RaisedButton(
         onPressed: onTap,
         color: Colors.white,
