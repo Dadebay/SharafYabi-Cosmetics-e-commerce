@@ -63,7 +63,7 @@ class _ProductProfilState extends State<ProductProfil> {
   }
 
   whenPageLoad() {
-    name = widget.productName ?? "SharafÝabi";
+    name = widget.productName ?? "Sharafyabi";
     imageMine = widget.image ?? "asd";
     if (favCartController.cartList.isNotEmpty) {
       bool mine = false;
@@ -159,7 +159,7 @@ class _ProductProfilState extends State<ProductProfil> {
     );
   }
 
-  Widget bottomSheetMine() {
+  Widget bottomSheetMine(String? price) {
     return Obx(() {
       return Container(
           child: productProfilController.addCartBool.value
@@ -183,9 +183,10 @@ class _ProductProfilState extends State<ProductProfil> {
                               }
                             }
                             productProfilController.quantity.value--;
+                            showSnackBarYnamdar("productCountAdded", "", kPrimaryColor);
                           } else {
                             productProfilController.addCartBool.value = false;
-                            showSnackBar("", "removedFromCartSubtitle", Colors.red);
+                            showSnackBar("removedFromCartTitle", "removedFromCartSubtitle", Colors.red);
                           }
                         },
                         child: const Padding(
@@ -204,7 +205,7 @@ class _ProductProfilState extends State<ProductProfil> {
                       GestureDetector(
                         onTap: () {
                           if (productProfilController.stockCount.value > (productProfilController.quantity.value + 1)) {
-                            favCartController.addCart(widget.id!);
+                            favCartController.addCart(widget.id!, price!);
                             cartPageController.addToCard(widget.id!);
 
                             productProfilController.quantity.value++;
@@ -215,6 +216,7 @@ class _ProductProfilState extends State<ProductProfil> {
                                 }
                               }
                             }
+                            showSnackBarYnamdar("productCountAdded", "", kPrimaryColor);
                           } else {
                             Vibration.vibrate();
                             showSnackBar("emptyStockMin", "emptyStockSubtitle", Colors.red);
@@ -234,7 +236,7 @@ class _ProductProfilState extends State<ProductProfil> {
                       if (priceOLD != 0.0) {
                         productProfilController.addCartBool.value = !productProfilController.addCartBool.value;
                         final int? a = widget.id;
-                        favCartController.addCart(a!);
+                        favCartController.addCart(a!, price!);
                         showSnackBar("addedToCardTitle", "addedToCardSubtitle", kPrimaryColor);
                       } else {
                         showSnackBar("retry", "error404", Colors.red);
@@ -308,7 +310,7 @@ class _ProductProfilState extends State<ProductProfil> {
                         const SizedBox.shrink(),
                     ],
                   ),
-                  bottomSheetMine(),
+                  bottomSheetMine(snapshot.data!.price),
                 ],
               ),
             ),

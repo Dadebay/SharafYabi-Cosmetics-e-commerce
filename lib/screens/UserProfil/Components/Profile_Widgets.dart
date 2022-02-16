@@ -378,7 +378,7 @@ Padding shareApp() {
       selectedTileColor: Colors.white,
       contentPadding: const EdgeInsets.symmetric(vertical: 10, horizontal: 5),
       onTap: () {
-        Share.share('https://play.google.com/store/apps/details?id=com.bilermennesil.sharafyabi', subject: 'Sharafýabi');
+        Share.share('https://play.google.com/store/apps/details?id=com.bilermennesil.sharafyabi', subject: 'Sharafyabi');
       },
       leading: Container(padding: const EdgeInsets.all(8), decoration: BoxDecoration(color: Colors.grey[100], borderRadius: borderRadius15), child: Image.asset("assets/icons/share.png", width: 25)),
       title: Text(

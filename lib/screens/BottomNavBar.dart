@@ -14,6 +14,7 @@ import 'package:sharaf_yabi_ecommerce/screens/News/TabbarViewPage.dart';
 import 'Cart/CartPage.dart';
 import 'Category/CategoryPage.dart';
 import 'HomePage/HomePage.dart';
+import 'package:badges/badges.dart';
 import 'UserProfil/UserProfilPage.dart';
 
 class BottomNavBar extends StatefulWidget {
@@ -24,6 +25,7 @@ class BottomNavBar extends StatefulWidget {
 class _BottomNavBarState extends State<BottomNavBar> with TickerProviderStateMixin {
   late TabController tabController;
   final SettingsController _settingsController = Get.put<SettingsController>(SettingsController());
+  final Fav_Cart_Controller fav_cart_controller = Get.put<Fav_Cart_Controller>(Fav_Cart_Controller());
   @override
   void initState() {
     super.initState();
@@ -94,11 +96,22 @@ class _BottomNavBarState extends State<BottomNavBar> with TickerProviderStateMix
           elevation: 2,
           type: BottomNavigationBarType.fixed,
           items: <BottomNavigationBarItem>[
-            BottomNavigationBarItem(label: 'homePage'.tr, icon: Icon(selectedPageIndex == 0 ? IconlyBold.home : IconlyLight.home)),
-            BottomNavigationBarItem(label: 'category'.tr, icon: Icon(selectedPageIndex == 1 ? IconlyBold.category : IconlyLight.category)),
-            BottomNavigationBarItem(label: 'cart'.tr, icon: Icon(selectedPageIndex == 2 ? IconlyBold.bag : IconlyLight.bag)),
-            BottomNavigationBarItem(label: 'news'.tr, icon: Icon(selectedPageIndex == 3 ? IconlyBold.paper : IconlyLight.paper)),
-            BottomNavigationBarItem(label: 'profil'.tr, icon: Icon(selectedPageIndex == 4 ? IconlyBold.profile : IconlyLight.profile)),
+            BottomNavigationBarItem(title: Text('homePage'.tr), icon: Icon(selectedPageIndex == 0 ? IconlyBold.home : IconlyLight.home)),
+            BottomNavigationBarItem(title: Text('category'.tr), icon: Icon(selectedPageIndex == 1 ? IconlyBold.category : IconlyLight.category)),
+            BottomNavigationBarItem(title: Obx(() {
+              return Text(fav_cart_controller.cartList.isEmpty ? 'cart'.tr : "${fav_cart_controller.priceAll.value} TMT");
+            }), icon: Obx(() {
+              return fav_cart_controller.cartList.isEmpty
+                  ? Icon(selectedPageIndex == 2 ? IconlyBold.bag : IconlyLight.bag)
+                  : Badge(
+                      badgeContent: Text('${fav_cart_controller.cartList.length}', style: TextStyle(color: Colors.white, fontSize: 10, fontFamily: montserratMedium)),
+                      badgeColor: Colors.red,
+                      shape: BadgeShape.circle,
+                      animationType: BadgeAnimationType.fade,
+                      child: Icon(selectedPageIndex == 2 ? IconlyBold.bag : IconlyLight.bag));
+            })),
+            BottomNavigationBarItem(title: Text('news'.tr), icon: Icon(selectedPageIndex == 3 ? IconlyBold.paper : IconlyLight.paper)),
+            BottomNavigationBarItem(title: Text("profil".tr), icon: Icon(selectedPageIndex == 4 ? IconlyBold.profile : IconlyLight.profile)),
           ],
         ),
       ),

@@ -8,6 +8,7 @@ import 'package:get_storage/get_storage.dart';
 class Fav_Cart_Controller extends GetxController {
   RxList cartList = [].obs;
   RxList favList = [].obs;
+  RxDouble priceAll = 0.0.obs;
 
   RxInt promoDiscount = 0.obs;
   RxBool promoLottie = false.obs;
@@ -51,9 +52,9 @@ class Fav_Cart_Controller extends GetxController {
   }
 
 ///////////////////////////////////////CART PART//////////////////////////////////////////////////
-  addCart(int id) {
+  addCart(int id, String price) {
     if (cartList.isEmpty) {
-      cartList.add({"id": id, "count": 1});
+      cartList.add({"id": id, "count": 1, "price": price});
     } else {
       bool value = false;
       for (final element in cartList) {
@@ -63,11 +64,23 @@ class Fav_Cart_Controller extends GetxController {
         }
       }
       if (value == false) {
-        cartList.add({"id": id, "count": 1});
+        cartList.add({"id": id, "count": 1, "price": price});
       }
     }
     final String jsonString = jsonEncode(cartList);
     storage.write("cartList", jsonString);
+    findSumma();
+  }
+
+  findSumma() {
+    priceAll.value = 0.0;
+    print(cartList);
+    cartList.forEach((element) {
+      double price = double.parse(element["price"]);
+      priceAll.value += price * element["count"];
+
+      print(element["count"]);
+    });
   }
 
   returnCartList() {
@@ -75,15 +88,17 @@ class Fav_Cart_Controller extends GetxController {
     final List jsonData = jsonDecode(result);
     if (jsonData.isNotEmpty) {
       for (final element in jsonData) {
-        cartList.add({"id": element["id"], "count": element["count"]});
+        cartList.add({"id": element["id"], "count": element["count"], "price": element["price"]});
       }
     }
+    findSumma();
   }
 
   clearCartList() {
     cartList.clear();
     final String jsonString = jsonEncode(cartList);
     storage.write("cartList", jsonString);
+    findSumma();
   }
 
   removeCart(int id) {
@@ -95,6 +110,7 @@ class Fav_Cart_Controller extends GetxController {
     cartList.removeWhere((element) => element["count"] == 0);
     final String jsonString = jsonEncode(cartList);
     storage.write("cartList", jsonString);
+    findSumma();
   }
 
   removeCartClear(int id) {
@@ -106,5 +122,6 @@ class Fav_Cart_Controller extends GetxController {
     cartList.removeWhere((element) => element["count"] == 0);
     final String jsonString = jsonEncode(cartList);
     storage.write("cartList", jsonString);
+    findSumma();
   }
 }

@@ -6,6 +6,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:sharaf_yabi_ecommerce/components/ProductProfil.dart';
 import 'package:sharaf_yabi_ecommerce/constants/constants.dart';
@@ -24,10 +25,13 @@ class CartPage extends StatefulWidget {
 class _CartPageState extends State<CartPage> {
   final CartPageController cartPageController = Get.put(CartPageController());
   final Fav_Cart_Controller favCartController = Get.put(Fav_Cart_Controller());
+  FToast? fToast;
+
   @override
   void initState() {
     super.initState();
-
+    fToast = FToast();
+    fToast?.init(context);
     cartPageController.loadData(parametrs: {"products": jsonEncode(Get.find<Fav_Cart_Controller>().cartList)});
   }
 
@@ -174,6 +178,11 @@ class _CartPageState extends State<CartPage> {
                               final int id = cartPageController.list[index]["id"];
                               cartPageController.removeCard(id);
                               favCartController.removeCart(id);
+                              showToast(
+                                fToast,
+                                "productCountAdded",
+                              );
+
                               setState(() {});
                             },
                             child: Container(
@@ -196,8 +205,13 @@ class _CartPageState extends State<CartPage> {
                           ),
                           GestureDetector(
                             onTap: () {
+                              showToast(
+                                fToast,
+                                "productCountAdded",
+                              );
+
                               cartPageController.addToCard(cartPageController.list[index]["id"]);
-                              favCartController.addCart(cartPageController.list[index]["id"]);
+                              favCartController.addCart(cartPageController.list[index]["id"], cartPageController.list[index]["price"]);
                             },
                             child: Container(
                                 padding: const EdgeInsets.all(4),

@@ -3,6 +3,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
@@ -11,18 +12,67 @@ import 'package:shimmer/shimmer.dart';
 import 'constants.dart';
 
 SnackbarController showSnackBar(String title, String subtitle, Color color) {
-  return Get.snackbar(title, subtitle,
-      titleText: Text(
-        title.tr,
-        style: const TextStyle(fontFamily: montserratSemiBold, fontSize: 16, color: Colors.white),
-      ),
-      messageText: Text(
-        subtitle.tr,
-        style: const TextStyle(fontFamily: montserratRegular, fontSize: 14, color: Colors.white),
-      ),
-      snackPosition: SnackPosition.BOTTOM,
-      backgroundColor: color,
-      margin: const EdgeInsets.only(bottom: 20, left: 20, right: 20));
+  return Get.snackbar(
+    title,
+    subtitle,
+    snackStyle: SnackStyle.FLOATING,
+    titleText: title == ""
+        ? SizedBox.shrink()
+        : Text(
+            title.tr,
+            style: const TextStyle(fontFamily: montserratSemiBold, fontSize: 16, color: Colors.white),
+          ),
+    messageText: Text(
+      subtitle.tr,
+      style: const TextStyle(fontFamily: montserratRegular, fontSize: 14, color: Colors.white),
+    ),
+    snackPosition: SnackPosition.BOTTOM,
+    backgroundColor: color,
+    borderRadius: 0.0,
+    margin: EdgeInsets.zero,
+  );
+}
+
+SnackbarController showSnackBarYnamdar(String title, String subtitle, Color color) {
+  return Get.snackbar(
+    title,
+    subtitle,
+    duration: Duration(seconds: 1),
+    snackStyle: SnackStyle.GROUNDED,
+    titleText: Text(
+      title.tr,
+      style: const TextStyle(fontFamily: montserratSemiBold, fontSize: 16, color: Colors.white),
+    ),
+    messageText: subtitle == ""
+        ? SizedBox.shrink()
+        : Text(
+            subtitle.tr,
+            style: const TextStyle(fontFamily: montserratRegular, fontSize: 14, color: Colors.white),
+          ),
+    snackPosition: SnackPosition.BOTTOM,
+    backgroundColor: color,
+    borderRadius: 5.0,
+    padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 12.0),
+    margin: EdgeInsets.all(10),
+  );
+}
+
+void showToast(FToast? fToast, String name) {
+  Widget toast = Container(
+    width: Get.size.width,
+    margin: EdgeInsets.only(bottom: 10),
+    padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),
+    decoration: BoxDecoration(
+      borderRadius: BorderRadius.circular(5.0),
+      color: kPrimaryColor,
+    ),
+    child: Text(name.tr, style: TextStyle(color: Colors.white, fontFamily: montserratMedium)),
+  );
+  fToast!.showToast(
+    child: toast,
+    gravity: ToastGravity.BOTTOM,
+    toastDuration: Duration(seconds: 2),
+  );
 }
 
 String lang = "ru";

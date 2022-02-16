@@ -33,9 +33,9 @@ class NewsProfil extends StatelessWidget {
                               padding: EdgeInsets.zero,
                               height: 250,
                               width: Get.size.width,
-                              margin: const EdgeInsets.symmetric(vertical: 10),
+                              margin: const EdgeInsets.only(bottom: 10),
                               decoration: BoxDecoration(
-                                borderRadius: borderRadius20,
+                                borderRadius: borderRadius10,
                                 image: DecorationImage(
                                   image: imageProvider,
                                   fit: BoxFit.cover,
@@ -57,7 +57,7 @@ class NewsProfil extends StatelessWidget {
                         children: [
                           Text("${snapshot.data!.title}", style: const TextStyle(color: Colors.black, fontFamily: montserratSemiBold, fontSize: 24)),
                           Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 15),
+                            padding: const EdgeInsets.symmetric(vertical: 20),
                             child: Row(
                               children: [
                                 const Padding(

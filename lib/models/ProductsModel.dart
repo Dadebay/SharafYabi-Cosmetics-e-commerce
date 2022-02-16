@@ -43,6 +43,7 @@ class ProductsModel extends ChangeNotifier {
         headers: <String, String>{
           HttpHeaders.contentTypeHeader: 'application/json; charset=UTF-8',
         });
+    print(parametrs);
     if (response.statusCode == 200) {
       final responseJson = jsonDecode(response.body)["rows"]["products"];
       final responseCount = jsonDecode(response.body)["rows"]["count"];

@@ -455,7 +455,7 @@ class _ShowAllProductsPageState extends State<ShowAllProductsPage> {
                           );
                         }
                       }),
-                )
+                ),
             ],
           ),
         ));
@@ -477,7 +477,7 @@ class _ShowAllProductsPageState extends State<ShowAllProductsPage> {
 
         Get.bottomSheet(Container(
             color: Colors.white,
-            padding: const EdgeInsets.only(bottom: 25),
+            padding: const EdgeInsets.only(bottom: 10),
             child: Column(children: [
               const BottomSheetName(
                 name: "subCategory",
@@ -491,7 +491,22 @@ class _ShowAllProductsPageState extends State<ShowAllProductsPage> {
                 itemBuilder: (BuildContext context, int indexx) {
                   return myCheckBox(indexx, snapshot.data![index].sub![indexx].name, snapshot.data![index].sub![indexx].id);
                 },
-              ))
+              )),
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 14),
+                child: AgreeButton(
+                  name: 'agree',
+                  onTap: () {
+                    filterController.loading.value = 0;
+                    filterController.list.clear();
+                    filterController.fetchProducts();
+                    Get.back();
+                    Get.back();
+
+                    Get.back();
+                  },
+                ),
+              ),
             ])));
       },
     );

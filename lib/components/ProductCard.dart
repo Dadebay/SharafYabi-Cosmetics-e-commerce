@@ -98,6 +98,7 @@ class _ProductCardState extends State<ProductCard> {
           ),
           AddCartButton(
             id: widget.product!.id,
+            price: widget.product!.price!,
           )
         ],
       ),

@@ -126,6 +126,8 @@ class _ProductCard2State extends State<ProductCard2> {
                                   }
                                 }
                               }
+                              showSnackBarYnamdar("productCountAdded", "", kPrimaryColor);
+
                               favCartController.removeCart(_filterController.list[widget.indexx]["id"]);
                             });
                           },
@@ -159,7 +161,9 @@ class _ProductCard2State extends State<ProductCard2> {
                               for (final element2 in _filterController.list) {
                                 if (element2["id"] == _filterController.list[widget.indexx]["id"]) {
                                   element2["count"]++;
-                                  favCartController.addCart(_filterController.list[widget.indexx]["id"]);
+                                  showSnackBarYnamdar("productCountAdded", "", kPrimaryColor);
+
+                                  favCartController.addCart(_filterController.list[widget.indexx]["id"], _filterController.list[widget.indexx]["price"]);
                                 }
                               }
                             });
@@ -184,16 +188,13 @@ class _ProductCard2State extends State<ProductCard2> {
                 : RaisedButton(
                     onPressed: () {
                       setState(() {
+                        showSnackBarYnamdar("addedToCardTitle", "", kPrimaryColor);
+
                         addCart = !addCart;
                         if (_filterController.list[widget.indexx]["count"] == 0) {
                           _filterController.list[widget.indexx]["count"]++;
-// for (final element2 in _filterController.list) {
-                          //   if (element2["id"] == _filterController.list[widget.indexx]["id"]) {
-                          //     element2["count"]++;
-                          //     }
-                          //   }
                         } else {
-                          favCartController.addCart(_filterController.list[widget.indexx]["id"]);
+                          favCartController.addCart(_filterController.list[widget.indexx]["id"], _filterController.list[widget.indexx]["price"]);
                         }
                       });
                     },

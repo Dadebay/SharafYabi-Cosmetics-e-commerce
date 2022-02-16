@@ -2,16 +2,18 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
 import 'package:sharaf_yabi_ecommerce/constants/constants.dart';
+import 'package:sharaf_yabi_ecommerce/constants/widgets.dart';
 import 'package:sharaf_yabi_ecommerce/controllers/Fav_Cart_Controller.dart';
 
 class AddCartButton extends StatefulWidget {
-  const AddCartButton({Key? key, this.id}) : super(key: key);
+  const AddCartButton({Key? key, this.id, required this.price}) : super(key: key);
 
   final int? id;
-
+  final String price;
   @override
   State<AddCartButton> createState() => _AddCartButtonState();
 }
@@ -20,10 +22,12 @@ class _AddCartButtonState extends State<AddCartButton> with TickerProviderStateM
   bool addCart = false;
   bool changeLottie = false;
   Fav_Cart_Controller fav_cart_controller = Get.put(Fav_Cart_Controller());
-
+  FToast? fToast;
   @override
   void initState() {
     super.initState();
+    fToast = FToast();
+    fToast?.init(context);
     if (fav_cart_controller.cartList.isNotEmpty) {
       for (final element in fav_cart_controller.cartList) {
         if (element["id"] == widget.id) {
@@ -42,7 +46,9 @@ class _AddCartButtonState extends State<AddCartButton> with TickerProviderStateM
         setState(() {
           addCart = !addCart;
           if (addCart == true) {
-            Get.find<Fav_Cart_Controller>().addCart(widget.id!);
+            showToast(fToast, "addedToCardSubtitle");
+
+            Get.find<Fav_Cart_Controller>().addCart(widget.id!, widget.price);
           } else {
             Get.find<Fav_Cart_Controller>().removeCartClear(
               widget.id!,

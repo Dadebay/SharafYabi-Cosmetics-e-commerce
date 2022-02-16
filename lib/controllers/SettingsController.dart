@@ -11,6 +11,8 @@ class SettingsController extends GetxController {
   RxBool connectionState = false.obs;
   RxBool commentBool = false.obs;
   RxInt commentID = 0.obs;
+  RxInt bottomBadgeCount = 0.obs;
+
   var tm = const Locale(
     'tr',
   );

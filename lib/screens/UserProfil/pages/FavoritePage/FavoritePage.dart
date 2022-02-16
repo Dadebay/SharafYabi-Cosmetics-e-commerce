@@ -168,6 +168,7 @@ class _FavoritePageState extends State<FavoritePage> {
                           ),
                           AddCartButton(
                             id: product.id,
+                            price: product.price!,
                           )
                         ],
                       ),

@@ -100,7 +100,7 @@ class _BannersState extends State<Banners> {
           if (pathID == 2) {
             filterController.mainCategoryID.value = id!;
             Get.to(() => const ShowAllProductsPage(
-                  pageName: "SharafÝabi",
+                  pageName: "Sharafyabi",
                   whichFilter: 0,
                 ));
           } else if (pathID == 3) {
