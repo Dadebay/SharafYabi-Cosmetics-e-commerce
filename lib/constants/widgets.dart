@@ -3,7 +3,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
-import 'package:fluttertoast/fluttertoast.dart';
+import 'package:flutter_styled_toast/flutter_styled_toast.dart';
 import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
@@ -33,49 +33,29 @@ SnackbarController showSnackBar(String title, String subtitle, Color color) {
   );
 }
 
-SnackbarController showSnackBarYnamdar(String title, String subtitle, Color color) {
-  return Get.snackbar(
-    title,
-    subtitle,
-    duration: Duration(seconds: 1),
-    snackStyle: SnackStyle.GROUNDED,
-    titleText: Text(
-      title.tr,
-      style: const TextStyle(fontFamily: montserratSemiBold, fontSize: 16, color: Colors.white),
-    ),
-    messageText: subtitle == ""
-        ? SizedBox.shrink()
-        : Text(
-            subtitle.tr,
-            style: const TextStyle(fontFamily: montserratRegular, fontSize: 14, color: Colors.white),
-          ),
-    snackPosition: SnackPosition.BOTTOM,
-    backgroundColor: color,
-    borderRadius: 5.0,
-    padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 12.0),
-    margin: EdgeInsets.all(10),
-  );
-}
-
-void showToast(FToast? fToast, String name) {
-  Widget toast = Container(
-    width: Get.size.width,
-    margin: EdgeInsets.only(bottom: 10),
-    padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),
-    decoration: BoxDecoration(
-      borderRadius: BorderRadius.circular(5.0),
-      color: kPrimaryColor,
-    ),
-    child: Text(name.tr, style: TextStyle(color: Colors.white, fontFamily: montserratMedium)),
-  );
-  fToast!.showToast(
-    child: toast,
-    gravity: ToastGravity.BOTTOM,
-    toastDuration: Duration(seconds: 2),
-  );
-}
-
 String lang = "ru";
+
+void showCustomToast(BuildContext context, String name) {
+  showToast(
+    name.tr,
+    textStyle: TextStyle(color: Colors.white, fontSize: 16, fontFamily: montserratSemiBold),
+    context: context,
+    alignment: Alignment.bottomCenter,
+    backgroundColor: kPrimaryColor,
+    axis: Axis.horizontal,
+    position: StyledToastPosition.bottom,
+    curve: Curves.decelerate,
+    reverseCurve: Curves.decelerate,
+    animation: StyledToastAnimation.none,
+    reverseAnimation: StyledToastAnimation.none,
+    duration: Duration(seconds: 3),
+    animDuration: Duration(seconds: 1),
+    dismissOtherToast: true,
+    fullWidth: false,
+    isHideKeyboard: false,
+    isIgnoring: true,
+  );
+}
 
 Future<String> languageCode() async {
   if (Get.locale!.languageCode == null) {

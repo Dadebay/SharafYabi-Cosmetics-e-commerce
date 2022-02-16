@@ -2,7 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
-import 'package:fluttertoast/fluttertoast.dart';
+import 'package:flutter_styled_toast/flutter_styled_toast.dart';
 import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
 import 'package:sharaf_yabi_ecommerce/constants/constants.dart';
@@ -22,12 +22,9 @@ class _AddCartButtonState extends State<AddCartButton> with TickerProviderStateM
   bool addCart = false;
   bool changeLottie = false;
   Fav_Cart_Controller fav_cart_controller = Get.put(Fav_Cart_Controller());
-  FToast? fToast;
   @override
   void initState() {
     super.initState();
-    fToast = FToast();
-    fToast?.init(context);
     if (fav_cart_controller.cartList.isNotEmpty) {
       for (final element in fav_cart_controller.cartList) {
         if (element["id"] == widget.id) {
@@ -46,12 +43,19 @@ class _AddCartButtonState extends State<AddCartButton> with TickerProviderStateM
         setState(() {
           addCart = !addCart;
           if (addCart == true) {
-            showToast(fToast, "addedToCardSubtitle");
+            showCustomToast(
+              context,
+              "addedToCardSubtitle".tr,
+            );
 
             Get.find<Fav_Cart_Controller>().addCart(widget.id!, widget.price);
           } else {
             Get.find<Fav_Cart_Controller>().removeCartClear(
               widget.id!,
+            );
+            showCustomToast(
+              context,
+              "removedFromCartSubtitle".tr,
             );
           }
         });

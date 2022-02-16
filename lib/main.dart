@@ -22,28 +22,25 @@ class MyHttpOverrides extends HttpOverrides {
 }
 
 AndroidNotificationChannel channel = const AndroidNotificationChannel(
-  'high_importance_channel', // id
-  'High Importance Notifications', // title
-  description: 'This channel is used for important notifications.', // description
-  importance: Importance.high,
-);
+    'high_importance_channel', // id
+    'High Importance Notifications', // title
+    description: 'This channel is used for important notifications.', // description
+    importance: Importance.high);
 
 FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
-
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp();
-  await FirebaseMessaging.instance.requestPermission();
-
   flutterLocalNotificationsPlugin.show(
     message.data.hashCode,
-    message.data['title'],
     message.data['body'],
+    message.data['title'],
     NotificationDetails(
       android: AndroidNotificationDetails(
         channel.id,
         channel.name,
         channelDescription: channel.description,
         color: Colors.white,
+        styleInformation: const BigTextStyleInformation(''),
         icon: '@mipmap/ic_launcher',
       ),
     ),
@@ -54,19 +51,9 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   HttpOverrides.global = MyHttpOverrides();
   await GetStorage.init();
-
-  await Firebase.initializeApp(
-      // options: const FirebaseOptions(
-      //   apiKey: 'AIzaSyAGOPaUjBwRsNQbCMndUaqJNC6RHXBQstQ',
-      //   appId: '1:1069011072291:android:6e2314726c7a71c94f8896',
-      //   messagingSenderId: '1069011072291',
-      //   projectId: 'sharafyabi-4293c',
-      // ),
-      );
+  await Firebase.initializeApp();
   await FirebaseMessaging.instance.requestPermission();
-
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
-
   await flutterLocalNotificationsPlugin.resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()?.createNotificationChannel(channel);
   await FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(
     alert: true,
@@ -105,13 +92,14 @@ class _MyAppRunState extends State<MyAppRun> {
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       flutterLocalNotificationsPlugin.show(
         message.data.hashCode,
-        message.data['title'],
         message.data['body'],
+        message.data['title'],
         NotificationDetails(
           android: AndroidNotificationDetails(
             channel.id,
             channel.name,
             channelDescription: channel.description,
+            styleInformation: const BigTextStyleInformation(''),
             color: Colors.white,
             icon: '@mipmap/ic_launcher',
           ),
@@ -119,7 +107,7 @@ class _MyAppRunState extends State<MyAppRun> {
       );
     });
 
-    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage? message) {
+    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
       Get.to(() => MyCustomSplashScreen());
     });
   }

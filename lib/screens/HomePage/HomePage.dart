@@ -14,7 +14,6 @@ import 'package:sharaf_yabi_ecommerce/screens/HomePage/Components/Banners.dart';
 import 'package:sharaf_yabi_ecommerce/screens/HomePage/SearchPage/Search.dart';
 import 'package:sharaf_yabi_ecommerce/widgets/appBar.dart';
 import 'package:shimmer/shimmer.dart';
-import 'Components/gridView.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);

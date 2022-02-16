@@ -40,6 +40,7 @@ class ProductProfil extends StatefulWidget {
 
 class _ProductProfilState extends State<ProductProfil> {
   bool addCartBool = false;
+
   CartPageController cartPageController = Get.put(CartPageController());
   TextEditingController controller = TextEditingController();
   double discountedPrice = 0.0;
@@ -74,16 +75,16 @@ class _ProductProfilState extends State<ProductProfil> {
         }
         if (element["id"] == widget.id) {
           mine = true;
-          productProfilController.addCartBool.value = true;
+          addCartBool = true;
           productProfilController.quantity.value = element["count"];
         }
       }
       if (mine == false) {
-        productProfilController.addCartBool.value = false;
+        addCartBool = false;
         productProfilController.quantity.value = 1;
       }
     } else {
-      productProfilController.addCartBool.value = false;
+      addCartBool = false;
       productProfilController.quantity.value = 1;
     }
     if (favCartController.favList.isNotEmpty) {
@@ -105,7 +106,7 @@ class _ProductProfilState extends State<ProductProfil> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Expanded(flex: 2, child: Text(text1!, overflow: TextOverflow.ellipsis, style: TextStyle(color: Colors.grey[600], fontFamily: montserratMedium, fontSize: 16))),
+          Expanded(flex: 2, child: Text(text1!, overflow: TextOverflow.ellipsis, style: TextStyle(color: Colors.grey[600], fontFamily: montserratSemiBold, fontSize: 16))),
           Expanded(flex: 2, child: Text(text2!, maxLines: 1, overflow: TextOverflow.ellipsis, style: const TextStyle(color: Colors.black, fontFamily: montserratMedium, fontSize: 16))),
         ],
       ),
@@ -160,98 +161,111 @@ class _ProductProfilState extends State<ProductProfil> {
   }
 
   Widget bottomSheetMine(String? price) {
-    return Obx(() {
-      return Container(
-          child: productProfilController.addCartBool.value
-              ? Container(
-                  decoration: const BoxDecoration(
-                    borderRadius: borderRadius10,
-                    color: kPrimaryColor,
-                  ),
-                  child: Row(
-                    children: [
-                      GestureDetector(
-                        onTap: () {
-                          favCartController.removeCart(widget.id!);
-                          cartPageController.removeCard(widget.id!);
-                          if (productProfilController.quantity.value > 1) {
-                            if (filterController.list.isNotEmpty) {
-                              for (final element2 in filterController.list) {
-                                if (element2["id"] == widget.id) {
-                                  element2["count"]--;
-                                }
+    return Container(
+        child: addCartBool
+            ? Container(
+                decoration: const BoxDecoration(
+                  borderRadius: borderRadius10,
+                  color: kPrimaryColor,
+                ),
+                child: Row(
+                  children: [
+                    GestureDetector(
+                      onTap: () {
+                        favCartController.removeCart(widget.id!);
+                        cartPageController.removeCard(widget.id!);
+                        if (productProfilController.quantity.value > 1) {
+                          if (filterController.list.isNotEmpty) {
+                            for (final element2 in filterController.list) {
+                              if (element2["id"] == widget.id) {
+                                element2["count"]--;
                               }
                             }
-                            productProfilController.quantity.value--;
-                            showSnackBarYnamdar("productCountAdded", "", kPrimaryColor);
-                          } else {
-                            productProfilController.addCartBool.value = false;
-                            showSnackBar("removedFromCartTitle", "removedFromCartSubtitle", Colors.red);
                           }
-                        },
-                        child: const Padding(
-                          padding: EdgeInsets.all(8.0),
-                          child: Icon(CupertinoIcons.minus_circled, color: Colors.white, size: 25),
-                        ),
+                          productProfilController.quantity.value--;
+                          showCustomToast(
+                            context,
+                            "productCountAdded".tr,
+                          );
+                          // showToast(fToast: fToast, name: "productCountAdded");
+                        } else {
+                          setState(() {
+                            addCartBool = false;
+                          });
+                          showSnackBar("removedFromCartTitle", "removedFromCartSubtitle", Colors.red);
+                        }
+                      },
+                      child: const Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: Icon(CupertinoIcons.minus_circled, color: Colors.white, size: 25),
                       ),
-                      Container(
-                        margin: const EdgeInsets.symmetric(horizontal: 15),
-                        child: Text(
-                          "${productProfilController.quantity.value}",
-                          textAlign: TextAlign.center,
-                          style: const TextStyle(color: Colors.white, fontFamily: montserratBold, fontSize: 26),
-                        ),
+                    ),
+                    Container(
+                      margin: const EdgeInsets.symmetric(horizontal: 15),
+                      child: Text(
+                        "${productProfilController.quantity.value}",
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(color: Colors.white, fontFamily: montserratBold, fontSize: 26),
                       ),
-                      GestureDetector(
-                        onTap: () {
-                          if (productProfilController.stockCount.value > (productProfilController.quantity.value + 1)) {
-                            favCartController.addCart(widget.id!, price!);
-                            cartPageController.addToCard(widget.id!);
+                    ),
+                    GestureDetector(
+                      onTap: () {
+                        if (productProfilController.stockCount.value > (productProfilController.quantity.value + 1)) {
+                          favCartController.addCart(widget.id!, price!);
+                          cartPageController.addToCard(widget.id!);
 
-                            productProfilController.quantity.value++;
-                            if (filterController.list.isNotEmpty) {
-                              for (final element2 in filterController.list) {
-                                if (element2["id"] == widget.id) {
-                                  element2["count"]++;
-                                }
+                          productProfilController.quantity.value++;
+                          if (filterController.list.isNotEmpty) {
+                            for (final element2 in filterController.list) {
+                              if (element2["id"] == widget.id) {
+                                element2["count"]++;
                               }
                             }
-                            showSnackBarYnamdar("productCountAdded", "", kPrimaryColor);
-                          } else {
-                            Vibration.vibrate();
-                            showSnackBar("emptyStockMin", "emptyStockSubtitle", Colors.red);
                           }
-                        },
-                        child: const Padding(
-                          padding: EdgeInsets.all(8.0),
-                          child: Icon(CupertinoIcons.add_circled, color: Colors.white, size: 25),
-                        ),
+                          showCustomToast(
+                            context,
+                            "productCountAdded".tr,
+                          );
+                          // showToast(fToast: fToast, name: "productCountAdded");
+                        } else {
+                          Vibration.vibrate();
+                          showSnackBar("emptyStockMin", "emptyStockSubtitle", Colors.red);
+                        }
+                      },
+                      child: const Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: Icon(CupertinoIcons.add_circled, color: Colors.white, size: 25),
                       ),
-                    ],
-                  ),
-                )
-              : GestureDetector(
-                  onTap: () {
-                    if (productProfilController.stockCount.value > 2) {
-                      if (priceOLD != 0.0) {
-                        productProfilController.addCartBool.value = !productProfilController.addCartBool.value;
+                    ),
+                  ],
+                ),
+              )
+            : GestureDetector(
+                onTap: () {
+                  if (productProfilController.stockCount.value > 2) {
+                    if (priceOLD != 0.0) {
+                      setState(() {
+                        addCartBool = !addCartBool;
                         final int? a = widget.id;
                         favCartController.addCart(a!, price!);
-                        showSnackBar("addedToCardTitle", "addedToCardSubtitle", kPrimaryColor);
-                      } else {
-                        showSnackBar("retry", "error404", Colors.red);
-                      }
+                        showCustomToast(
+                          context,
+                          "addedToCardSubtitle".tr,
+                        );
+                      });
+                    } else {
+                      showSnackBar("retry", "error404", Colors.red);
                     }
-                  },
-                  child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
-                      decoration: const BoxDecoration(
-                        color: kPrimaryColor,
-                        borderRadius: borderRadius10,
-                      ),
-                      child: Text("addCart3".tr, textAlign: TextAlign.center, style: const TextStyle(color: Colors.white, fontFamily: montserratMedium, fontSize: 18))),
-                ));
-    });
+                  }
+                },
+                child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
+                    decoration: const BoxDecoration(
+                      color: kPrimaryColor,
+                      borderRadius: borderRadius10,
+                    ),
+                    child: Text("addCart3".tr, textAlign: TextAlign.center, style: const TextStyle(color: Colors.white, fontFamily: montserratMedium, fontSize: 18))),
+              ));
   }
 
   Column sameProducts(AsyncSnapshot<ProductProfilModel> snapshot) {
@@ -322,7 +336,7 @@ class _ProductProfilState extends State<ProductProfil> {
   Stack imagePart(AsyncSnapshot<ProductProfilModel> snapshot) {
     return Stack(
       children: [
-        if (snapshot.data!.images.length == 1)
+        if (snapshot.data!.images.toString() == "[]")
           noImage()
         else
           Container(
@@ -348,7 +362,7 @@ class _ProductProfilState extends State<ProductProfil> {
                   },
                   child: CachedNetworkImage(
                       fadeInCurve: Curves.ease,
-                      imageUrl: "$serverImage/${snapshot.data!.images[index]["destination"]}-mini.webp",
+                      imageUrl: "$serverImage/${snapshot.data!.images[index]["destination"]}-big.webp",
                       imageBuilder: (context, imageProvider) => Container(
                             padding: EdgeInsets.zero,
                             margin: EdgeInsets.zero,
@@ -555,7 +569,6 @@ class _ProductProfilState extends State<ProductProfil> {
     return Scaffold(
         backgroundColor: backgroundColor,
         appBar: appBar(),
-        // bottomSheet: bottomSheetMine(),
         body: SingleChildScrollView(
           child: FutureBuilder<ProductProfilModel>(
               future: getProduct,

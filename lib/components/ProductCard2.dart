@@ -28,6 +28,7 @@ class _ProductCard2State extends State<ProductCard2> {
   Fav_Cart_Controller favCartController = Get.put<Fav_Cart_Controller>(Fav_Cart_Controller());
   bool favButton = false;
   bool addCart = false;
+
   @override
   void initState() {
     super.initState();
@@ -126,8 +127,11 @@ class _ProductCard2State extends State<ProductCard2> {
                                   }
                                 }
                               }
-                              showSnackBarYnamdar("productCountAdded", "", kPrimaryColor);
-
+                              showCustomToast(
+                                context,
+                                "productCountAdded".tr,
+                              );
+                              // showToast(fToast: fToast, name: "productCountAdded");
                               favCartController.removeCart(_filterController.list[widget.indexx]["id"]);
                             });
                           },
@@ -161,8 +165,11 @@ class _ProductCard2State extends State<ProductCard2> {
                               for (final element2 in _filterController.list) {
                                 if (element2["id"] == _filterController.list[widget.indexx]["id"]) {
                                   element2["count"]++;
-                                  showSnackBarYnamdar("productCountAdded", "", kPrimaryColor);
-
+                                  // showToast(fToast: fToast, name: "productCountAdded");
+                                  showCustomToast(
+                                    context,
+                                    "productCountAdded".tr,
+                                  );
                                   favCartController.addCart(_filterController.list[widget.indexx]["id"], _filterController.list[widget.indexx]["price"]);
                                 }
                               }
@@ -188,8 +195,11 @@ class _ProductCard2State extends State<ProductCard2> {
                 : RaisedButton(
                     onPressed: () {
                       setState(() {
-                        showSnackBarYnamdar("addedToCardTitle", "", kPrimaryColor);
-
+                        // showToast(fToast: fToast, name: "addedToCardSubtitle");
+                        showCustomToast(
+                          context,
+                          "addedToCardSubtitle".tr,
+                        );
                         addCart = !addCart;
                         if (_filterController.list[widget.indexx]["count"] == 0) {
                           _filterController.list[widget.indexx]["count"]++;

@@ -74,13 +74,10 @@ class Fav_Cart_Controller extends GetxController {
 
   findSumma() {
     priceAll.value = 0.0;
-    print(cartList);
-    cartList.forEach((element) {
-      double price = double.parse(element["price"]);
+    for (final element in cartList) {
+      final double price = double.parse(element["price"]);
       priceAll.value += price * element["count"];
-
-      print(element["count"]);
-    });
+    }
   }
 
   returnCartList() {

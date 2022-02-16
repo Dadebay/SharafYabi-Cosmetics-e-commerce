@@ -28,6 +28,7 @@ class _ProductCardState extends State<ProductCard> {
   @override
   void initState() {
     super.initState();
+
     for (final element in favCartController.cartList) {
       if (element["id"] == widget.product?.id) {
         addCart = true;
