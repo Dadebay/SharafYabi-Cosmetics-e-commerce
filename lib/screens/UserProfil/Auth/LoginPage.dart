@@ -33,34 +33,34 @@ class LoginPage extends StatelessWidget {
                     size: 28,
                   ),
                 )),
-            Positioned(
-              top: 30,
-              right: 15,
-              child: PopupMenuButton(
-                onSelected: (String a) {
-                  if (a.toString() == "forgot") {
-                    Get.to(() => ForgotPassword());
-                  } else {
-                    Get.to(() => ChangePassword());
-                  }
-                },
-                icon: const Icon(
-                  IconlyLight.moreCircle,
-                  color: Colors.white,
-                  size: 28,
-                ),
-                itemBuilder: (_) => <PopupMenuItem<String>>[
-                  PopupMenuItem<String>(
-                    value: 'forgot',
-                    child: Text('forgotPassword'.tr),
-                  ),
-                  PopupMenuItem<String>(
-                    value: 'change',
-                    child: Text('changePassword'.tr),
-                  ),
-                ],
-              ),
-            ),
+            // Positioned(
+            //   top: 30,
+            //   right: 15,
+            //   child: PopupMenuButton(
+            //     onSelected: (String a) {
+            //       if (a.toString() == "forgot") {
+            //         Get.to(() => ForgotPassword());
+            //       } else {
+            //         Get.to(() => ChangePassword());
+            //       }
+            //     },
+            //     icon: const Icon(
+            //       IconlyLight.moreCircle,
+            //       color: Colors.white,
+            //       size: 28,
+            //     ),
+            //     itemBuilder: (_) => <PopupMenuItem<String>>[
+            //       PopupMenuItem<String>(
+            //         value: 'forgot',
+            //         child: Text('forgotPassword'.tr, style: TextStyle(color: Colors.black, fontFamily: montserratMedium)),
+            //       ),
+            //       PopupMenuItem<String>(
+            //         value: 'change',
+            //         child: Text('changePassword'.tr, style: TextStyle(color: Colors.black, fontFamily: montserratMedium)),
+            //       ),
+            //     ],
+            //   ),
+            // ),
             Align(
               alignment: Alignment.bottomCenter,
               child: TabBar(

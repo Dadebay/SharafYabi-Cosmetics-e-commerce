@@ -39,12 +39,7 @@ class _CartPageState extends State<CartPage> {
             favCartController.clearCartList();
 
             setState(() {
-              _homePageController.list.clear();
-              _homePageController.listNewInCome.clear();
-              _homePageController.listRecomended.clear();
-              _homePageController.fetchDiscountedProducts();
-              _homePageController.fetchPopularProducts();
-              _homePageController.fetchNewInComeProducts();
+              _homePageController.refreshList();
             });
           },
         ),

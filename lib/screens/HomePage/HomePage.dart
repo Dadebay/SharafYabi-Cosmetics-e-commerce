@@ -124,7 +124,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                     price: _homePageController.listRecomended[index]["price"],
                     image: _homePageController.listRecomended[index]["image"],
                     discountValue: _homePageController.listRecomended[index]["discountValue"],
-                    whichList: 3,
                     index: index,
                   ),
                 );
@@ -191,7 +190,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                             price: _homePageController.list[index]["price"],
                             image: _homePageController.list[index]["image"],
                             discountValue: _homePageController.list[index]["discountValue"],
-                            whichList: 1,
                             index: index,
                           ),
                         );
@@ -258,7 +256,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                             price: _homePageController.listNewInCome[index]["price"],
                             image: _homePageController.listNewInCome[index]["image"],
                             discountValue: _homePageController.listNewInCome[index]["discountValue"],
-                            whichList: 2,
                             index: index,
                           ),
                         );

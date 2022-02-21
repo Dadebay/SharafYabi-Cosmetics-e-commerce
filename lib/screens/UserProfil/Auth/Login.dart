@@ -7,6 +7,7 @@ import 'package:sharaf_yabi_ecommerce/constants/widgets.dart';
 import 'package:sharaf_yabi_ecommerce/controllers/AuthController.dart';
 import 'package:sharaf_yabi_ecommerce/models/UserModels/UserSignInModel.dart';
 import 'package:sharaf_yabi_ecommerce/screens/BottomNavBar.dart';
+import 'package:sharaf_yabi_ecommerce/screens/UserProfil/Auth/ForgotPassword.dart';
 import 'package:sharaf_yabi_ecommerce/widgets/PhoneNumber.dart';
 import 'package:sharaf_yabi_ecommerce/widgets/agreeButton.dart';
 import 'package:sharaf_yabi_ecommerce/widgets/passwordTextField.dart';
@@ -56,7 +57,6 @@ class Login extends StatelessWidget {
       child: Form(
         key: _login,
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             textPart(),
@@ -66,8 +66,11 @@ class Login extends StatelessWidget {
               controller: loginPhoneController,
             ),
             PasswordTextFieldMine(mineFocus: paswordFocus, requestFocus: paswordFocus, controller: loginPassswordController, hintText: "userPassword".tr),
-            const SizedBox(
-              height: 20,
+            GestureDetector(
+              onTap: () {
+                Get.to(() => ForgotPassword());
+              },
+              child: Text("forgotPassword".tr + ".", style: TextStyle(color: kPrimaryColor, decoration: TextDecoration.underline, fontFamily: montserratMedium, fontSize: 18)),
             ),
             Center(
               child: AgreeButton(
@@ -77,14 +80,14 @@ class Login extends StatelessWidget {
                     authController.changeSignInAnimation();
                     UserSignInModel().login(phone: loginPhoneController.text, password: loginPassswordController.text).then((value) {
                       if (value == true) {
-                        showSnackBar("signIntitle", "signInSubtitle", Colors.green);
+                        showSnackBar("signIntitle", "signInSubtitle", kPrimaryColor);
                         Get.to(() => BottomNavBar());
                       } else if (value == 409) {
-                        showSnackBar("signInErrorTitle", "singInSubtitle ", Colors.red);
+                        showSnackBar("signInErrorTitle", "errorLogin", Colors.red);
 
                         loginPhoneController.clear();
                       } else if (value == 500) {
-                        showSnackBar("retry", "error404", Colors.red);
+                        showSnackBar("signInErrorTitle", "errorLogin", Colors.red);
                       } else if (value == 404) {
                         showSnackBar("retry", "errorLogin", Colors.red);
                       }

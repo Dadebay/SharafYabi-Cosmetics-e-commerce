@@ -42,6 +42,7 @@ class ProductProfil extends StatefulWidget {
 
 class _ProductProfilState extends State<ProductProfil> {
   bool addCartBool = false;
+  bool favBool = false;
   CartPageController cartPageController = Get.put(CartPageController());
   TextEditingController controller = TextEditingController();
   double discountedPrice = 0.0;
@@ -90,17 +91,14 @@ class _ProductProfilState extends State<ProductProfil> {
       addCartBool = false;
       productProfilController.quantity.value = 1;
     }
-    if (favCartController.favList.isNotEmpty) {
-      for (final element in favCartController.favList) {
-        if (element["id"] == widget.id) {
-          productProfilController.favBool.value = true;
-        } else {
-          productProfilController.favBool.value = false;
-        }
+
+    print("favlist girdi ");
+    for (final element in favCartController.favList) {
+      if (element["id"] == widget.id) {
+        favBool = true;
       }
-    } else {
-      productProfilController.favBool.value = false;
     }
+    print(favBool);
   }
 
   Padding specificationTexts({String? text1, String? text2}) {
@@ -129,6 +127,7 @@ class _ProductProfilState extends State<ProductProfil> {
       leadingWidth: 25,
       leading: IconButton(
           onPressed: () {
+            print("itapped");
             Navigator.of(context).pop();
           },
           icon: const Icon(
@@ -142,19 +141,17 @@ class _ProductProfilState extends State<ProductProfil> {
           },
           child: Image.asset("assets/icons/share.png", width: 27, color: Colors.black),
         ),
-        Obx(() {
-          return GestureDetector(
-            onTap: () {
-              favCartController.toggleFav(widget.id!);
-              productProfilController.favBool.value = !productProfilController.favBool.value;
-            },
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 15),
-              child: Icon(productProfilController.favBool.value == true ? IconlyBold.heart : IconlyLight.heart,
-                  color: productProfilController.favBool.value == true ? Colors.red : Colors.black, size: 28),
-            ),
-          );
-        }),
+        GestureDetector(
+          onTap: () {
+            favCartController.toggleFav(widget.id!);
+            favBool = !favBool;
+            setState(() {});
+          },
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 15),
+            child: Icon(favBool == true ? IconlyBold.heart : IconlyLight.heart, color: favBool == true ? Colors.red : Colors.black, size: 28),
+          ),
+        ),
       ],
       title: Text(
         name,
@@ -298,44 +295,34 @@ class _ProductProfilState extends State<ProductProfil> {
               },
             ),
             builder: (context, snapshot) {
-              if (snapshot.hasError) {
-                return errorConnection(
-                    onTap: () {
-                      ProductsModel().getProducts(
-                        parametrs: {
-                          "page": "1",
-                          "limit": "20",
-                          "product_id": "${widget.id}",
-                          "main_category_id": "$categoryId",
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return Center(
+                  child: spinKit(),
+                );
+              } else if (snapshot.hasData) {
+                return snapshot.data.toString() == "[]"
+                    ? Center(child: emptyDataLottie(imagePath: "assets/lottie/searchNotFound.json", errorSubtitle: "noSameProducts", errorTitle: ""))
+                    : GridView.builder(
+                        itemCount: snapshot.data?.length,
+                        physics: const NeverScrollableScrollPhysics(),
+                        shrinkWrap: true,
+                        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2, childAspectRatio: 1.5 / 2.5),
+                        itemBuilder: (BuildContext context, int index) {
+                          return Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: ProductCard3(
+                              id: snapshot.data![index].id,
+                              name: snapshot.data![index].productName,
+                              price: snapshot.data![index].price,
+                              image: snapshot.data![index].imagePath,
+                              discountValue: snapshot.data![index].discountValue,
+                              index: index,
+                            ),
+                          );
                         },
                       );
-                    },
-                    sizeWidth: sizeWidth);
-              } else if (snapshot.hasData) {
-                return GridView.builder(
-                  itemCount: snapshot.data?.length,
-                  physics: const NeverScrollableScrollPhysics(),
-                  shrinkWrap: true,
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2, childAspectRatio: 1.5 / 2.5),
-                  itemBuilder: (BuildContext context, int index) {
-                    return Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: ProductCard3(
-                        id: snapshot.data![index].id,
-                        name: snapshot.data![index].productName,
-                        price: snapshot.data![index].price,
-                        image: snapshot.data![index].imagePath,
-                        discountValue: snapshot.data![index].discountValue,
-                        whichList: 1,
-                        index: index,
-                      ),
-                    );
-                  },
-                );
               }
-              return Center(
-                child: spinKit(),
-              );
+              return Center(child: emptyDataLottie(imagePath: "assets/lottie/searchNotFound.json", errorSubtitle: "noSameProducts", errorTitle: ""));
             })
       ],
     );
@@ -617,6 +604,7 @@ class _ProductProfilState extends State<ProductProfil> {
 
   @override
   Widget build(BuildContext context) {
+    favCartController.favList.isNotEmpty ? whenPageLoad() : null;
     return Scaffold(
         backgroundColor: backgroundColor,
         appBar: appBar(),

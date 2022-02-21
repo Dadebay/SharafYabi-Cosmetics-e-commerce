@@ -3,7 +3,6 @@
 import 'package:get/state_manager.dart';
 
 class ProductProfilController extends GetxController {
-  RxBool favBool = false.obs;
   RxInt stockCount = 0.obs;
   RxInt quantity = 1.obs;
   RxBool commentBool = false.obs;

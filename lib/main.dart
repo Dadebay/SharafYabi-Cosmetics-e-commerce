@@ -116,26 +116,28 @@ class _MyAppRunState extends State<MyAppRun> {
 
   @override
   Widget build(BuildContext context) {
-    return DevicePreview(builder: (context) {
-      return GetMaterialApp(
-        initialBinding: AllControllerBindings(),
-        useInheritedMediaQuery: true,
-        builder: DevicePreview.appBuilder,
-        locale: storage.read('langCode') != null
-            ? Locale(storage.read('langCode'))
-            : const Locale(
-                'tr',
-              ),
-        theme: ThemeData(
-          primaryColor: Colors.green.shade700,
-        ),
-        fallbackLocale: const Locale("tr"),
-        navigatorObservers: <NavigatorObserver>[observer],
-        translations: MyTranslations(),
-        defaultTransition: Transition.cupertinoDialog,
-        debugShowCheckedModeBanner: false,
-        home: MyCustomSplashScreen(),
-      );
-    });
+    return DevicePreview(
+        enabled: false,
+        builder: (context) {
+          return GetMaterialApp(
+            initialBinding: AllControllerBindings(),
+            useInheritedMediaQuery: true,
+            builder: DevicePreview.appBuilder,
+            locale: storage.read('langCode') != null
+                ? Locale(storage.read('langCode'))
+                : const Locale(
+                    'tr',
+                  ),
+            theme: ThemeData(
+              primaryColor: Colors.green.shade700,
+            ),
+            fallbackLocale: const Locale("tr"),
+            navigatorObservers: <NavigatorObserver>[observer],
+            translations: MyTranslations(),
+            defaultTransition: Transition.cupertinoDialog,
+            debugShowCheckedModeBanner: false,
+            home: MyCustomSplashScreen(),
+          );
+        });
   }
 }

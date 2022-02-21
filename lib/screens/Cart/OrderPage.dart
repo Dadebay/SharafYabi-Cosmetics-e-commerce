@@ -12,8 +12,11 @@ import 'package:sharaf_yabi_ecommerce/constants/constants.dart';
 import 'package:sharaf_yabi_ecommerce/constants/widgets.dart';
 import 'package:sharaf_yabi_ecommerce/controllers/CartPageController.dart';
 import 'package:sharaf_yabi_ecommerce/controllers/Fav_Cart_Controller.dart';
+import 'package:sharaf_yabi_ecommerce/controllers/HomePageController.dart';
+import 'package:sharaf_yabi_ecommerce/models/AddresModel.dart';
 import 'package:sharaf_yabi_ecommerce/models/CartModel.dart';
 import 'package:sharaf_yabi_ecommerce/screens/BottomNavBar.dart';
+import 'package:sharaf_yabi_ecommerce/screens/UserProfil/pages/MyAddress.dart';
 import 'package:vibration/vibration.dart';
 
 class OrderPage extends StatefulWidget {
@@ -26,7 +29,10 @@ class OrderPage extends StatefulWidget {
   State<OrderPage> createState() => _OrderPageState();
 }
 
+enum PaymentMethod { cash, creditCard }
+
 class _OrderPageState extends State<OrderPage> {
+  PaymentMethod payment = PaymentMethod.cash;
   TextEditingController addressController = TextEditingController();
   final CartPageController cartPageController = Get.put(CartPageController());
   TextEditingController couponController = TextEditingController();
@@ -38,7 +44,7 @@ class _OrderPageState extends State<OrderPage> {
   bool sendButton = false;
   final storage = GetStorage();
   final _form1Key = GlobalKey<FormState>();
-
+  bool dataloaded = false;
   @override
   void initState() {
     super.initState();
@@ -46,7 +52,30 @@ class _OrderPageState extends State<OrderPage> {
     cartPageController.nagt.value = 1;
     favCartController.promoDiscount.value = 0;
     favCartController.promoLottie.value = false;
-    // favCartController.promoLottieADDCoin.value = false;
+    changeUserData();
+  }
+
+  changeUserData() async {
+    final result = storage.read('data');
+
+    await AddressModel().getAddress().then((value) {
+      if (value.toString() != "[]") {
+        dataloaded = true;
+        addressController.text = value[0].address!;
+        noteController.text = value[0].comment!;
+        if (result != null) {
+          nameController.text = jsonDecode(result)["full_name"];
+          phoneController.text = jsonDecode(result)["phone"];
+        }
+      } else {
+        dataloaded = true;
+        if (result != null) {
+          nameController.text = jsonDecode(result)["full_name"];
+          phoneController.text = "+993 ${jsonDecode(result)["phone"]}";
+        }
+      }
+    });
+    setState(() {});
   }
 
   Row productsCount() {
@@ -112,6 +141,8 @@ class _OrderPageState extends State<OrderPage> {
     );
   }
 
+  final HomePageController _homePageController = Get.put(HomePageController());
+
   Center orderButton() {
     return Center(
       child: SizedBox(
@@ -155,6 +186,8 @@ class _OrderPageState extends State<OrderPage> {
                       setState(() {
                         sendButton = false;
                       });
+                      _homePageController.refreshList();
+
                       showSnackBar("orderComplete", "orderCompleteSubtitle", kPrimaryColor);
                     } else {
                       sendButton = false;
@@ -174,8 +207,10 @@ class _OrderPageState extends State<OrderPage> {
     );
   }
 
+  bool radioButtonValue = false;
   Widget paymentMethod() {
-    return Wrap(
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
           padding: const EdgeInsets.symmetric(vertical: 8),
@@ -184,50 +219,57 @@ class _OrderPageState extends State<OrderPage> {
             style: const TextStyle(color: Colors.black, fontFamily: montserratSemiBold, fontSize: 20),
           ),
         ),
-        Padding(
-          padding: const EdgeInsets.only(left: 10),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Obx(() {
-                return RaisedButton(
-                    onPressed: () {
-                      cartPageController.buttonColor.value = false;
-                      cartPageController.nagt.value = 1;
-                    },
-                    elevation: 0,
-                    disabledElevation: 0,
-                    color: cartPageController.buttonColor.value == true ? backgroundColor : kPrimaryColor,
-                    shape: RoundedRectangleBorder(borderRadius: borderRadius5, side: BorderSide(color: cartPageController.buttonColor.value == true ? backgroundColor : kPrimaryColor, width: 2)),
-                    child: Text("cash".tr,
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                            color: cartPageController.buttonColor.value == true ? Colors.black : Colors.white,
-                            fontFamily: cartPageController.buttonColor.value == true ? montserratMedium : montserratSemiBold)));
-              }),
-              const SizedBox(
-                width: 10,
-              ),
-              Obx(() {
-                return RaisedButton(
-                    onPressed: () {
-                      cartPageController.buttonColor.value = true;
-                      cartPageController.nagt.value = 2;
-                    },
-                    elevation: 0,
-                    disabledElevation: 0,
-                    color: cartPageController.buttonColor.value == true ? kPrimaryColor : backgroundColor,
-                    shape: RoundedRectangleBorder(borderRadius: borderRadius5, side: BorderSide(color: cartPageController.buttonColor.value == true ? kPrimaryColor : backgroundColor, width: 2)),
-                    child: Text("creditCart".tr,
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                            color: cartPageController.buttonColor.value == true ? Colors.white : Colors.black,
-                            fontFamily: cartPageController.buttonColor.value == true ? montserratSemiBold : montserratMedium)));
-              }),
-            ],
+        RadioListTile<PaymentMethod>(
+          contentPadding: EdgeInsets.zero,
+          value: PaymentMethod.cash,
+          groupValue: payment,
+          onChanged: (PaymentMethod? value) {
+            setState(() {
+              print(value);
+              payment = value!;
+              print(cartPageController.buttonColor.value);
+
+              cartPageController.nagt.value = 1;
+              print(cartPageController.nagt.value);
+            });
+          },
+          activeColor: kPrimaryColor,
+          title: Text(
+            "cash".tr,
+            style: const TextStyle(color: Colors.black, fontFamily: montserratMedium),
+          ),
+          subtitle: Text(
+            "cashSubtitle".tr,
+            style: const TextStyle(color: Colors.black54, fontFamily: montserratRegular),
           ),
         ),
+        const SizedBox(
+          width: 10,
+        ),
+        RadioListTile<PaymentMethod>(
+          contentPadding: EdgeInsets.zero,
+          value: PaymentMethod.creditCard,
+          groupValue: payment,
+          onChanged: (PaymentMethod? value) {
+            setState(() {
+              print(value);
+
+              payment = value!;
+
+              cartPageController.nagt.value = 2;
+              print(cartPageController.nagt.value);
+            });
+          },
+          activeColor: kPrimaryColor,
+          title: Text(
+            "creditCart".tr,
+            style: const TextStyle(color: Colors.black, fontFamily: montserratMedium),
+          ),
+          subtitle: Text(
+            "creditCartSubtitle".tr,
+            style: const TextStyle(color: Colors.black54, fontFamily: montserratRegular),
+          ),
+        )
       ],
     );
   }
@@ -299,6 +341,79 @@ class _OrderPageState extends State<OrderPage> {
                   ),
           ),
         ),
+        if (lenght == 50)
+          GestureDetector(
+            onTap: () {
+              Get.defaultDialog(
+                  radius: 4,
+                  title: "Salgylarym",
+                  content: FutureBuilder<List<AddressModel>>(
+                    future: AddressModel().getAddress(),
+                    builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+                      print(snapshot.data);
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return Center(
+                          child: spinKit(),
+                        );
+                      } else if (snapshot.hasData) {
+                        return snapshot.data.toString() == "[]"
+                            ? GestureDetector(
+                                onTap: () {
+                                  Get.back();
+                                  Get.back();
+                                  Get.to(() => MyAddress());
+                                },
+                                child: Column(
+                                  children: [
+                                    Text("Address gos baran "),
+                                    Text("Hic hili address yok "),
+                                  ],
+                                ),
+                              )
+                            : Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: List.generate(
+                                    snapshot.data!.length,
+                                    (index) => CheckboxListTile(
+                                          value: false,
+                                          onChanged: (value) {
+                                            print("i tapped");
+                                            addressController.text = snapshot.data![index].address;
+                                            noteController.text = snapshot.data![index].comment;
+                                            Get.back();
+                                            Get.back();
+                                            setState(() {});
+                                          },
+                                          title: Text(snapshot.data![index].address),
+                                          subtitle: Text(snapshot.data![index].comment),
+                                        )));
+                      }
+                      return GestureDetector(
+                        onTap: () {
+                          Get.back();
+                          Get.back();
+                          Get.to(() => MyAddress());
+                        },
+                        child: Column(
+                          children: [
+                            Text("Address gos baran "),
+                            Text("Hic hili address yok "),
+                          ],
+                        ),
+                      );
+                    },
+                  ));
+            },
+            child: Padding(
+              padding: const EdgeInsets.only(bottom: 15),
+              child: const Text(
+                "Salgylarymdan sayla",
+                style: TextStyle(color: kPrimaryColor, fontFamily: montserratMedium, decoration: TextDecoration.underline),
+              ),
+            ),
+          )
+        else
+          const SizedBox.shrink(),
         SizedBox(
           width: Get.size.width,
           child: RaisedButton(
@@ -320,10 +435,11 @@ class _OrderPageState extends State<OrderPage> {
                   favCartController.promoLottie.value = false;
                 });
                 setState(() {});
-                Get.back();
               } else {
                 Vibration.vibrate();
               }
+              Get.back();
+              Vibration.vibrate();
             },
             padding: const EdgeInsets.symmetric(
               vertical: 10,
@@ -377,57 +493,61 @@ class _OrderPageState extends State<OrderPage> {
     return Scaffold(
         backgroundColor: Colors.white,
         appBar: appbar(),
-        body: Stack(
-          children: [
-            SingleChildScrollView(
-              child: Container(
-                margin: const EdgeInsets.all(15),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    mineListTile(nameController.text.isEmpty ? "enterUserName" : "${"orderName".tr} : ${nameController.text}", "enterUserName", IconlyLight.profile, "pleaseEnterYourName",
-                        nameController, 20, nameController.text.isEmpty ? false : true),
-                    mineListTile(phoneController.text.isEmpty ? "userPhoneNumber" : "${"orderPhone".tr} : ${phoneController.text}", "userPhoneNumber", IconlyLight.call, "pleaseEnterYourPhone",
-                        phoneController, 8, phoneController.text.isEmpty ? false : true),
-                    mineListTile(addressController.text.isEmpty ? "address" : "${"orderAddress".tr} : ${addressController.text}", "address", IconlyLight.location, "pleaseEnterYourAddress",
-                        addressController, 50, addressController.text.isEmpty ? false : true),
-                    mineListTile(noteController.text.isEmpty ? "note" : "${"orderNote".tr} : ${noteController.text}", "note", IconlyLight.editSquare, "pleaseEnterYourNote", noteController, 50,
-                        noteController.text.isEmpty ? false : true),
-                    mineListTile(couponController.text.isEmpty ? "couponCodeTitle" : "${"orderСoupon".tr} :  ${couponController.text}", "couponCodeTitle", IconlyLight.discount,
-                        "pleaseEnterYourCouponeCode", couponController, 20, couponController.text.isEmpty ? false : true),
-                    const SizedBox(
-                      height: 80,
-                    ),
-                    paymentMethod(),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 20),
-                      child: Text(
-                        "orderInfo".tr,
-                        style: const TextStyle(color: Colors.black, fontFamily: montserratSemiBold, fontSize: 20),
+        body: dataloaded
+            ? Stack(
+                children: [
+                  SingleChildScrollView(
+                    child: Container(
+                      margin: const EdgeInsets.all(15),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          mineListTile(nameController.text.isEmpty ? "enterUserName" : "${"orderName".tr} : ${nameController.text}", "enterUserName", IconlyLight.profile, "pleaseEnterYourName",
+                              nameController, 20, nameController.text.isEmpty ? false : true),
+                          mineListTile(phoneController.text.isEmpty ? "userPhoneNumber" : "${"orderPhone".tr} : ${phoneController.text}", "userPhoneNumber", IconlyLight.call, "pleaseEnterYourPhone",
+                              phoneController, 8, phoneController.text.isEmpty ? false : true),
+                          mineListTile(addressController.text.isEmpty ? "address" : "${"orderAddress".tr} : ${addressController.text}", "address", IconlyLight.location, "pleaseEnterYourAddress",
+                              addressController, 50, addressController.text.isEmpty ? false : true),
+                          mineListTile(noteController.text.isEmpty ? "note" : "${"orderNote".tr} : ${noteController.text}", "note", IconlyLight.editSquare, "pleaseEnterYourNote", noteController, 49,
+                              noteController.text.isEmpty ? false : true),
+                          mineListTile(couponController.text.isEmpty ? "couponCodeTitle" : "${"orderСoupon".tr} :  ${couponController.text}", "couponCodeTitle", IconlyLight.discount,
+                              "pleaseEnterYourCouponeCode", couponController, 20, couponController.text.isEmpty ? false : true),
+                          const SizedBox(
+                            height: 80,
+                          ),
+                          paymentMethod(),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 20),
+                            child: Text(
+                              "orderInfo".tr + " : ",
+                              style: const TextStyle(color: Colors.black, fontFamily: montserratSemiBold, fontSize: 20),
+                            ),
+                          ),
+                          productsCount(),
+                          couponDiscount(),
+                          total(),
+                          orderButton(),
+                          const SizedBox(
+                            height: 20,
+                          )
+                        ],
                       ),
                     ),
-                    productsCount(),
-                    couponDiscount(),
-                    total(),
-                    orderButton(),
-                    const SizedBox(
-                      height: 20,
-                    )
-                  ],
-                ),
-              ),
-            ),
-            Obx(() {
-              return Center(
-                  child: favCartController.promoLottie.value == true
-                      ? Lottie.asset(
-                          "assets/lottie/coupon_falling_confetti.json",
-                          animate: true,
-                        )
-                      : const SizedBox.shrink());
-            }),
-          ],
-        ));
+                  ),
+                  Obx(() {
+                    return Center(
+                        child: favCartController.promoLottie.value == true
+                            ? Lottie.asset(
+                                "assets/lottie/coupon_falling_confetti.json",
+                                animate: true,
+                              )
+                            : const SizedBox.shrink());
+                  }),
+                ],
+              )
+            : Center(
+                child: spinKit(),
+              ));
   }
 }
 

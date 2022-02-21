@@ -1,4 +1,4 @@
-// ignore_for_file: deprecated_member_use, file_names, avoid_dynamic_calls
+// ignore_for_file: deprecated_member_use, file_names, avoid_dynamic_calls, unnecessary_statements
 
 import 'package:animations/animations.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -19,10 +19,9 @@ class ProductCard3 extends StatefulWidget {
   final String? price;
   final String? image;
   final int? discountValue;
-  final int? whichList;
   final int? index;
 
-  const ProductCard3({Key? key, this.index, this.whichList, this.name, this.id, this.discountValue, this.price, this.image}) : super(key: key);
+  const ProductCard3({Key? key, this.index, this.name, this.id, this.discountValue, this.price, this.image}) : super(key: key);
 
   @override
   State<ProductCard3> createState() => _ProductCard3State();
@@ -31,38 +30,43 @@ class ProductCard3 extends StatefulWidget {
 class _ProductCard3State extends State<ProductCard3> {
   bool addCart = false;
   bool favButton = false;
+  int quantity = 0;
   final HomePageController _homePageController = Get.put(HomePageController());
   final Fav_Cart_Controller favCartController = Get.put(Fav_Cart_Controller());
   final FilterController filterController = Get.put(FilterController());
   @override
   void initState() {
     super.initState();
-    if (favCartController.favList.isNotEmpty) {
-      for (final element in favCartController.favList) {
-        if (element["id"] == widget.id!) {
-          favButton = true;
-        }
-      }
-    } else {
-      favButton = false;
-    }
-    if (favCartController.cartList.isNotEmpty) {
-      for (final element in favCartController.cartList) {
-        if (element["id"] == widget.id!) {
-          addCart = true;
-        }
+  }
+
+  changeCartCount() {
+    bool value = false;
+    for (final element in favCartController.favList) {
+      if (element["id"] == widget.id!) {
+        favButton = true;
       }
     }
+    for (final element in favCartController.cartList) {
+      if (element["id"] == widget.id!) {
+        addCart = true;
+        value = true;
+        print(element["count"]);
+        quantity = element["count"];
+      }
+    }
+    if (value == false) addCart = false;
   }
 
   @override
   Widget build(BuildContext context) {
+    favCartController.cartList.isNotEmpty ? changeCartCount() : null;
     final double sizeHeight = MediaQuery.of(context).size.height;
     final double sizeWidth = MediaQuery.of(context).size.width;
     return OpenContainer(
       closedShape: const RoundedRectangleBorder(borderRadius: borderRadius5),
       closedColor: Colors.white,
       closedElevation: 1,
+      useRootNavigator: true,
       closedBuilder: (context, openWidget) {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.end,
@@ -75,6 +79,7 @@ class _ProductCard3State extends State<ProductCard3> {
       },
       openBuilder: (context, closeWidget) {
         final int? a = widget.id;
+
         return ProductProfil(
           id: a,
           productName: widget.name,
@@ -108,38 +113,7 @@ class _ProductCard3State extends State<ProductCard3> {
               textAlign: TextAlign.center,
               style: TextStyle(fontFamily: montserratSemiBold, fontSize: sizeWidth > 800 ? 22 : 18, color: kPrimaryColor),
             ),
-            SizedBox(
-                width: MediaQuery.of(context).size.width,
-                child: addCart
-                    ? Obx(() {
-                        if (widget.whichList == 1) {
-                          int count = 0;
-                          for (final element in _homePageController.list) {
-                            if (element["id"] == widget.id!) {
-                              count = element["count"];
-                            }
-                          }
-                          return count <= 0 ? addButton() : addRemoveButton();
-                        } else if (widget.whichList == 2) {
-                          int count = 0;
-                          for (final element in _homePageController.listNewInCome) {
-                            if (element["id"] == widget.id!) {
-                              count = element["count"];
-                            }
-                          }
-                          return count <= 0 ? addButton() : addRemoveButton();
-                        } else if (widget.whichList == 3) {
-                          int count = 0;
-                          for (final element in _homePageController.listRecomended) {
-                            if (element["id"] == widget.id!) {
-                              count = element["count"];
-                            }
-                          }
-                          return count <= 0 ? addButton() : addRemoveButton();
-                        }
-                        return addCart ? addRemoveButton() : addButton();
-                      })
-                    : addButton()),
+            SizedBox(width: MediaQuery.of(context).size.width, child: addCart ? addRemoveButton() : addButton()),
           ],
         ),
       ),
@@ -155,6 +129,7 @@ class _ProductCard3State extends State<ProductCard3> {
             context,
             "addedToCardSubtitle".tr,
           );
+          quantity++;
           _homePageController.searchAndAdd(widget.id!, "${widget.price}");
           favCartController.addCart(widget.id!, "${widget.price}");
         });
@@ -189,26 +164,8 @@ class _ProductCard3State extends State<ProductCard3> {
               favCartController.removeCart(
                 widget.id!,
               );
-              setState(() {
-                if (widget.whichList == 1) {
-                  final int count = _homePageController.list[widget.index!]["count"];
-                  if (count <= 0) {
-                    addCart = false;
-                  }
-                }
-                if (widget.whichList == 2) {
-                  final int count = _homePageController.listNewInCome[widget.index!]["count"];
-                  if (count <= 0) {
-                    addCart = false;
-                  }
-                }
-                if (widget.whichList == 3) {
-                  final int count = _homePageController.listRecomended[widget.index!]["count"];
-                  if (count <= 0) {
-                    addCart = false;
-                  }
-                }
-              });
+              quantity--;
+              setState(() {});
             },
             child: PhysicalModel(
               elevation: 1,
@@ -224,18 +181,18 @@ class _ProductCard3State extends State<ProductCard3> {
                   )),
             ),
           ),
-          Obx(() {
-            return Text(
-              "${widget.whichList! == 1 ? _homePageController.list[widget.index!]["count"] : widget.whichList! == 2 ? _homePageController.listNewInCome[widget.index!]["count"] : _homePageController.listRecomended[widget.index!]["count"]}",
-              style: const TextStyle(color: Colors.black, fontSize: 18, fontFamily: montserratSemiBold),
-            );
-          }),
+          Text(
+            "$quantity",
+            style: const TextStyle(color: Colors.black, fontSize: 18, fontFamily: montserratSemiBold),
+          ),
           GestureDetector(
             onTap: () {
               showCustomToast(
                 context,
                 "productCountAdded".tr,
               );
+              quantity++;
+
               _homePageController.searchAndAdd(widget.id!, "${widget.price}");
               favCartController.addCart(widget.id!, "${widget.price}");
               setState(() {});

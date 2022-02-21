@@ -40,7 +40,9 @@ class PasswordTextFieldMine extends StatelessWidget {
             ],
             controller: controller,
             validator: (value) {
-              if (value == "") {
+              if (value!.isEmpty) {
+                return "errorEmpty".tr;
+              } else if (value == "") {
                 return a;
               } else if (value.toString().length < 8) {
                 return b;

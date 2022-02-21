@@ -59,7 +59,7 @@ void logOut() {
             Auth().removeToken();
             Auth().removeRefreshToken();
             Get.back();
-            Restart.restartApp();
+            // Restart.restartApp();
 
             Get.to(() => BottomNavBar());
           },

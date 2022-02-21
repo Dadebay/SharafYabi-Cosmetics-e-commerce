@@ -76,6 +76,8 @@ class UserSignInModel {
         body: jsonEncode(<String, dynamic>{
           "phone": phoneNumber,
         }));
+    print(response.body);
+    print(response.statusCode);
     if (response.statusCode == 200) {
       Auth().setToken(jsonDecode(response.body)["token"]);
 
@@ -99,12 +101,13 @@ class UserSignInModel {
           "password": newPassword,
           "code": code,
         }));
-
+    print(response.body);
+    print(response.statusCode);
     if (response.statusCode == 200) {
       Auth().removeToken();
-      return true;
+      return response.statusCode;
     } else {
-      return null;
+      return response.statusCode;
     }
   }
 }

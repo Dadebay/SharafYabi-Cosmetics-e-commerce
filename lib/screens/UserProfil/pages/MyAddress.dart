@@ -8,6 +8,7 @@ import 'package:sharaf_yabi_ecommerce/constants/constants.dart';
 import 'package:sharaf_yabi_ecommerce/constants/widgets.dart';
 import 'package:sharaf_yabi_ecommerce/models/AddresModel.dart';
 import 'package:sharaf_yabi_ecommerce/widgets/appBar.dart';
+import 'package:vibration/vibration.dart';
 
 class MyAddress extends StatefulWidget {
   @override
@@ -61,15 +62,19 @@ class _MyAddressState extends State<MyAddress> {
                                 child: Column(
                                   children: [
                                     Row(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      mainAxisAlignment: MainAxisAlignment.start,
                                       children: [
-                                        Text("${"orderAddress".tr} : ", style: const TextStyle(color: Colors.black38, fontFamily: montserratMedium, fontSize: 18)),
-                                        Text(snapshot.data![index].address!, style: const TextStyle(color: Colors.black, fontFamily: montserratRegular, fontSize: 18)),
+                                        Text("${"orderAddress".tr} : ", style: const TextStyle(color: Colors.black38, fontFamily: montserratRegular, fontSize: 16)),
+                                        Expanded(child: Text(snapshot.data![index].address!, maxLines: 4, style: const TextStyle(color: Colors.black, fontFamily: montserratRegular, fontSize: 18))),
                                       ],
                                     ),
                                     Row(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      mainAxisAlignment: MainAxisAlignment.start,
                                       children: [
-                                        Text("${"orderNote".tr} : ", style: const TextStyle(color: Colors.black38, fontFamily: montserratMedium, fontSize: 18)),
-                                        Text(snapshot.data![index].comment!, style: const TextStyle(color: Colors.black, fontFamily: montserratRegular, fontSize: 18)),
+                                        Text("${"orderNote".tr} : ", style: const TextStyle(color: Colors.black38, fontFamily: montserratRegular, fontSize: 16)),
+                                        Expanded(child: Text(snapshot.data![index].comment!, maxLines: 4, style: const TextStyle(color: Colors.black, fontFamily: montserratRegular, fontSize: 18))),
                                       ],
                                     ),
                                   ],
@@ -82,9 +87,16 @@ class _MyAddressState extends State<MyAddress> {
                                 child: GestureDetector(
                                   onTap: () {
                                     final int id = int.parse(snapshot.data![index].id!);
-                                    AddressModel().deleteLocation(id);
-                                    setState(() {});
-                                    showCustomToast(context, "addressDeleted");
+                                    AddressModel().deleteLocation(id).then((value) {
+                                      print(value);
+                                      if (value == 200) {
+                                        showCustomToast(context, "addressDeleted");
+                                        setState(() {});
+                                      } else {
+                                        showSnackBar("retry", "error404", Colors.red);
+                                        Vibration.vibrate();
+                                      }
+                                    });
                                   },
                                   child: const Icon(CupertinoIcons.xmark_circle, size: 30, color: Colors.black),
                                 )),
@@ -108,6 +120,7 @@ class _MyAddressState extends State<MyAddress> {
                       children: [
                         TextField(
                           controller: address,
+                          maxLines: 3,
                           cursorColor: kPrimaryColor,
                           style: TextStyle(color: Colors.black, fontFamily: montserratMedium),
                           decoration: InputDecoration(
@@ -121,10 +134,11 @@ class _MyAddressState extends State<MyAddress> {
                           padding: const EdgeInsets.symmetric(vertical: 15),
                           child: TextField(
                             controller: comment,
+                            maxLines: 3,
                             cursorColor: kPrimaryColor,
                             style: TextStyle(color: Colors.black, fontFamily: montserratMedium),
                             decoration: InputDecoration(
-                              labelText: "orderNote".tr,
+                              labelText: "orderNoteOrder".tr,
                               labelStyle: TextStyle(color: Colors.grey, fontFamily: montserratMedium),
                               focusedBorder: OutlineInputBorder(borderRadius: borderRadius5, borderSide: BorderSide(color: kPrimaryColor, width: 2)),
                               enabledBorder: OutlineInputBorder(borderRadius: borderRadius5, borderSide: BorderSide(color: Colors.grey)),
@@ -139,6 +153,8 @@ class _MyAddressState extends State<MyAddress> {
                                 if (value == true) {
                                   showCustomToast(context, "AddressAdded");
                                   Get.back();
+                                  address.clear();
+                                  comment.clear();
                                   setState(() {});
                                 } else {
                                   showSnackBar("retry", "errorAddress", Colors.red);

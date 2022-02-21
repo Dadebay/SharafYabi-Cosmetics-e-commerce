@@ -22,6 +22,12 @@ class _FavoritePageState extends State<FavoritePage> {
   final HomePageController _homePageController = Get.put(HomePageController());
 
   @override
+  void initState() {
+    super.initState();
+    _homePageController.fetcbFavListProducts();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final double sizeWidth = MediaQuery.of(context).size.width;
 
@@ -33,54 +39,84 @@ class _FavoritePageState extends State<FavoritePage> {
             name: "favorite",
             onTap: () {
               fav_cart_controller.clearFavList();
-              _homePageController.list.clear();
-              _homePageController.listNewInCome.clear();
-              _homePageController.listRecomended.clear();
-              _homePageController.fetchDiscountedProducts();
-              _homePageController.fetchPopularProducts();
-              _homePageController.fetchNewInComeProducts();
+              _homePageController.refreshList();
               setState(() {});
             },
             backArrow: true,
             iconRemove: fav_cart_controller.favList.isNotEmpty ? true : false),
         body: Obx(() {
-          return fav_cart_controller.favList.isEmpty
-              ? GestureDetector(onTap: () {}, child: emptyData(imagePath: "assets/emptyState/emptyFav.png", errorTitle: "emptyFavoriteTitle", errorSubtitle: "emptyFavoriteSubtitle"))
-              : FutureBuilder<List<ProductsModel>>(
-                  future: ProductsModel().getFavorites(parametrs: {"products": jsonEncode(fav_cart_controller.favList)}),
-                  builder: (context, snapshot) {
-                    if (snapshot.hasError) {
-                      return errorConnection(
-                          onTap: () {
-                            ProductsModel().getFavorites(parametrs: {"products": jsonEncode(fav_cart_controller.favList)});
-                          },
-                          sizeWidth: sizeWidth);
-                    } else if (snapshot.hasData) {
-                      return GridView.builder(
-                        itemCount: snapshot.data?.length,
-                        physics: const NeverScrollableScrollPhysics(),
-                        shrinkWrap: true,
-                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: sizeWidth > 800 ? 3 : 2, childAspectRatio: 1.5 / 2.5),
-                        itemBuilder: (BuildContext context, int index) {
-                          return Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: ProductCard3(
-                              id: snapshot.data![index].id,
-                              name: snapshot.data![index].productName,
-                              price: snapshot.data![index].price,
-                              image: snapshot.data![index].imagePath,
-                              discountValue: snapshot.data![index].discountValue,
-                              whichList: 1,
-                              index: index,
-                            ),
-                          );
-                        },
+          if (_homePageController.loadingFavlist.value == 1) {
+            return fav_cart_controller.favList.isEmpty
+                ? GestureDetector(onTap: () {}, child: emptyData(imagePath: "assets/emptyState/emptyFav.png", errorTitle: "emptyFavoriteTitle", errorSubtitle: "emptyFavoriteSubtitle"))
+                : GridView.builder(
+                    itemCount: _homePageController.listFavlist.length,
+                    physics: const BouncingScrollPhysics(),
+                    shrinkWrap: true,
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: sizeWidth > 800 ? 3 : 2, childAspectRatio: 1.5 / 2.5),
+                    itemBuilder: (BuildContext context, int index) {
+                      return Container(
+                        width: sizeWidth > 800 ? 220 : 180,
+                        margin: const EdgeInsets.all(6),
+                        padding: const EdgeInsets.only(
+                          bottom: 4,
+                        ),
+                        child: ProductCard3(
+                          id: _homePageController.listFavlist[index]["id"],
+                          name: _homePageController.listFavlist[index]["name"],
+                          price: _homePageController.listFavlist[index]["price"],
+                          image: _homePageController.listFavlist[index]["image"],
+                          discountValue: _homePageController.listFavlist[index]["discountValue"],
+                          index: index,
+                        ),
                       );
-                    }
-                    return Center(
-                      child: spinKit(),
-                    );
-                  });
+                    });
+          } else if (_homePageController.loadingFavlist.value == 3) {
+            return retryButton(() {
+              _homePageController.fetcbFavListProducts();
+            });
+          } else if (_homePageController.loadingFavlist.value == 0) {
+            return Center(
+              child: spinKit(),
+            );
+          }
+          return Center(
+            child: spinKit(),
+          );
+
+          // FutureBuilder<List<ProductsModel>>(
+          //     future: ProductsModel().getFavorites(parametrs: {"products": jsonEncode(fav_cart_controller.favList)}),
+          //     builder: (context, snapshot) {
+          //       if (snapshot.hasError) {
+          //         return errorConnection(
+          //             onTap: () {
+          //               ProductsModel().getFavorites(parametrs: {"products": jsonEncode(fav_cart_controller.favList)});
+          //             },
+          //             sizeWidth: sizeWidth);
+          //       } else if (snapshot.hasData) {
+          // return GridView.builder(
+          //   itemCount: snapshot.data?.length,
+          //   physics: const NeverScrollableScrollPhysics(),
+          //   shrinkWrap: true,
+          //   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: sizeWidth > 800 ? 3 : 2, childAspectRatio: 1.5 / 2.5),
+          //           itemBuilder: (BuildContext context, int index) {
+          //             return Padding(
+          //               padding: const EdgeInsets.all(8.0),
+          //               child: ProductCard3(
+          //                 id: snapshot.data![index].id,
+          //                 name: snapshot.data![index].productName,
+          //                 price: snapshot.data![index].price,
+          //                 image: snapshot.data![index].imagePath,
+          //                 discountValue: snapshot.data![index].discountValue,
+          //                 index: index,
+          //               ),
+          //             );
+          //           },
+          //         );
+          //       }
+          //       return Center(
+          //         child: spinKit(),
+          //       );
+          //     });
         }));
   }
 }
