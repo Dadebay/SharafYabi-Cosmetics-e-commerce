@@ -1,7 +1,5 @@
 // ignore_for_file: file_names, avoid_bool_literals_in_conditional_expressions, avoid_dynamic_calls, non_constant_identifier_names
 
-import 'dart:convert';
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -12,6 +10,7 @@ import 'package:sharaf_yabi_ecommerce/constants/constants.dart';
 import 'package:sharaf_yabi_ecommerce/constants/widgets.dart';
 import 'package:sharaf_yabi_ecommerce/controllers/CartPageController.dart';
 import 'package:sharaf_yabi_ecommerce/controllers/Fav_Cart_Controller.dart';
+import 'package:sharaf_yabi_ecommerce/controllers/HomePageController.dart';
 import 'package:sharaf_yabi_ecommerce/screens/Cart/OrderPage.dart';
 import 'package:sharaf_yabi_ecommerce/screens/UserProfil/pages/FavoritePage/Components/FavCardShimmer.dart';
 import 'package:sharaf_yabi_ecommerce/widgets/appBar.dart';
@@ -24,12 +23,7 @@ class CartPage extends StatefulWidget {
 class _CartPageState extends State<CartPage> {
   final CartPageController cartPageController = Get.put(CartPageController());
   final Fav_Cart_Controller favCartController = Get.put(Fav_Cart_Controller());
-
-  @override
-  void initState() {
-    super.initState();
-    cartPageController.loadData(parametrs: {"products": jsonEncode(Get.find<Fav_Cart_Controller>().cartList)});
-  }
+  final HomePageController _homePageController = Get.put(HomePageController());
 
   @override
   Widget build(BuildContext context) {
@@ -43,13 +37,21 @@ class _CartPageState extends State<CartPage> {
           onTap: () {
             cartPageController.list.clear();
             favCartController.clearCartList();
-            setState(() {});
+
+            setState(() {
+              _homePageController.list.clear();
+              _homePageController.listNewInCome.clear();
+              _homePageController.listRecomended.clear();
+              _homePageController.fetchDiscountedProducts();
+              _homePageController.fetchPopularProducts();
+              _homePageController.fetchNewInComeProducts();
+            });
           },
         ),
         body: Obx(() {
           if (cartPageController.loading.value == 1) {
             return favCartController.cartList.isEmpty
-                ? emptyDataLottie(imagePath: "assets/lottie/emptyCart.json", errorTitle: "cartEmpty", errorSubtitle: "cartEmptySubtitle")
+                ? Center(child: emptyDataLottie(imagePath: "assets/lottie/emptyCart.json", errorTitle: "cartEmpty", errorSubtitle: "cartEmptySubtitle"))
                 : ListView.builder(
                     physics: const BouncingScrollPhysics(),
                     itemCount: cartPageController.list.length,
@@ -174,11 +176,14 @@ class _CartPageState extends State<CartPage> {
                               final int id = cartPageController.list[index]["id"];
                               cartPageController.removeCard(id);
                               favCartController.removeCart(id);
+                              _homePageController.searchAndRemove(
+                                cartPageController.list[index]["id"],
+                              );
+
                               showCustomToast(
                                 context,
                                 "productCountAdded".tr,
                               );
-                              // showToast(fToast: fToast, name: "productCountAdded");
 
                               setState(() {});
                             },
@@ -202,11 +207,11 @@ class _CartPageState extends State<CartPage> {
                           ),
                           GestureDetector(
                             onTap: () {
-                              // showToast(fToast: fToast, name: "productCountAdded");
                               showCustomToast(
                                 context,
                                 "productCountAdded".tr,
                               );
+                              _homePageController.searchAndAdd(cartPageController.list[index]["id"], cartPageController.list[index]["price"]);
                               cartPageController.addToCard(cartPageController.list[index]["id"]);
                               favCartController.addCart(cartPageController.list[index]["id"], cartPageController.list[index]["price"]);
                             },

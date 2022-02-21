@@ -1,4 +1,4 @@
-// ignore_for_file: file_names, must_be_immutable
+// ignore_for_file: file_names, must_be_immutable, deprecated_member_use
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -17,9 +17,10 @@ class BrandCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final double sizeWidth = MediaQuery.of(context).size.width;
+
     return Padding(
       padding: const EdgeInsets.all(8.0),
-      // ignore: deprecated_member_use
       child: RaisedButton(
         onPressed: () {
           filterController.producersID.clear();
@@ -66,7 +67,7 @@ class BrandCard extends StatelessWidget {
                 overflow: TextOverflow.ellipsis,
                 textAlign: TextAlign.center,
                 maxLines: 1,
-                style: const TextStyle(color: Colors.black, fontFamily: montserratMedium),
+                style: TextStyle(color: Colors.black, fontSize: sizeWidth > 800 ? 26 : 18, fontFamily: montserratMedium),
               ),
             )
           ],

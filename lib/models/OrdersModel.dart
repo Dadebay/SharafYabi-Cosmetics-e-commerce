@@ -50,6 +50,27 @@ class OrdersModel extends ChangeNotifier {
       return [];
     }
   }
+
+  Future<List<OrdersModel>> getOrdersNotLogin({required Map<String, String> parametrs}) async {
+    final List<OrdersModel> products = [];
+    languageCode();
+    final response = await http.get(
+        Uri.parse(
+          "$serverURL/api/$lang/get-orders-mobile",
+        ).replace(queryParameters: parametrs),
+        headers: <String, String>{
+          HttpHeaders.contentTypeHeader: 'application/json; charset=UTF-8',
+        });
+    if (response.statusCode == 200) {
+      final responseJson = jsonDecode(response.body)["rows"];
+      for (final Map product in responseJson) {
+        products.add(OrdersModel.fromJson(product));
+      }
+      return products;
+    } else {
+      return [];
+    }
+  }
 }
 
 class OrdersModelById extends ChangeNotifier {
@@ -86,6 +107,27 @@ class OrdersModelById extends ChangeNotifier {
         headers: <String, String>{
           HttpHeaders.contentTypeHeader: 'application/json; charset=UTF-8',
           HttpHeaders.authorizationHeader: 'Bearer $token',
+        });
+    if (response.statusCode == 200) {
+      final responseJson = jsonDecode(response.body)["rows"];
+      for (final Map product in responseJson) {
+        products.add(OrdersModelById.fromJson(product));
+      }
+      return products;
+    } else {
+      return [];
+    }
+  }
+
+  Future<List<OrdersModelById>> getOrderByIdNotLogin({int? id}) async {
+    final List<OrdersModelById> products = [];
+    languageCode();
+    final response = await http.get(
+        Uri.parse(
+          "$serverURL/api/$lang/get-order/$id",
+        ),
+        headers: <String, String>{
+          HttpHeaders.contentTypeHeader: 'application/json; charset=UTF-8',
         });
     if (response.statusCode == 200) {
       final responseJson = jsonDecode(response.body)["rows"];

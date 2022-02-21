@@ -1,6 +1,7 @@
 // ignore_for_file: always_declare_return_types, type_annotate_public_apis
 
 import 'dart:io';
+import 'package:device_preview/device_preview.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -89,6 +90,7 @@ class _MyAppRunState extends State<MyAppRun> {
   void initState() {
     super.initState();
     FirebaseMessaging.instance.subscribeToTopic('Events');
+    FirebaseMessaging.instance.getToken().then((value) {});
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       flutterLocalNotificationsPlugin.show(
         message.data.hashCode,
@@ -114,22 +116,26 @@ class _MyAppRunState extends State<MyAppRun> {
 
   @override
   Widget build(BuildContext context) {
-    return GetMaterialApp(
-      initialBinding: AllControllerBindings(),
-      locale: storage.read('langCode') != null
-          ? Locale(storage.read('langCode'))
-          : const Locale(
-              'tr',
-            ),
-      theme: ThemeData(
-        primaryColor: Colors.green.shade700,
-      ),
-      fallbackLocale: const Locale("tr"),
-      navigatorObservers: <NavigatorObserver>[observer],
-      translations: MyTranslations(),
-      defaultTransition: Transition.cupertinoDialog,
-      debugShowCheckedModeBanner: false,
-      home: MyCustomSplashScreen(),
-    );
+    return DevicePreview(builder: (context) {
+      return GetMaterialApp(
+        initialBinding: AllControllerBindings(),
+        useInheritedMediaQuery: true,
+        builder: DevicePreview.appBuilder,
+        locale: storage.read('langCode') != null
+            ? Locale(storage.read('langCode'))
+            : const Locale(
+                'tr',
+              ),
+        theme: ThemeData(
+          primaryColor: Colors.green.shade700,
+        ),
+        fallbackLocale: const Locale("tr"),
+        navigatorObservers: <NavigatorObserver>[observer],
+        translations: MyTranslations(),
+        defaultTransition: Transition.cupertinoDialog,
+        debugShowCheckedModeBanner: false,
+        home: MyCustomSplashScreen(),
+      );
+    });
   }
 }

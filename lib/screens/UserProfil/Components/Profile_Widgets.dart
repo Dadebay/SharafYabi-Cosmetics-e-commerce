@@ -96,110 +96,16 @@ void logOut() {
   ));
 }
 
-void clearCache() {
-  Get.bottomSheet(Container(
-    decoration: const BoxDecoration(color: Colors.white),
-    child: Wrap(
-      children: [
-        Padding(
-          padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 10),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              const SizedBox.shrink(),
-              Text(
-                "clearAppCache".tr,
-                style: const TextStyle(color: Colors.black, fontFamily: montserratMedium, fontSize: 16),
-              ),
-              GestureDetector(
-                onTap: () {
-                  Get.back();
-                },
-                child: const Icon(CupertinoIcons.xmark_circle, size: 22, color: Colors.black),
-              )
-            ],
-          ),
-        ),
-        Divider(
-          color: Colors.grey[200],
-          height: 1,
-          thickness: 2,
-        ),
-        Padding(
-          padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
-          child: Text("clearAppCacheSubtitle".tr,
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                color: Colors.grey[500],
-                fontFamily: montserratMedium,
-                fontSize: 16,
-              )),
-        ),
-        GestureDetector(
-          onTap: () async {
-            Auth().logout();
-            Auth().removeToken();
-            Auth().removeRefreshToken();
-            Get.back();
-            Restart.restartApp();
-            Get.to(() => BottomNavBar());
-          },
-          child: Container(
-            width: Get.size.width,
-            margin: const EdgeInsets.only(left: 20, right: 20, bottom: 10),
-            padding: const EdgeInsets.all(10),
-            decoration: const BoxDecoration(color: Colors.red, borderRadius: borderRadius10),
-            child: Text(
-              "yes".tr,
-              textAlign: TextAlign.center,
-              style: const TextStyle(color: Colors.white, fontFamily: montserratBold, fontSize: 16),
-            ),
-          ),
-        ),
-        GestureDetector(
-          onTap: () async {
-            Get.back();
-          },
-          child: Container(
-            width: Get.size.width,
-            margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-            padding: const EdgeInsets.all(10),
-            decoration: BoxDecoration(color: Colors.grey[100], borderRadius: borderRadius10),
-            child: Text(
-              "no".tr,
-              textAlign: TextAlign.center,
-              style: const TextStyle(color: Colors.black, fontFamily: montserratMedium, fontSize: 16),
-            ),
-          ),
-        ),
-      ],
-    ),
-  ));
-}
-
-Padding myText(String name) {
-  return Padding(
-    padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-    child: Text(
-      name.tr,
-      maxLines: 1,
-      textAlign: TextAlign.left,
-      overflow: TextOverflow.ellipsis,
-      style: const TextStyle(
-        color: kPrimaryColor,
-        fontSize: 18,
-        fontFamily: montserratSemiBold,
-      ),
-    ),
-  );
-}
-
 Widget buttonProfile({required String name, required IconData icon, required Function() onTap}) {
-  return Padding(
-    padding: const EdgeInsets.symmetric(horizontal: 20),
+  return Container(
+    margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+    decoration: const BoxDecoration(
+      borderRadius: borderRadius15,
+    ),
     child: ListTile(
       tileColor: Colors.white,
       focusColor: Colors.white,
+      shape: const RoundedRectangleBorder(borderRadius: borderRadius15),
       selectedColor: Colors.white,
       hoverColor: Colors.white,
       selectedTileColor: Colors.white,
@@ -207,6 +113,7 @@ Widget buttonProfile({required String name, required IconData icon, required Fun
       onTap: onTap,
       leading: Container(
         padding: const EdgeInsets.all(8),
+        margin: const EdgeInsets.only(left: 8),
         decoration: BoxDecoration(color: const Color(0xfff1f2f4).withOpacity(0.6), borderRadius: borderRadius15),
         child: Icon(
           icon,
@@ -221,16 +128,19 @@ Widget buttonProfile({required String name, required IconData icon, required Fun
         overflow: TextOverflow.ellipsis,
         style: const TextStyle(color: Colors.black, fontFamily: montserratMedium, fontSize: 16),
       ),
-      trailing: const Icon(
-        IconlyLight.arrowRightCircle,
-        color: Colors.black,
-        size: 18,
+      trailing: const Padding(
+        padding: EdgeInsets.only(right: 10),
+        child: Icon(
+          IconlyLight.arrowRightCircle,
+          color: Colors.black,
+          size: 24,
+        ),
       ),
     ),
   );
 }
 
-Padding selectLang() {
+Container selectLang() {
   void changeLanguage() {
     Get.bottomSheet(Container(
       padding: const EdgeInsets.only(bottom: 20),
@@ -327,9 +237,13 @@ Padding selectLang() {
     ));
   }
 
-  return Padding(
-    padding: const EdgeInsets.symmetric(horizontal: 20),
+  return Container(
+    margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+    decoration: const BoxDecoration(
+      borderRadius: borderRadius15,
+    ),
     child: ListTile(
+      shape: const RoundedRectangleBorder(borderRadius: borderRadius15),
       tileColor: Colors.white,
       focusColor: Colors.white,
       hoverColor: Colors.white,
@@ -338,15 +252,19 @@ Padding selectLang() {
       onTap: () async {
         changeLanguage();
       },
-      leading: CircleAvatar(
-        backgroundImage: AssetImage(
-          Get.locale!.languageCode.toString() == "tr"
-              ? tmIcon
-              : Get.locale!.languageCode.toString() == "ru"
-                  ? ruIcon
-                  : enIcon,
+      leading: Container(
+        padding: const EdgeInsets.all(8),
+        margin: const EdgeInsets.only(left: 8),
+        child: CircleAvatar(
+          backgroundImage: AssetImage(
+            Get.locale!.languageCode.toString() == "tr"
+                ? tmIcon
+                : Get.locale!.languageCode.toString() == "ru"
+                    ? ruIcon
+                    : enIcon,
+          ),
+          radius: 18,
         ),
-        radius: 18,
       ),
       title: Text(
         Get.locale!.languageCode.toString() == "tr"
@@ -359,19 +277,26 @@ Padding selectLang() {
         overflow: TextOverflow.ellipsis,
         style: const TextStyle(color: Colors.black, fontFamily: montserratMedium, fontSize: 16),
       ),
-      trailing: const Icon(
-        IconlyLight.arrowRightCircle,
-        color: Colors.black,
-        size: 20,
+      trailing: const Padding(
+        padding: EdgeInsets.only(right: 10),
+        child: Icon(
+          IconlyLight.arrowRightCircle,
+          color: Colors.black,
+          size: 24,
+        ),
       ),
     ),
   );
 }
 
-Padding shareApp() {
-  return Padding(
-    padding: const EdgeInsets.symmetric(horizontal: 20),
+Container shareApp() {
+  return Container(
+    margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+    decoration: const BoxDecoration(
+      borderRadius: borderRadius15,
+    ),
     child: ListTile(
+      shape: const RoundedRectangleBorder(borderRadius: borderRadius15),
       tileColor: Colors.white,
       focusColor: Colors.white,
       hoverColor: Colors.white,
@@ -380,7 +305,11 @@ Padding shareApp() {
       onTap: () {
         Share.share('https://play.google.com/store/apps/details?id=com.bilermennesil.sharafyabi', subject: 'Sharafyabi');
       },
-      leading: Container(padding: const EdgeInsets.all(8), decoration: BoxDecoration(color: Colors.grey[100], borderRadius: borderRadius15), child: Image.asset("assets/icons/share.png", width: 25)),
+      leading: Container(
+          padding: const EdgeInsets.all(8),
+          margin: const EdgeInsets.only(left: 8),
+          decoration: BoxDecoration(color: Colors.grey[100], borderRadius: borderRadius15),
+          child: Image.asset("assets/icons/share.png", width: 25)),
       title: Text(
         "share".tr,
         maxLines: 1,
@@ -388,10 +317,13 @@ Padding shareApp() {
         overflow: TextOverflow.ellipsis,
         style: const TextStyle(color: Colors.black, fontFamily: montserratMedium, fontSize: 16),
       ),
-      trailing: const Icon(
-        IconlyLight.arrowRightCircle,
-        color: Colors.black,
-        size: 18,
+      trailing: const Padding(
+        padding: EdgeInsets.only(right: 10),
+        child: Icon(
+          IconlyLight.arrowRightCircle,
+          color: Colors.black,
+          size: 24,
+        ),
       ),
     ),
   );

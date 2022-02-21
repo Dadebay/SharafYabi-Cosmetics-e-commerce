@@ -33,6 +33,31 @@ class ProductsModel extends ChangeNotifier {
   final String? imagePath;
   final String? categoryName;
 
+  Future<List<ProductsModel>> getFavorites({required Map<String, String> parametrs}) async {
+    final List<ProductsModel> products = [];
+    languageCode();
+    final response = await http.get(
+        Uri.parse(
+          "$serverURL/api/$lang/get-wish-list",
+        ).replace(queryParameters: parametrs),
+        headers: <String, String>{
+          HttpHeaders.contentTypeHeader: 'application/json; charset=UTF-8',
+        });
+    if (response.statusCode == 200) {
+      final responseJson = jsonDecode(response.body)["rows"];
+      if (responseJson != null) {
+        for (final Map product in responseJson) {
+          products.add(ProductsModel.fromJson(product));
+        }
+        return products;
+      } else {
+        return [];
+      }
+    } else {
+      return [];
+    }
+  }
+
   Future<List<ProductsModel>> getProducts({Map<String, dynamic>? parametrs}) async {
     final List<ProductsModel> products = [];
     languageCode();

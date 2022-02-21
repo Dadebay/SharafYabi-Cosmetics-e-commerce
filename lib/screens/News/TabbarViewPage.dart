@@ -16,7 +16,7 @@ class TabbarViewPage extends StatelessWidget {
     return DefaultTabController(
       length: 2,
       child: Scaffold(
-        backgroundColor: backgroundColor.withOpacity(0.1),
+        backgroundColor: Colors.white,
         appBar: MyAppBar(icon: Icons.add, onTap: () {}, backArrow: false, iconRemove: false),
         body: Column(
           children: [

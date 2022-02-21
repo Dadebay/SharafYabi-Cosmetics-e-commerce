@@ -4,6 +4,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
 import 'package:get/get.dart';
+import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:sharaf_yabi_ecommerce/components/ShowAllProductsPage.dart';
 import 'package:sharaf_yabi_ecommerce/constants/constants.dart';
 import 'package:sharaf_yabi_ecommerce/constants/widgets.dart';
@@ -17,19 +18,26 @@ class CategoryCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final double sizeWidth = MediaQuery.of(context).size.width;
     return GestureDetector(
       onTap: () {
         filterController.categoryID.clear();
         filterController.producersID.value = [];
         final int? id = category!.id;
         filterController.mainCategoryID.value = id!;
-        Get.to(() => ShowAllProductsPage(
-              pageName: "${category!.name}",
-              whichFilter: 5,
-            ));
+
+        pushNewScreen(
+          context,
+          screen: ShowAllProductsPage(
+            pageName: "${category!.name}",
+            whichFilter: 5,
+          ),
+          withNavBar: true, // OPTIONAL VALUE. True by default.
+          pageTransitionAnimation: PageTransitionAnimation.cupertino,
+        );
       },
       child: Container(
-        height: 120,
+        height: sizeWidth > 800 ? 150 : 120,
         margin: const EdgeInsets.symmetric(horizontal: 20),
         padding: const EdgeInsets.symmetric(vertical: 15),
         decoration: BoxDecoration(border: Border(bottom: BorderSide(color: Colors.grey.withOpacity(0.25)))),
@@ -42,7 +50,7 @@ class CategoryCard extends StatelessWidget {
                 color: backgroundColor.withOpacity(0.4),
               ),
               margin: const EdgeInsets.fromLTRB(0, 0, 15, 0),
-              width: 85,
+              width: sizeWidth > 800 ? 100 : 85,
               child: CachedNetworkImage(
                   fadeInCurve: Curves.ease,
                   imageUrl: "$serverImage/${category!.imagePath}-mini.webp",
@@ -63,19 +71,19 @@ class CategoryCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Padding(
-                    padding: const EdgeInsets.only(top: 14, bottom: 5),
+                    padding: EdgeInsets.only(top: sizeWidth > 800 ? 24 : 14, bottom: 5),
                     child: Text(
                       "${category!.name}",
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
+                      style: TextStyle(
                         color: Colors.black,
-                        fontSize: 18,
+                        fontSize: sizeWidth > 800 ? 26 : 18,
                         fontFamily: montserratSemiBold,
                       ),
                     ),
                   ),
-                  Text("${category!.count}", maxLines: 2, style: TextStyle(color: Colors.grey.withOpacity(0.6), fontFamily: montserratRegular, fontSize: 16)),
+                  Text("${category!.count}", maxLines: 2, style: TextStyle(color: Colors.grey.withOpacity(0.6), fontFamily: montserratRegular, fontSize: sizeWidth > 800 ? 24 : 16)),
                 ],
               ),
             ),

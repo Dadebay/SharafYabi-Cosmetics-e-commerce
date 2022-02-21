@@ -9,6 +9,7 @@ import 'package:http/http.dart' as http;
 import 'package:sharaf_yabi_ecommerce/constants/constants.dart';
 import 'package:sharaf_yabi_ecommerce/constants/widgets.dart';
 import 'package:sharaf_yabi_ecommerce/controllers/Fav_Cart_Controller.dart';
+import 'package:sharaf_yabi_ecommerce/controllers/SettingsController.dart';
 
 class CartModel extends ChangeNotifier {
   CartModel({
@@ -92,6 +93,8 @@ class OrderModel extends ChangeNotifier {
     log(response.body);
     if (response.statusCode == 200) {
       Get.find<Fav_Cart_Controller>().clearCartList();
+      final responseJson = jsonDecode(response.body)["rows"];
+      Get.find<SettingsController>().saveID(responseJson);
       return true;
     } else {
       showSnackBar("retry", "error404", Colors.red);

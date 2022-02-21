@@ -1,12 +1,15 @@
-// ignore_for_file: file_names, must_be_immutable, non_constant_identifier_names
+// ignore_for_file: file_names, must_be_immutable, non_constant_identifier_names, always_use_package_imports, noop_primitive_operations
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
 import 'package:get/get.dart';
 import 'package:sharaf_yabi_ecommerce/constants/constants.dart';
+import 'package:sharaf_yabi_ecommerce/screens/UserProfil/Auth/ChangePassword.dart';
 import 'package:sharaf_yabi_ecommerce/screens/UserProfil/Auth/Login.dart';
 import 'package:sharaf_yabi_ecommerce/screens/UserProfil/Auth/SignIn.dart';
+
+import 'ForgotPassword.dart';
 
 class LoginPage extends StatelessWidget {
   SizedBox ImagePart() {
@@ -30,6 +33,34 @@ class LoginPage extends StatelessWidget {
                     size: 28,
                   ),
                 )),
+            Positioned(
+              top: 30,
+              right: 15,
+              child: PopupMenuButton(
+                onSelected: (String a) {
+                  if (a.toString() == "forgot") {
+                    Get.to(() => ForgotPassword());
+                  } else {
+                    Get.to(() => ChangePassword());
+                  }
+                },
+                icon: const Icon(
+                  IconlyLight.moreCircle,
+                  color: Colors.white,
+                  size: 28,
+                ),
+                itemBuilder: (_) => <PopupMenuItem<String>>[
+                  PopupMenuItem<String>(
+                    value: 'forgot',
+                    child: Text('forgotPassword'.tr),
+                  ),
+                  PopupMenuItem<String>(
+                    value: 'change',
+                    child: Text('changePassword'.tr),
+                  ),
+                ],
+              ),
+            ),
             Align(
               alignment: Alignment.bottomCenter,
               child: TabBar(
@@ -60,22 +91,23 @@ class LoginPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(statusBarColor: Colors.transparent));
-
-    return DefaultTabController(
-      length: 2,
-      child: Scaffold(
-        body: SingleChildScrollView(
-          child: SizedBox(
-            height: Get.size.height,
-            child: Stack(
-              children: [
-                ImagePart(),
-                Container(
-                  padding: EdgeInsets.only(top: Get.size.height / 2.2),
-                  child: TabBarView(children: [SingIN(), Login()]),
-                ),
-              ],
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: const SystemUiOverlayStyle(statusBarColor: kPrimaryColor, statusBarIconBrightness: Brightness.dark),
+      child: DefaultTabController(
+        length: 2,
+        child: Scaffold(
+          body: SingleChildScrollView(
+            child: SizedBox(
+              height: Get.size.height,
+              child: Stack(
+                children: [
+                  ImagePart(),
+                  Container(
+                    padding: EdgeInsets.only(top: Get.size.height / 2.2),
+                    child: TabBarView(children: [SingIN(), Login()]),
+                  ),
+                ],
+              ),
             ),
           ),
         ),

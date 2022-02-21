@@ -6,4 +6,6 @@ class ProductProfilController extends GetxController {
   RxBool favBool = false.obs;
   RxInt stockCount = 0.obs;
   RxInt quantity = 1.obs;
+  RxBool commentBool = false.obs;
+  RxInt commentID = 0.obs;
 }

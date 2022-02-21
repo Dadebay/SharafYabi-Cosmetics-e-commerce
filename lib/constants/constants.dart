@@ -4,9 +4,9 @@ const String langKey = "language";
 const String serverURL = "https://sharafyabi.com";
 const String serverImage = "https://sharafyabi.com";
 const String authServerUrl = "https://sharafyabi.com";
-// const String serverURL = "http://192.168.31.30:7200";
-// const String serverImage = "http://192.168.31.30:7200";
-// const String authServerUrl = "http://192.168.31.30:7200";
+// const String serverURL = "http://141.136.44.174:7010";
+// const String serverImage = "http://141.136.44.174:7010";
+// const String authServerUrl = "http://141.136.44.174:7010";
 
 const Color backgroundColor = Color(0xfff1f2f4);
 const Color kPrimaryColor = Color(0xff4C844C);
@@ -28,3 +28,4 @@ const String montserratBold = "Montserrat_Bold";
 const String tmIcon = "assets/lang/tm.png";
 const String ruIcon = "assets/lang/ru.png";
 const String enIcon = "assets/lang/en.png";
+const String appLogo = 'assets/appLogo/greyLogo.png';

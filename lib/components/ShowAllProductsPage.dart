@@ -87,7 +87,7 @@ class _ShowAllProductsPageState extends State<ShowAllProductsPage> {
           ),
           leading: IconButton(
               onPressed: () {
-                Get.back();
+                Navigator.of(context).pop();
               },
               icon: const Icon(IconlyLight.arrowLeft, color: Colors.black)),
           elevation: 0,
@@ -113,21 +113,18 @@ class _ShowAllProductsPageState extends State<ShowAllProductsPage> {
                   onLoading: _onLoading,
                   child: Obx(() {
                     if (filterController.loading.value == 1) {
-                      return Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 10),
-                        child: GridView.builder(
-                            physics: const NeverScrollableScrollPhysics(),
-                            itemCount: filterController.list.length,
-                            shrinkWrap: true,
-                            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2, childAspectRatio: 4 / 6),
-                            itemBuilder: (BuildContext context, int index) {
-                              return Padding(
-                                  padding: const EdgeInsets.all(4.0),
-                                  child: ProductCard2(
-                                    indexx: index,
-                                  ));
-                            }),
-                      );
+                      return GridView.builder(
+                          physics: const NeverScrollableScrollPhysics(),
+                          itemCount: filterController.list.length,
+                          shrinkWrap: true,
+                          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2, childAspectRatio: 1.5 / 2.5),
+                          itemBuilder: (BuildContext context, int index) {
+                            return Padding(
+                                padding: const EdgeInsets.all(4.0),
+                                child: ProductCard2(
+                                  indexx: index,
+                                ));
+                          });
                     } else if (filterController.loading.value == 2) {
                       return emptyDataLottie(imagePath: "assets/lottie/searchNotFound.json", errorTitle: "emptyProducts", errorSubtitle: "emptyProductsSubtitle");
                     } else if (filterController.loading.value == 3) {
@@ -270,7 +267,7 @@ class _ShowAllProductsPageState extends State<ShowAllProductsPage> {
     );
   }
 
-  Obx discountButton() {
+  Widget discountButton() {
     return Obx(() {
       return SwitchListTile.adaptive(
         value: filterController.discountBool.value,

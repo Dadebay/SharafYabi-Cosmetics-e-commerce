@@ -63,7 +63,7 @@ class _NewsState extends State<News> {
                   child: ListView.separated(
                     separatorBuilder: (BuildContext context, int index) => const Divider(),
                     shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
+                    physics: const BouncingScrollPhysics(),
                     itemCount: newsController.list.length,
                     itemBuilder: (BuildContext context, int index) {
                       return newCard(index);
@@ -170,7 +170,7 @@ class _NewsState extends State<News> {
             borderRadius: borderRadius15,
             image: DecorationImage(
               image: imageProvider,
-              fit: BoxFit.fill,
+              fit: BoxFit.cover,
             ),
           ),
         ),

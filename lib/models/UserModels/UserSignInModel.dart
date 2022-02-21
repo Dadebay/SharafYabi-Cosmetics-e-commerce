@@ -65,4 +65,46 @@ class UserSignInModel {
       return response.statusCode;
     }
   }
+
+  Future forgotPassword({
+    required String phoneNumber,
+  }) async {
+    final response = await http.post(Uri.parse("$authServerUrl/api/user/ru/forgot-password"),
+        headers: <String, String>{
+          HttpHeaders.contentTypeHeader: 'application/json; charset=UTF-8',
+        },
+        body: jsonEncode(<String, dynamic>{
+          "phone": phoneNumber,
+        }));
+    if (response.statusCode == 200) {
+      Auth().setToken(jsonDecode(response.body)["token"]);
+
+      return response.statusCode;
+    } else {
+      return response.statusCode;
+    }
+  }
+
+  Future changePassword({
+    required String newPassword,
+    required String code,
+  }) async {
+    final token = await Auth().getToken();
+    final response = await http.post(Uri.parse("$authServerUrl/api/user/tm/change-password"),
+        headers: <String, String>{
+          HttpHeaders.contentTypeHeader: 'application/json; charset=UTF-8',
+          HttpHeaders.authorizationHeader: 'Bearer $token',
+        },
+        body: jsonEncode(<String, dynamic>{
+          "password": newPassword,
+          "code": code,
+        }));
+
+    if (response.statusCode == 200) {
+      Auth().removeToken();
+      return true;
+    } else {
+      return null;
+    }
+  }
 }

@@ -153,8 +153,7 @@ class _OrderPageState extends State<OrderPage> {
                     if (value == true) {
                       completeOrder();
                       setState(() {
-                      sendButton = false;
-                        
+                        sendButton = false;
                       });
                       showSnackBar("orderComplete", "orderCompleteSubtitle", kPrimaryColor);
                     } else {

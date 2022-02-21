@@ -13,13 +13,19 @@ class MyCustomSplashScreen extends StatefulWidget {
 }
 
 class _MyCustomSplashScreenState extends State with TickerProviderStateMixin {
-  double _fontSize = 2.0;
-  int _containerSize = 1;
-  double _textOpacity = 0.0;
-  double _containerOpacity = 0.0;
-
-  late AnimationController _controller;
   Animation? animation1;
+
+  double _containerOpacity = 0.0;
+  int _containerSize = 1;
+  late AnimationController _controller;
+  double _fontSize = 2.0;
+  double _textOpacity = 0.0;
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
 
   @override
   void initState() {
@@ -53,12 +59,6 @@ class _MyCustomSplashScreenState extends State with TickerProviderStateMixin {
         Navigator.pushReplacement(context, MaterialPageRoute(builder: (BuildContext context) => BottomNavBar()));
       });
     });
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
   }
 
   @override
@@ -101,11 +101,7 @@ class _MyCustomSplashScreenState extends State with TickerProviderStateMixin {
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(30),
                   ),
-                  child: Image.asset('assets/appLogo/greyLogo.png', color: kPrimaryColor)
-                  // child: const Text(
-                  //   'YOUR APP\'S LOGO',
-                  // ),
-                  ),
+                  child: Image.asset(appLogo, color: kPrimaryColor)),
             ),
           ),
         ],

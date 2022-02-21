@@ -10,6 +10,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
 import 'package:get/get.dart';
 import 'package:sharaf_yabi_ecommerce/components/Comments.dart';
+import 'package:sharaf_yabi_ecommerce/components/ProductCard3.dart';
 import 'package:sharaf_yabi_ecommerce/components/ShowAllProductsPage.dart';
 
 import 'package:sharaf_yabi_ecommerce/constants/constants.dart';
@@ -17,10 +18,11 @@ import 'package:sharaf_yabi_ecommerce/constants/widgets.dart';
 import 'package:sharaf_yabi_ecommerce/controllers/CartPageController.dart';
 import 'package:sharaf_yabi_ecommerce/controllers/Fav_Cart_Controller.dart';
 import 'package:sharaf_yabi_ecommerce/controllers/FilterController.dart';
+import 'package:sharaf_yabi_ecommerce/controllers/HomePageController.dart';
 import 'package:sharaf_yabi_ecommerce/models/CommentModel.dart';
 import 'package:sharaf_yabi_ecommerce/models/ProductProfilModel.dart';
+import 'package:sharaf_yabi_ecommerce/models/ProductsModel.dart';
 import 'package:sharaf_yabi_ecommerce/models/UserModels/AuthModel.dart';
-import 'package:sharaf_yabi_ecommerce/screens/HomePage/Components/gridView.dart';
 import 'package:share/share.dart';
 import 'package:vibration/vibration.dart';
 
@@ -40,7 +42,6 @@ class ProductProfil extends StatefulWidget {
 
 class _ProductProfilState extends State<ProductProfil> {
   bool addCartBool = false;
-
   CartPageController cartPageController = Get.put(CartPageController());
   TextEditingController controller = TextEditingController();
   double discountedPrice = 0.0;
@@ -54,6 +55,8 @@ class _ProductProfilState extends State<ProductProfil> {
   double priceOLD = 0.0;
   ProductProfilController productProfilController = Get.put(ProductProfilController());
   int selectedIndex = 0;
+
+  final HomePageController _homePageController = Get.put(HomePageController());
 
   @override
   void initState() {
@@ -126,7 +129,7 @@ class _ProductProfilState extends State<ProductProfil> {
       leadingWidth: 25,
       leading: IconButton(
           onPressed: () {
-            Get.back();
+            Navigator.of(context).pop();
           },
           icon: const Icon(
             Icons.arrow_back,
@@ -173,6 +176,7 @@ class _ProductProfilState extends State<ProductProfil> {
                     GestureDetector(
                       onTap: () {
                         favCartController.removeCart(widget.id!);
+                        _homePageController.searchAndRemove(widget.id!);
                         cartPageController.removeCard(widget.id!);
                         if (productProfilController.quantity.value > 1) {
                           if (filterController.list.isNotEmpty) {
@@ -187,13 +191,14 @@ class _ProductProfilState extends State<ProductProfil> {
                             context,
                             "productCountAdded".tr,
                           );
-                          // showToast(fToast: fToast, name: "productCountAdded");
                         } else {
-                          setState(() {
-                            addCartBool = false;
-                          });
-                          showSnackBar("removedFromCartTitle", "removedFromCartSubtitle", Colors.red);
+                          addCartBool = false;
+                          showCustomToast(
+                            context,
+                            "removedFromCartTitle".tr,
+                          );
                         }
+                        setState(() {});
                       },
                       child: const Padding(
                         padding: EdgeInsets.all(8.0),
@@ -202,18 +207,20 @@ class _ProductProfilState extends State<ProductProfil> {
                     ),
                     Container(
                       margin: const EdgeInsets.symmetric(horizontal: 15),
-                      child: Text(
-                        "${productProfilController.quantity.value}",
-                        textAlign: TextAlign.center,
-                        style: const TextStyle(color: Colors.white, fontFamily: montserratBold, fontSize: 26),
-                      ),
+                      child: Obx(() {
+                        return Text(
+                          "${productProfilController.quantity.value}",
+                          textAlign: TextAlign.center,
+                          style: const TextStyle(color: Colors.white, fontFamily: montserratBold, fontSize: 26),
+                        );
+                      }),
                     ),
                     GestureDetector(
                       onTap: () {
                         if (productProfilController.stockCount.value > (productProfilController.quantity.value + 1)) {
                           favCartController.addCart(widget.id!, price!);
                           cartPageController.addToCard(widget.id!);
-
+                          _homePageController.searchAndAdd(widget.id!, price);
                           productProfilController.quantity.value++;
                           if (filterController.list.isNotEmpty) {
                             for (final element2 in filterController.list) {
@@ -226,11 +233,14 @@ class _ProductProfilState extends State<ProductProfil> {
                             context,
                             "productCountAdded".tr,
                           );
-                          // showToast(fToast: fToast, name: "productCountAdded");
                         } else {
                           Vibration.vibrate();
-                          showSnackBar("emptyStockMin", "emptyStockSubtitle", Colors.red);
+                          showCustomToast(
+                            context,
+                            "emptyStockSubtitle".tr,
+                          );
                         }
+                        setState(() {});
                       },
                       child: const Padding(
                         padding: EdgeInsets.all(8.0),
@@ -268,7 +278,9 @@ class _ProductProfilState extends State<ProductProfil> {
               ));
   }
 
-  Column sameProducts(AsyncSnapshot<ProductProfilModel> snapshot) {
+  Column sameProducts(int? categoryId) {
+    final double sizeWidth = MediaQuery.of(context).size.width;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -276,16 +288,55 @@ class _ProductProfilState extends State<ProductProfil> {
           padding: const EdgeInsets.only(right: 15, left: 15, top: 25, bottom: 15),
           child: Text("sameProducts".tr, style: const TextStyle(color: Colors.black, fontFamily: montserratSemiBold, fontSize: 18)),
         ),
-        gridViewMine(
-          whichFilter: 0,
-          parametrs: {
-            "page": "1",
-            "limit": "20",
-            "product_id": "${widget.id}",
-            "main_category_id": "${snapshot.data!.categoryId}",
-          },
-          removeText: true,
-        ),
+        FutureBuilder<List<ProductsModel>>(
+            future: ProductsModel().getProducts(
+              parametrs: {
+                "page": "1",
+                "limit": "20",
+                "product_id": "${widget.id}",
+                "main_category_id": "$categoryId",
+              },
+            ),
+            builder: (context, snapshot) {
+              if (snapshot.hasError) {
+                return errorConnection(
+                    onTap: () {
+                      ProductsModel().getProducts(
+                        parametrs: {
+                          "page": "1",
+                          "limit": "20",
+                          "product_id": "${widget.id}",
+                          "main_category_id": "$categoryId",
+                        },
+                      );
+                    },
+                    sizeWidth: sizeWidth);
+              } else if (snapshot.hasData) {
+                return GridView.builder(
+                  itemCount: snapshot.data?.length,
+                  physics: const NeverScrollableScrollPhysics(),
+                  shrinkWrap: true,
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2, childAspectRatio: 1.5 / 2.5),
+                  itemBuilder: (BuildContext context, int index) {
+                    return Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: ProductCard3(
+                        id: snapshot.data![index].id,
+                        name: snapshot.data![index].productName,
+                        price: snapshot.data![index].price,
+                        image: snapshot.data![index].imagePath,
+                        discountValue: snapshot.data![index].discountValue,
+                        whichList: 1,
+                        index: index,
+                      ),
+                    );
+                  },
+                );
+              }
+              return Center(
+                child: spinKit(),
+              );
+            })
       ],
     );
   }
@@ -619,11 +670,17 @@ class _ProductProfilState extends State<ProductProfil> {
                           const SizedBox(
                             height: 30,
                           ),
-                          Text("description".tr, style: const TextStyle(color: Colors.black, fontFamily: montserratSemiBold, fontSize: 17)),
-                          Padding(
-                            padding: const EdgeInsets.only(top: 15),
-                            child: Text("${snapshot.data!.description}", style: const TextStyle(color: Colors.black, fontFamily: montserratRegular, fontSize: 16)),
-                          ),
+                          if (snapshot.data!.description == null)
+                            const SizedBox.shrink()
+                          else
+                            Text("description".tr, style: const TextStyle(color: Colors.black, fontFamily: montserratSemiBold, fontSize: 17)),
+                          if (snapshot.data!.description == null)
+                            const SizedBox.shrink()
+                          else
+                            Padding(
+                              padding: const EdgeInsets.only(top: 15),
+                              child: Text("${snapshot.data!.description}", style: const TextStyle(color: Colors.black, fontFamily: montserratRegular, fontSize: 16)),
+                            ),
                         ],
                       )),
                       customContainer(ExpansionTile(
@@ -664,7 +721,7 @@ class _ProductProfilState extends State<ProductProfil> {
                           )
                         ],
                       )),
-                      sameProducts(snapshot),
+                      sameProducts(snapshot.data!.categoryId),
                       const SizedBox(height: 80),
                     ],
                   );

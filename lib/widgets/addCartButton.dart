@@ -2,7 +2,6 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
-import 'package:flutter_styled_toast/flutter_styled_toast.dart';
 import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
 import 'package:sharaf_yabi_ecommerce/constants/constants.dart';
@@ -38,6 +37,7 @@ class _AddCartButtonState extends State<AddCartButton> with TickerProviderStateM
 
   @override
   Widget build(BuildContext context) {
+    final double sizeWidth = MediaQuery.of(context).size.width;
     return GestureDetector(
       onTap: () {
         setState(() {
@@ -63,21 +63,21 @@ class _AddCartButtonState extends State<AddCartButton> with TickerProviderStateM
       child: addCart
           ? Container(
               margin: const EdgeInsets.only(right: 5),
-              width: 35,
-              height: 35,
-              padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 3),
-              decoration: const BoxDecoration(color: kPrimaryColor, borderRadius: borderRadius10),
+              width: sizeWidth > 800 ? 45 : 32,
+              height: sizeWidth > 800 ? 45 : 32,
+              padding: EdgeInsets.symmetric(vertical: sizeWidth > 800 ? 5 : 2, horizontal: sizeWidth > 800 ? 6 : 3),
+              decoration: const BoxDecoration(color: kPrimaryColor, borderRadius: borderRadius5),
               child: Lottie.asset(
                 "assets/lottie/cartwhite.json",
-                width: 28,
+                width: sizeWidth > 800 ? 38 : 28,
                 animate: true,
                 repeat: false,
               ))
           : Container(
               margin: const EdgeInsets.only(right: 5),
               padding: const EdgeInsets.all(5),
-              decoration: const BoxDecoration(color: kPrimaryColor, borderRadius: borderRadius10),
-              child: const Icon(IconlyLight.buy, color: Colors.white)),
+              decoration: const BoxDecoration(color: kPrimaryColor, borderRadius: borderRadius5),
+              child: Icon(IconlyLight.buy, size: sizeWidth > 800 ? 34 : 22, color: Colors.white)),
     );
   }
 }

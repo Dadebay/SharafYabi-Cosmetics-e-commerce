@@ -17,7 +17,7 @@ SnackbarController showSnackBar(String title, String subtitle, Color color) {
     subtitle,
     snackStyle: SnackStyle.FLOATING,
     titleText: title == ""
-        ? SizedBox.shrink()
+        ? const SizedBox.shrink()
         : Text(
             title.tr,
             style: const TextStyle(fontFamily: montserratSemiBold, fontSize: 16, color: Colors.white),
@@ -28,8 +28,8 @@ SnackbarController showSnackBar(String title, String subtitle, Color color) {
     ),
     snackPosition: SnackPosition.BOTTOM,
     backgroundColor: color,
-    borderRadius: 0.0,
-    margin: EdgeInsets.zero,
+    borderRadius: 10.0,
+    margin: const EdgeInsets.all(8),
   );
 }
 
@@ -38,7 +38,7 @@ String lang = "ru";
 void showCustomToast(BuildContext context, String name) {
   showToast(
     name.tr,
-    textStyle: TextStyle(color: Colors.white, fontSize: 16, fontFamily: montserratSemiBold),
+    textStyle: const TextStyle(color: Colors.white, fontSize: 16, fontFamily: montserratSemiBold),
     context: context,
     alignment: Alignment.bottomCenter,
     backgroundColor: kPrimaryColor,
@@ -48,8 +48,8 @@ void showCustomToast(BuildContext context, String name) {
     reverseCurve: Curves.decelerate,
     animation: StyledToastAnimation.none,
     reverseAnimation: StyledToastAnimation.none,
-    duration: Duration(seconds: 3),
-    animDuration: Duration(seconds: 1),
+    duration: const Duration(seconds: 3),
+    animDuration: const Duration(seconds: 1),
     dismissOtherToast: true,
     fullWidth: false,
     isHideKeyboard: false,
@@ -70,12 +70,15 @@ Future<String> languageCode() async {
   return "ru";
 }
 
-Widget errorConnection({required Function() onTap}) {
+Widget errorConnection({
+  required Function() onTap,
+  double? sizeWidth,
+}) {
   return Center(
     child: Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Lottie.asset("assets/lottie/noconnection.json", animate: true, height: 300, width: 400),
+        Lottie.asset("assets/lottie/noconnection.json", animate: true, fit: BoxFit.contain, height: sizeWidth! > 800 ? 500 : 300, width: sizeWidth > 800 ? 500 : 400),
         Container(
           color: Colors.white,
           width: Get.size.width,
@@ -86,24 +89,25 @@ Widget errorConnection({required Function() onTap}) {
               Text(
                 "noConnection1".tr,
                 textAlign: TextAlign.center,
-                style: const TextStyle(color: Colors.black, fontSize: 20, fontFamily: montserratSemiBold),
+                style: TextStyle(color: Colors.black, fontSize: sizeWidth > 800 ? 32 : 18, fontFamily: montserratMedium),
               ),
               const SizedBox(height: 15),
               Text(
                 "error404".tr,
                 textAlign: TextAlign.center,
-                style: const TextStyle(color: Colors.black, fontSize: 18, fontFamily: montserratMedium),
+                style: TextStyle(color: Colors.black, fontSize: sizeWidth > 800 ? 26 : 16, fontFamily: montserratRegular),
               ),
             ],
           ),
         ),
         RaisedButton(
+          padding: sizeWidth > 800 ? const EdgeInsets.symmetric(horizontal: 15, vertical: 10) : const EdgeInsets.symmetric(horizontal: 5),
           onPressed: onTap,
           shape: const RoundedRectangleBorder(borderRadius: borderRadius10),
           color: kPrimaryColor,
           child: Text(
             "retry".tr,
-            style: const TextStyle(color: Colors.white, fontSize: 18, fontFamily: montserratSemiBold),
+            style: TextStyle(color: Colors.white, fontSize: sizeWidth > 800 ? 30 : 16, fontFamily: montserratSemiBold),
           ),
         ),
       ],
@@ -254,22 +258,22 @@ CustomFooter loadMore() {
   });
 }
 
-Padding namePart({Function()? onTap, String? name}) {
+Padding namePart({Function()? onTap, String? name, double? sizeWidth, double? sizeHeight}) {
   return Padding(
-    padding: const EdgeInsets.only(top: 30, left: 15, right: 15, bottom: 15),
+    padding: const EdgeInsets.only(top: 20, left: 15, right: 15, bottom: 15),
     child: Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Text(name!, style: const TextStyle(color: Colors.black, fontFamily: montserratSemiBold, fontSize: 18)),
+        Text(name!, style: TextStyle(color: Colors.black, fontFamily: montserratSemiBold, fontSize: sizeWidth! > 800 ? 28 : 18)),
         GestureDetector(
           onTap: onTap,
           child: Row(
             children: [
-              Text("all".tr, style: const TextStyle(color: kPrimaryColor, fontFamily: montserratMedium, fontSize: 14)),
+              Text("all".tr, style: TextStyle(color: kPrimaryColor, fontFamily: montserratMedium, fontSize: sizeWidth > 800 ? 22 : 14)),
               const SizedBox(
                 width: 8,
               ),
-              const Icon(IconlyLight.arrowRightCircle, size: 20, color: kPrimaryColor),
+              Icon(IconlyLight.arrowRightCircle, size: sizeWidth > 800 ? 25 : 20, color: kPrimaryColor),
             ],
           ),
         )

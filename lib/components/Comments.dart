@@ -7,12 +7,11 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:sharaf_yabi_ecommerce/constants/constants.dart';
 import 'package:sharaf_yabi_ecommerce/constants/widgets.dart';
+import 'package:sharaf_yabi_ecommerce/controllers/ProductProfileController.dart';
 import 'package:sharaf_yabi_ecommerce/models/CommentModel.dart';
 import 'package:sharaf_yabi_ecommerce/models/UserModels/AuthModel.dart';
 import 'package:sharaf_yabi_ecommerce/widgets/appBar.dart';
 import 'package:vibration/vibration.dart';
-
-import '../controllers/SettingsController.dart';
 
 class CommentsPage extends StatefulWidget {
   final int productID;
@@ -26,7 +25,7 @@ class CommentsPage extends StatefulWidget {
 class _CommentsPageState extends State<CommentsPage> {
   TextEditingController controller = TextEditingController();
 
-  SettingsController settingsController = Get.put(SettingsController());
+  ProductProfilController settingsController = Get.put(ProductProfilController());
 
   @override
   void initState() {

@@ -3,13 +3,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
 import 'package:get/get.dart';
-import 'package:sharaf_yabi_ecommerce/components/ProductCard.dart';
+import 'package:sharaf_yabi_ecommerce/components/ProductCard3.dart';
 import 'package:sharaf_yabi_ecommerce/components/ShowAllProductsPage.dart';
 import 'package:sharaf_yabi_ecommerce/constants/constants.dart';
 import 'package:sharaf_yabi_ecommerce/constants/widgets.dart';
 import 'package:sharaf_yabi_ecommerce/controllers/FilterController.dart';
+import 'package:sharaf_yabi_ecommerce/controllers/HomePageController.dart';
 import 'package:sharaf_yabi_ecommerce/models/BannersModel.dart';
-import 'package:sharaf_yabi_ecommerce/models/ProductsModel.dart';
 import 'package:sharaf_yabi_ecommerce/screens/HomePage/Components/Banners.dart';
 import 'package:sharaf_yabi_ecommerce/screens/HomePage/SearchPage/Search.dart';
 import 'package:sharaf_yabi_ecommerce/widgets/appBar.dart';
@@ -23,43 +23,35 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
-  Future<List<ProductsModel>>? newInComeFuture;
-  Future<List<ProductsModel>>? discountsFuture;
-  Future<List<ProductsModel>>? getGridView;
   Future<List<BannerModel>>? banners;
   FilterController filterController = Get.put(FilterController());
+  final HomePageController _homePageController = Get.put(HomePageController());
 
   @override
   void initState() {
     super.initState();
-
-    discountsFuture = ProductsModel().getProducts(
-      parametrs: {
-        "page": "1",
-        "limit": "30",
-        "discounts": "true",
-      },
-    );
+    _homePageController.fetchDiscountedProducts();
+    _homePageController.fetchNewInComeProducts();
+    _homePageController.fetchPopularProducts();
     banners = BannerModel().getBanners();
-    getGridView = ProductsModel().getProducts(
-      parametrs: {"page": "1", "limit": "30", "recomended": "true"},
-    );
-    newInComeFuture = ProductsModel().getProducts(
-      parametrs: {"page": "1", "limit": "30", "new_in_come": "true"},
-    );
   }
 
   @override
   Widget build(BuildContext context) {
+    final double sizeHeight = MediaQuery.of(context).size.height;
+    final double sizeWidth = MediaQuery.of(context).size.width;
     return Scaffold(
       backgroundColor: backgroundColor.withOpacity(0.2),
-      appBar: MyAppBar(
-          icon: IconlyLight.search,
-          onTap: () {
-            Get.to(() => SearchPage());
-          },
-          backArrow: false,
-          iconRemove: true),
+      appBar: PreferredSize(
+        preferredSize: sizeWidth > 800 ? const Size.fromHeight(70) : const Size.fromHeight(kToolbarHeight),
+        child: MyAppBar(
+            icon: IconlyLight.search,
+            onTap: () {
+              Get.to(() => SearchPage());
+            },
+            backArrow: false,
+            iconRemove: true),
+      ),
       body: SingleChildScrollView(
         physics: const BouncingScrollPhysics(),
         child: Column(
@@ -67,9 +59,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Banners(banners: banners),
-            discountedProducts(),
-            newInCome(),
-            getGridViewItems(),
+            discountedProducts(sizeWidth, sizeHeight),
+            newInCome(sizeWidth, sizeHeight),
+            getGridViewItems(sizeWidth, sizeHeight),
             const SizedBox(
               height: 25,
             )
@@ -79,187 +71,214 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     );
   }
 
-  Padding getGridViewItems() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 15),
-      child: FutureBuilder<List<ProductsModel>>(
-          future: getGridView,
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return Padding(
-                padding: const EdgeInsets.symmetric(vertical: 15),
-                child: Center(child: spinKit()),
-              );
-            } else if (snapshot.data!.isEmpty) {
-              return emptyData(imagePath: "", errorTitle: "emptyProducts", errorSubtitle: "emptyProductsSubtitle");
-            } else if (snapshot.hasError) {
-              return errorConnection(onTap: () {
-                ProductsModel().getProducts(parametrs: {"page": "1", "limit": "30", "recomended": "true"});
-              });
-            } else if (snapshot.hasData) {
-              return Column(
+  Widget getGridViewItems(double sizeWidth, double sizeHeight) {
+    return Obx(() {
+      if (_homePageController.loadingRecomended.value == 1) {
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(top: 30, bottom: 8, right: 10),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Padding(
-                    padding: const EdgeInsets.only(top: 30, bottom: 15),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text("popularProducts".tr, style: const TextStyle(color: Colors.black, fontFamily: montserratSemiBold, fontSize: 18)),
-                        GestureDetector(
-                          onTap: () {
-                            filterController.producersID.clear();
-                            filterController.categoryID.clear();
-                            filterController.categoryIDOnlyID.clear();
-                            filterController.mainCategoryID.value = 0;
-                            Get.to(() => ShowAllProductsPage(
-                                  pageName: "popularProducts".tr,
-                                  whichFilter: 1,
-                                ));
-                          },
-                          child: Row(
-                            children: [
-                              Text("all".tr, style: const TextStyle(color: kPrimaryColor, fontFamily: montserratMedium, fontSize: 14)),
-                              const SizedBox(
-                                width: 8,
-                              ),
-                              const Icon(IconlyLight.arrowRightCircle, size: 20, color: kPrimaryColor),
-                            ],
-                          ),
-                        )
-                      ],
-                    ),
+                    padding: const EdgeInsets.symmetric(horizontal: 15),
+                    child: Text("popularProducts".tr, style: TextStyle(color: Colors.black, fontFamily: montserratSemiBold, fontSize: sizeWidth > 800 ? 28 : 18)),
                   ),
-                  GridView.builder(
-                    itemCount: snapshot.data?.length,
-                    physics: const NeverScrollableScrollPhysics(),
-                    shrinkWrap: true,
-                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2, childAspectRatio: 3 / 4),
-                    itemBuilder: (BuildContext context, int index) {
-                      return Padding(
-                        padding: const EdgeInsets.only(top: 8, right: 8, bottom: 8),
-                        child: ProductCard(
-                          product: snapshot.data?[index],
-                        ),
-                      );
+                  GestureDetector(
+                    onTap: () {
+                      filterController.producersID.clear();
+                      filterController.categoryID.clear();
+                      filterController.categoryIDOnlyID.clear();
+                      filterController.mainCategoryID.value = 0;
+                      Get.to(() => ShowAllProductsPage(
+                            pageName: "popularProducts".tr,
+                            whichFilter: 1,
+                          ));
                     },
-                  ),
+                    child: Row(
+                      children: [
+                        Text("all".tr, style: TextStyle(color: kPrimaryColor, fontFamily: montserratMedium, fontSize: sizeWidth > 800 ? 22 : 14)),
+                        const SizedBox(
+                          width: 8,
+                        ),
+                        Icon(IconlyLight.arrowRightCircle, size: sizeWidth > 800 ? 25 : 20, color: kPrimaryColor),
+                      ],
+                    ),
+                  )
                 ],
-              );
-            } else {
-              return spinKit();
-            }
-          }),
-    );
+              ),
+            ),
+            GridView.builder(
+              itemCount: _homePageController.listRecomended.length,
+              physics: const NeverScrollableScrollPhysics(),
+              shrinkWrap: true,
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: sizeWidth > 800 ? 3 : 2, childAspectRatio: 1.5 / 2.5),
+              itemBuilder: (BuildContext context, int index) {
+                return Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: ProductCard3(
+                    id: _homePageController.listRecomended[index]["id"],
+                    name: _homePageController.listRecomended[index]["name"],
+                    price: _homePageController.listRecomended[index]["price"],
+                    image: _homePageController.listRecomended[index]["image"],
+                    discountValue: _homePageController.listRecomended[index]["discountValue"],
+                    whichList: 3,
+                    index: index,
+                  ),
+                );
+              },
+            ),
+          ],
+        );
+      } else if (_homePageController.loadingRecomended.value == 3) {
+        return retryButton(() {
+          _homePageController.fetchPopularProducts();
+        });
+      } else if (_homePageController.loadingRecomended.value == 0) {
+        return Center(
+          child: spinKit(),
+        );
+      }
+      return Center(
+        child: spinKit(),
+      );
+    });
   }
 
-  FutureBuilder<List<ProductsModel>> newInCome() {
-    return FutureBuilder<List<ProductsModel>>(
-        future: newInComeFuture,
-        builder: (context, snapshot) {
-          if (snapshot.hasError) {
-            return const SizedBox.shrink();
-          } else if (snapshot.hasData) {
-            return snapshot.data!.isEmpty
-                ? const SizedBox.shrink()
-                : Container(
-                    height: 280,
-                    margin: const EdgeInsets.only(top: 15),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        namePart(
-                            name: "newProducts".tr,
-                            onTap: () {
-                              filterController.producersID.clear();
-                              filterController.categoryID.clear();
-                              filterController.categoryIDOnlyID.clear();
-                              filterController.mainCategoryID.value = 0;
-                              Get.to(() => ShowAllProductsPage(
-                                    pageName: "newProducts".tr,
-                                    whichFilter: 2,
-                                  ));
-                            }),
-                        Expanded(
-                          child: ListView.builder(
-                            physics: const BouncingScrollPhysics(),
-                            shrinkWrap: true,
-                            scrollDirection: Axis.horizontal,
-                            itemCount: snapshot.data?.length,
-                            itemBuilder: (BuildContext context, int index) {
-                              return Container(
-                                width: 150,
-                                margin: const EdgeInsets.only(left: 15),
-                                padding: const EdgeInsets.only(
-                                  bottom: 4,
-                                ),
-                                child: ProductCard(
-                                  product: snapshot.data?[index],
-                                ),
-                              );
-                            },
+  Widget discountedProducts(double sizeWidth, double sizeHeight) {
+    return Obx(() {
+      if (_homePageController.loading.value == 1) {
+        return Container(
+          height: sizeWidth > 800 ? 360 : 400,
+          margin: const EdgeInsets.only(top: 15),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              namePart(
+                  name: "discountedProducts".tr,
+                  sizeHeight: sizeHeight,
+                  sizeWidth: sizeWidth,
+                  onTap: () {
+                    filterController.producersID.clear();
+                    filterController.categoryID.clear();
+                    filterController.categoryIDOnlyID.clear();
+                    filterController.mainCategoryID.value = 0;
+                    Get.to(() => ShowAllProductsPage(
+                          pageName: "discountedProducts".tr,
+                          whichFilter: 3,
+                        ));
+                  }),
+              Expanded(
+                  child: ListView.builder(
+                      physics: const BouncingScrollPhysics(),
+                      shrinkWrap: true,
+                      scrollDirection: Axis.horizontal,
+                      itemCount: _homePageController.list.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        return Container(
+                          width: sizeWidth > 800 ? 220 : 180,
+                          margin: const EdgeInsets.only(
+                            left: 10,
                           ),
-                        ),
-                      ],
-                    ),
-                  );
-          }
-          return shimmerListView();
+                          padding: const EdgeInsets.only(
+                            bottom: 4,
+                          ),
+                          child: ProductCard3(
+                            id: _homePageController.list[index]["id"],
+                            name: _homePageController.list[index]["name"],
+                            price: _homePageController.list[index]["price"],
+                            image: _homePageController.list[index]["image"],
+                            discountValue: _homePageController.list[index]["discountValue"],
+                            whichList: 1,
+                            index: index,
+                          ),
+                        );
+                      })),
+            ],
+          ),
+        );
+      } else if (_homePageController.loading.value == 3) {
+        return retryButton(() {
+          _homePageController.fetchDiscountedProducts();
         });
+      } else if (_homePageController.loading.value == 0) {
+        return Center(
+          child: spinKit(),
+        );
+      }
+      return Center(
+        child: spinKit(),
+      );
+    });
   }
 
-  FutureBuilder<List<ProductsModel>> discountedProducts() {
-    return FutureBuilder<List<ProductsModel>>(
-        future: discountsFuture,
-        builder: (context, snapshot) {
-          if (snapshot.hasError) {
-            return const SizedBox.shrink();
-          } else if (snapshot.hasData) {
-            return snapshot.data!.isEmpty
-                ? const SizedBox.shrink()
-                : Container(
-                    height: 280,
-                    margin: const EdgeInsets.only(top: 15),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        namePart(
-                            name: "discountedProducts".tr,
-                            onTap: () {
-                              filterController.producersID.clear();
-                              filterController.categoryID.clear();
-                              filterController.categoryIDOnlyID.clear();
-                              filterController.mainCategoryID.value = 0;
-                              Get.to(() => ShowAllProductsPage(
-                                    pageName: "discountedProducts".tr,
-                                    whichFilter: 3,
-                                  ));
-                            }),
-                        Expanded(
-                          child: ListView.builder(
-                            physics: const BouncingScrollPhysics(),
-                            shrinkWrap: true,
-                            scrollDirection: Axis.horizontal,
-                            itemCount: snapshot.data?.length,
-                            itemBuilder: (BuildContext context, int index) {
-                              return Container(
-                                width: 150,
-                                margin: const EdgeInsets.only(left: 15),
-                                padding: const EdgeInsets.only(
-                                  bottom: 4,
-                                ),
-                                child: ProductCard(
-                                  product: snapshot.data?[index],
-                                ),
-                              );
-                            },
+  Widget newInCome(double sizeWidth, double sizeHeight) {
+    return Obx(() {
+      if (_homePageController.loadingNewInCome.value == 1) {
+        return Container(
+          height: sizeWidth > 800 ? 360 : 400,
+          margin: const EdgeInsets.only(top: 15),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              namePart(
+                  name: "newProducts".tr,
+                  sizeHeight: sizeHeight,
+                  sizeWidth: sizeWidth,
+                  onTap: () {
+                    filterController.producersID.clear();
+                    filterController.categoryID.clear();
+                    filterController.categoryIDOnlyID.clear();
+                    filterController.mainCategoryID.value = 0;
+                    Get.to(() => ShowAllProductsPage(
+                          pageName: "newProducts".tr,
+                          whichFilter: 2,
+                        ));
+                  }),
+              Expanded(
+                  child: ListView.builder(
+                      physics: const BouncingScrollPhysics(),
+                      shrinkWrap: true,
+                      scrollDirection: Axis.horizontal,
+                      itemCount: _homePageController.listNewInCome.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        return Container(
+                          width: sizeWidth > 800 ? 220 : 180,
+                          margin: const EdgeInsets.only(
+                            left: 10,
                           ),
-                        ),
-                      ],
-                    ),
-                  );
-          }
-          return shimmerListView();
+                          padding: const EdgeInsets.only(
+                            bottom: 4,
+                          ),
+                          child: ProductCard3(
+                            id: _homePageController.listNewInCome[index]["id"],
+                            name: _homePageController.listNewInCome[index]["name"],
+                            price: _homePageController.listNewInCome[index]["price"],
+                            image: _homePageController.listNewInCome[index]["image"],
+                            discountValue: _homePageController.listNewInCome[index]["discountValue"],
+                            whichList: 2,
+                            index: index,
+                          ),
+                        );
+                      })),
+            ],
+          ),
+        );
+      } else if (_homePageController.loadingNewInCome.value == 3) {
+        return retryButton(() {
+          _homePageController.fetchNewInComeProducts();
         });
+      } else if (_homePageController.loadingNewInCome.value == 0) {
+        return Center(
+          child: spinKit(),
+        );
+      }
+      return Center(
+        child: spinKit(),
+      );
+    });
   }
 
   SizedBox shimmerListView() {

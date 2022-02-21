@@ -10,6 +10,7 @@ import 'package:sharaf_yabi_ecommerce/constants/constants.dart';
 import 'package:sharaf_yabi_ecommerce/constants/widgets.dart';
 import 'package:sharaf_yabi_ecommerce/controllers/Fav_Cart_Controller.dart';
 import 'package:sharaf_yabi_ecommerce/controllers/FilterController.dart';
+import 'package:sharaf_yabi_ecommerce/controllers/HomePageController.dart';
 
 import 'ProductProfil.dart';
 
@@ -26,6 +27,8 @@ class ProductCard2 extends StatefulWidget {
 class _ProductCard2State extends State<ProductCard2> {
   final FilterController _filterController = Get.put<FilterController>(FilterController());
   Fav_Cart_Controller favCartController = Get.put<Fav_Cart_Controller>(Fav_Cart_Controller());
+  final HomePageController _homePageController = Get.put(HomePageController());
+
   bool favButton = false;
   bool addCart = false;
 
@@ -82,27 +85,21 @@ class _ProductCard2State extends State<ProductCard2> {
     return Padding(
       padding: const EdgeInsets.only(left: 7, right: 7, bottom: 3, top: 7),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
           Text(
             _filterController.list[widget.indexx]["name"],
             overflow: TextOverflow.ellipsis,
-            maxLines: 1,
-            style: const TextStyle(fontFamily: montserratMedium, fontSize: 16),
+            maxLines: 3,
+            textAlign: TextAlign.center,
+            style: const TextStyle(fontFamily: montserratRegular, fontSize: 14),
           ),
           Text(
-            _filterController.list[widget.indexx]["categoryName"],
+            "${_filterController.list[widget.indexx]["price"]} m.",
             overflow: TextOverflow.ellipsis,
-            maxLines: 1,
-            style: TextStyle(fontFamily: montserratMedium, fontSize: 14, color: Colors.grey[400]),
-          ),
-          RichText(
-            overflow: TextOverflow.ellipsis,
-            text: TextSpan(children: <TextSpan>[
-              TextSpan(text: _filterController.list[widget.indexx]["price"], style: const TextStyle(fontFamily: montserratSemiBold, fontSize: 20, color: kPrimaryColor)),
-              const TextSpan(text: " TMT", style: TextStyle(fontFamily: montserratMedium, fontSize: 16, color: kPrimaryColor))
-            ]),
+            maxLines: 4,
+            textAlign: TextAlign.center,
+            style: const TextStyle(fontFamily: montserratSemiBold, fontSize: 18, color: kPrimaryColor),
           ),
           SizedBox(
             width: Get.size.width,
@@ -131,7 +128,10 @@ class _ProductCard2State extends State<ProductCard2> {
                                 context,
                                 "productCountAdded".tr,
                               );
-                              // showToast(fToast: fToast, name: "productCountAdded");
+                              _homePageController.searchAndRemove(
+                                _filterController.list[widget.indexx]["id"]!,
+                              );
+
                               favCartController.removeCart(_filterController.list[widget.indexx]["id"]);
                             });
                           },
@@ -165,11 +165,12 @@ class _ProductCard2State extends State<ProductCard2> {
                               for (final element2 in _filterController.list) {
                                 if (element2["id"] == _filterController.list[widget.indexx]["id"]) {
                                   element2["count"]++;
-                                  // showToast(fToast: fToast, name: "productCountAdded");
                                   showCustomToast(
                                     context,
                                     "productCountAdded".tr,
                                   );
+                                  _homePageController.searchAndAdd(_filterController.list[widget.indexx]["id"]!, "${_filterController.list[widget.indexx]["price"]}");
+
                                   favCartController.addCart(_filterController.list[widget.indexx]["id"], _filterController.list[widget.indexx]["price"]);
                                 }
                               }
@@ -195,7 +196,6 @@ class _ProductCard2State extends State<ProductCard2> {
                 : RaisedButton(
                     onPressed: () {
                       setState(() {
-                        // showToast(fToast: fToast, name: "addedToCardSubtitle");
                         showCustomToast(
                           context,
                           "addedToCardSubtitle".tr,
@@ -204,6 +204,8 @@ class _ProductCard2State extends State<ProductCard2> {
                         if (_filterController.list[widget.indexx]["count"] == 0) {
                           _filterController.list[widget.indexx]["count"]++;
                         } else {
+                          _homePageController.searchAndAdd(_filterController.list[widget.indexx]["id"]!, "${_filterController.list[widget.indexx]["price"]}");
+
                           favCartController.addCart(_filterController.list[widget.indexx]["id"], _filterController.list[widget.indexx]["price"]);
                         }
                       });
@@ -259,6 +261,11 @@ class _ProductCard2State extends State<ProductCard2> {
                 setState(() {
                   favButton = !favButton;
                   favCartController.toggleFav(_filterController.list[widget.indexx]["id"]);
+                  if (favButton == true) {
+                    showCustomToast(context, "addedfavorite");
+                  } else {
+                    showCustomToast(context, "removedfavorite");
+                  }
                 });
               },
               child: PhysicalModel(
@@ -274,8 +281,8 @@ class _ProductCard2State extends State<ProductCard2> {
           ),
           if (_filterController.list[widget.indexx]["discountValue"] != 0)
             Positioned(
-                top: 8,
-                left: 8,
+                bottom: 8,
+                right: 8,
                 child: Container(
                   padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 4),
                   decoration: const BoxDecoration(color: Colors.red, borderRadius: borderRadius5),

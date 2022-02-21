@@ -31,6 +31,7 @@ class Fav_Cart_Controller extends GetxController {
         favList.add({"id": id});
       }
     }
+    favList.refresh();
     final String jsonString = jsonEncode(favList);
     storage.write("favList", jsonString);
   }
@@ -72,6 +73,18 @@ class Fav_Cart_Controller extends GetxController {
     findSumma();
   }
 
+  removeCart(int id) {
+    for (final element in cartList) {
+      if (element["id"] == id) {
+        element["count"] -= 1;
+      }
+    }
+    cartList.removeWhere((element) => element["count"] == 0);
+    final String jsonString = jsonEncode(cartList);
+    storage.write("cartList", jsonString);
+    findSumma();
+  }
+
   findSumma() {
     priceAll.value = 0.0;
     for (final element in cartList) {
@@ -93,18 +106,6 @@ class Fav_Cart_Controller extends GetxController {
 
   clearCartList() {
     cartList.clear();
-    final String jsonString = jsonEncode(cartList);
-    storage.write("cartList", jsonString);
-    findSumma();
-  }
-
-  removeCart(int id) {
-    for (final element in cartList) {
-      if (element["id"] == id) {
-        element["count"] -= 1;
-      }
-    }
-    cartList.removeWhere((element) => element["count"] == 0);
     final String jsonString = jsonEncode(cartList);
     storage.write("cartList", jsonString);
     findSumma();
