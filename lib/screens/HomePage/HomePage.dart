@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
 import 'package:get/get.dart';
+import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:sharaf_yabi_ecommerce/components/ProductCard3.dart';
 import 'package:sharaf_yabi_ecommerce/components/ShowAllProductsPage.dart';
 import 'package:sharaf_yabi_ecommerce/constants/constants.dart';
@@ -47,7 +48,12 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         child: MyAppBar(
             icon: IconlyLight.search,
             onTap: () {
-              Get.to(() => SearchPage());
+              pushNewScreen(
+                context,
+                screen: SearchPage(),
+                withNavBar: true, // OPTIONAL VALUE. True by default.
+                pageTransitionAnimation: PageTransitionAnimation.cupertino,
+              );
             },
             backArrow: false,
             iconRemove: true),
@@ -92,10 +98,15 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                       filterController.categoryID.clear();
                       filterController.categoryIDOnlyID.clear();
                       filterController.mainCategoryID.value = 0;
-                      Get.to(() => ShowAllProductsPage(
-                            pageName: "popularProducts".tr,
-                            whichFilter: 1,
-                          ));
+                      pushNewScreen(
+                        context,
+                        screen: ShowAllProductsPage(
+                          pageName: "popularProducts".tr,
+                          whichFilter: 1,
+                        ),
+                        withNavBar: true, // OPTIONAL VALUE. True by default.
+                        pageTransitionAnimation: PageTransitionAnimation.cupertino,
+                      );
                     },
                     child: Row(
                       children: [
@@ -164,10 +175,15 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                     filterController.categoryID.clear();
                     filterController.categoryIDOnlyID.clear();
                     filterController.mainCategoryID.value = 0;
-                    Get.to(() => ShowAllProductsPage(
-                          pageName: "discountedProducts".tr,
-                          whichFilter: 3,
-                        ));
+                    pushNewScreen(
+                      context,
+                      screen: ShowAllProductsPage(
+                        pageName: "discountedProducts".tr,
+                        whichFilter: 3,
+                      ),
+                      withNavBar: true, // OPTIONAL VALUE. True by default.
+                      pageTransitionAnimation: PageTransitionAnimation.cupertino,
+                    );
                   }),
               Expanded(
                   child: ListView.builder(
@@ -230,10 +246,15 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                     filterController.categoryID.clear();
                     filterController.categoryIDOnlyID.clear();
                     filterController.mainCategoryID.value = 0;
-                    Get.to(() => ShowAllProductsPage(
-                          pageName: "newProducts".tr,
-                          whichFilter: 2,
-                        ));
+                    pushNewScreen(
+                      context,
+                      screen: ShowAllProductsPage(
+                        pageName: "newProducts".tr,
+                        whichFilter: 2,
+                      ),
+                      withNavBar: true, // OPTIONAL VALUE. True by default.
+                      pageTransitionAnimation: PageTransitionAnimation.cupertino,
+                    );
                   }),
               Expanded(
                   child: ListView.builder(

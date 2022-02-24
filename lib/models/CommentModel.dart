@@ -4,9 +4,9 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:sharaf_yabi_ecommerce/constants/constants.dart';
-import 'package:sharaf_yabi_ecommerce/constants/widgets.dart';
 import 'package:sharaf_yabi_ecommerce/models/UserModels/AuthModel.dart';
 
 class CommentModel extends ChangeNotifier {
@@ -25,7 +25,8 @@ class CommentModel extends ChangeNotifier {
   final List<Comment>? comments;
 
   Future<CommentModel> getComment({int? id}) async {
-    languageCode();
+    String lang = Get.locale!.languageCode;
+    if (lang == "tr") lang = "tm";
     final response = await http.get(
         Uri.parse(
           "$serverURL/api/$lang/get-comments/$id",
@@ -41,7 +42,8 @@ class CommentModel extends ChangeNotifier {
   }
 
   Future writeComment({int? id, String? comment}) async {
-    languageCode();
+    String lang = Get.locale!.languageCode;
+    if (lang == "tr") lang = "tm";
     final token = await Auth().getToken();
 
     final response = await http.post(
@@ -63,7 +65,8 @@ class CommentModel extends ChangeNotifier {
   }
 
   Future writeSubComment({int? id, String? comment, int? commentID}) async {
-    languageCode();
+    String lang = Get.locale!.languageCode;
+    if (lang == "tr") lang = "tm";
     final token = await Auth().getToken();
 
     final response = await http.post(

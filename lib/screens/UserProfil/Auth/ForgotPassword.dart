@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
 import 'package:get/get.dart';
-import 'package:get/get_utils/src/extensions/internacionalization.dart';
+import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:sharaf_yabi_ecommerce/constants/constants.dart';
 import 'package:sharaf_yabi_ecommerce/constants/widgets.dart';
 import 'package:sharaf_yabi_ecommerce/models/UserModels/UserSignInModel.dart';
@@ -82,7 +82,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                       errorBorder: OutlineInputBorder(borderRadius: borderRadius10, borderSide: BorderSide(color: Colors.red)),
                       hintStyle: TextStyle(color: Colors.grey, fontSize: 18, fontFamily: montserratMedium),
                       border: OutlineInputBorder(borderRadius: borderRadius10, borderSide: BorderSide(color: kPrimaryColor, width: 2)),
-                      focusedErrorBorder: OutlineInputBorder(borderRadius: borderRadius10, borderSide: BorderSide(color: Colors.red, width: 1)),
+                      focusedErrorBorder: OutlineInputBorder(borderRadius: borderRadius10, borderSide: BorderSide(color: Colors.red)),
                       focusedBorder: OutlineInputBorder(borderRadius: borderRadius10, borderSide: BorderSide(color: kPrimaryColor, width: 2)),
                       enabledBorder: OutlineInputBorder(borderRadius: borderRadius10, borderSide: BorderSide(color: Colors.black12, width: 2)),
                     ),
@@ -114,14 +114,14 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                       isDense: true,
                       errorBorder: const OutlineInputBorder(borderRadius: borderRadius10, borderSide: BorderSide(color: Colors.red)),
                       hintStyle: const TextStyle(color: Colors.grey, fontSize: 18, fontFamily: montserratMedium),
-                      focusedErrorBorder: const OutlineInputBorder(borderRadius: borderRadius10, borderSide: BorderSide(color: Colors.red, width: 1)),
+                      focusedErrorBorder: const OutlineInputBorder(borderRadius: borderRadius10, borderSide: BorderSide(color: Colors.red)),
                       focusedBorder: const OutlineInputBorder(borderRadius: borderRadius10, borderSide: BorderSide(color: kPrimaryColor, width: 2)),
                       enabledBorder: const OutlineInputBorder(borderRadius: borderRadius10, borderSide: BorderSide(color: Colors.black12, width: 2)),
                     ),
                   ),
                 )
               else
-                SizedBox.shrink(),
+                const SizedBox.shrink(),
               Center(
                 child: RaisedButton(
                   onPressed: () {
@@ -154,9 +154,14 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                         });
                       }
                     } else {
-                      Get.to(() => ChangePassword(
-                            otpCode: otpController.text,
-                          ));
+                      pushNewScreen(
+                        context,
+                        screen: ChangePassword(
+                          otpCode: otpController.text,
+                        ),
+                        withNavBar: true, // OPTIONAL VALUE. True by default.
+                        pageTransitionAnimation: PageTransitionAnimation.cupertino,
+                      );
                     }
                   },
                   color: kPrimaryColor,

@@ -1,4 +1,4 @@
-// ignore_for_file: deprecated_member_use, file_names, always_use_package_imports, avoid_dynamic_calls, type_annotate_public_apis, always_declare_return_types, invariant_booleans, avoid_positional_boolean_parameters, unnecessary_null_comparison, avoid_types_as_parameter_names, non_constant_identifier_names
+// ignore_for_file: deprecated_member_use, file_names, always_use_package_imports, avoid_dynamic_calls, type_annotate_public_apis, always_declare_return_types, invariant_booleans, avoid_positional_boolean_parameters, unnecessary_null_comparison, avoid_types_as_parameter_names, non_constant_identifier_names, unnecessary_statements
 
 import 'dart:math';
 
@@ -9,6 +9,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
 import 'package:get/get.dart';
+import 'package:lottie/lottie.dart';
+import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:sharaf_yabi_ecommerce/components/Comments.dart';
 import 'package:sharaf_yabi_ecommerce/components/ProductCard3.dart';
 import 'package:sharaf_yabi_ecommerce/components/ShowAllProductsPage.dart';
@@ -92,13 +94,11 @@ class _ProductProfilState extends State<ProductProfil> {
       productProfilController.quantity.value = 1;
     }
 
-    print("favlist girdi ");
     for (final element in favCartController.favList) {
       if (element["id"] == widget.id) {
         favBool = true;
       }
     }
-    print(favBool);
   }
 
   Padding specificationTexts({String? text1, String? text2}) {
@@ -124,10 +124,10 @@ class _ProductProfilState extends State<ProductProfil> {
       backgroundColor: Colors.white,
       elevation: 1,
       centerTitle: true,
-      leadingWidth: 25,
+      leadingWidth: 50,
+      titleSpacing: 0.0,
       leading: IconButton(
           onPressed: () {
-            print("itapped");
             Navigator.of(context).pop();
           },
           icon: const Icon(
@@ -139,7 +139,7 @@ class _ProductProfilState extends State<ProductProfil> {
           onTap: () {
             Share.share(imageMine, subject: 'Sharafyabi programmasy');
           },
-          child: Image.asset("assets/icons/share.png", width: 27, color: Colors.black),
+          child: Image.asset(shareIcon, width: 27, color: Colors.black),
         ),
         GestureDetector(
           onTap: () {
@@ -276,8 +276,6 @@ class _ProductProfilState extends State<ProductProfil> {
   }
 
   Column sameProducts(int? categoryId) {
-    final double sizeWidth = MediaQuery.of(context).size.width;
-
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -289,7 +287,7 @@ class _ProductProfilState extends State<ProductProfil> {
             future: ProductsModel().getProducts(
               parametrs: {
                 "page": "1",
-                "limit": "20",
+                "limit": "10",
                 "product_id": "${widget.id}",
                 "main_category_id": "$categoryId",
               },
@@ -342,25 +340,36 @@ class _ProductProfilState extends State<ProductProfil> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Row(
-                    children: [
-                      RichText(
-                        overflow: TextOverflow.ellipsis,
-                        text: TextSpan(children: <TextSpan>[
-                          TextSpan(text: priceMine.toStringAsFixed(2), style: const TextStyle(fontFamily: montserratSemiBold, fontSize: 24, color: Colors.black)),
-                          const TextSpan(text: " TMT", style: TextStyle(fontFamily: montserratSemiBold, fontSize: 18, color: Colors.black))
-                        ]),
-                      ),
-                      if (snapshot.data!.discountValue != 0 && snapshot.data!.discountValue != null)
-                        RotationTransition(
-                          turns: const AlwaysStoppedAnimation(-2 / 360),
-                          child: Padding(
-                              padding: const EdgeInsets.only(left: 25),
-                              child: Text("$priceOLD" + " TMT", style: const TextStyle(decoration: TextDecoration.lineThrough, fontFamily: montserratRegular, fontSize: 18, color: Colors.grey))),
-                        )
-                      else
-                        const SizedBox.shrink(),
-                    ],
+                  Expanded(
+                    child: Row(
+                      children: [
+                        RichText(
+                          overflow: TextOverflow.ellipsis,
+                          text: TextSpan(children: <TextSpan>[
+                            TextSpan(text: priceMine.toStringAsFixed(2), style: const TextStyle(fontFamily: montserratSemiBold, fontSize: 24, color: Colors.black)),
+                            const TextSpan(text: " TMT", style: TextStyle(fontFamily: montserratSemiBold, fontSize: 18, color: Colors.black))
+                          ]),
+                        ),
+                        if (snapshot.data!.discountValue != 0 && snapshot.data!.discountValue != null)
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 8),
+                            child: Stack(
+                              children: [
+                                Positioned(left: 0, right: 5, top: 10, child: Transform.rotate(angle: pi / -14, child: Container(height: 1, color: Colors.red))),
+                                RichText(
+                                  overflow: TextOverflow.ellipsis,
+                                  text: TextSpan(children: <TextSpan>[
+                                    TextSpan(text: "$priceOLD", style: const TextStyle(fontFamily: montserratRegular, fontSize: 18, color: Colors.grey)),
+                                    const TextSpan(text: " TMT", style: TextStyle(fontFamily: montserratRegular, fontSize: 12, color: Colors.grey))
+                                  ]),
+                                ),
+                              ],
+                            ),
+                          )
+                        else
+                          const SizedBox.shrink(),
+                      ],
+                    ),
                   ),
                   bottomSheetMine(snapshot.data!.price),
                 ],
@@ -394,9 +403,14 @@ class _ProductProfilState extends State<ProductProfil> {
               itemBuilder: (BuildContext context, int index, int realIndex) {
                 return GestureDetector(
                   onTap: () {
-                    Get.to(() => PhotoViewPage(
-                          image: "$serverImage/${snapshot.data!.images[index]["destination"]}-mini.webp",
-                        ));
+                    pushNewScreen(
+                      context,
+                      screen: PhotoViewPage(
+                        image: "$serverImage/${snapshot.data!.images[index]["destination"]}-mini.webp",
+                      ),
+                      withNavBar: true, // OPTIONAL VALUE. True by default.
+                      pageTransitionAnimation: PageTransitionAnimation.fade,
+                    );
                   },
                   child: CachedNetworkImage(
                       fadeInCurve: Curves.ease,
@@ -614,9 +628,7 @@ class _ProductProfilState extends State<ProductProfil> {
               builder: (context, snapshot) {
                 if (snapshot.hasError) {
                   return Container(
-                      height: Get.size.height - 200,
-                      padding: const EdgeInsets.symmetric(horizontal: 15),
-                      child: emptyData(imagePath: "assets/emptyState/emptyProducts.png", errorTitle: "retry", errorSubtitle: "error404"));
+                      height: Get.size.height - 200, padding: const EdgeInsets.symmetric(horizontal: 15), child: emptyData(imagePath: emptyProducts, errorTitle: "retry", errorSubtitle: "error404"));
                 } else if (snapshot.hasData) {
                   whenDataComesBacked(price: snapshot.data!.price, stockCount: snapshot.data!.stock, discountValue: snapshot.data!.discountValue);
                   return Column(
@@ -636,10 +648,15 @@ class _ProductProfilState extends State<ProductProfil> {
                                 filterController.producersID.value = [];
                                 final int? id = snapshot.data!.categoryId;
                                 filterController.mainCategoryID.value = id!;
-                                Get.to(() => ShowAllProductsPage(
-                                      pageName: "${snapshot.data!.categoryName}",
-                                      whichFilter: 5,
-                                    ));
+                                pushNewScreen(
+                                  context,
+                                  screen: ShowAllProductsPage(
+                                    pageName: "${snapshot.data!.categoryName}",
+                                    whichFilter: 5,
+                                  ),
+                                  withNavBar: true, // OPTIONAL VALUE. True by default.
+                                  pageTransitionAnimation: PageTransitionAnimation.fade,
+                                );
                               },
                               child: specificationTexts(text1: "categoryName".tr, text2: "${snapshot.data!.categoryName}")),
                           GestureDetector(
@@ -648,11 +665,15 @@ class _ProductProfilState extends State<ProductProfil> {
                                 filterController.categoryID.clear();
 
                                 filterController.producersID.add(snapshot.data!.producerId);
-
-                                Get.to(() => ShowAllProductsPage(
-                                      pageName: '${snapshot.data!.producerName}',
-                                      whichFilter: 4,
-                                    ));
+                                pushNewScreen(
+                                  context,
+                                  screen: ShowAllProductsPage(
+                                    pageName: '${snapshot.data!.producerName}',
+                                    whichFilter: 4,
+                                  ),
+                                  withNavBar: true, // OPTIONAL VALUE. True by default.
+                                  pageTransitionAnimation: PageTransitionAnimation.fade,
+                                );
                               },
                               child: specificationTexts(text1: "brandName".tr, text2: "${snapshot.data!.producerName}")),
                           const SizedBox(
@@ -672,6 +693,7 @@ class _ProductProfilState extends State<ProductProfil> {
                         ],
                       )),
                       customContainer(ExpansionTile(
+                        iconColor: kPrimaryColor,
                         tilePadding: const EdgeInsets.symmetric(horizontal: 8),
                         title: GestureDetector(
                           onTap: () {
@@ -695,7 +717,13 @@ class _ProductProfilState extends State<ProductProfil> {
                                   }
                                   if (snapshot.hasData) {
                                     return snapshot.data!.comments!.isEmpty
-                                        ? Center(child: Text("nocomment".tr, style: const TextStyle(color: Colors.black, fontFamily: montserratSemiBold)))
+                                        ? Column(
+                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            children: [
+                                              Lottie.asset("assets/lottie/NoComment.json", height: 300, animate: true),
+                                              Text("nocomment".tr, style: const TextStyle(color: Colors.black, fontSize: 20, fontFamily: montserratSemiBold)),
+                                            ],
+                                          )
                                         : ListView.builder(
                                             physics: const BouncingScrollPhysics(),
                                             itemCount: snapshot.data!.comments!.length > 5 ? 5 : snapshot.data!.comments!.length,

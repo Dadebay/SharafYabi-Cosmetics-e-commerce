@@ -143,21 +143,4 @@ class OrderModel extends ChangeNotifier {
       return false;
     }
   }
-
-  Future addSubscription({
-    String? phoneNumber,
-  }) async {
-    final response = await http.post(
-      Uri.parse(
-        "$serverURL/api/ru/add-to-subscription",
-      ),
-      body: jsonEncode(<String, dynamic>{
-        "phone": phoneNumber,
-      }),
-      headers: <String, String>{
-        HttpHeaders.contentTypeHeader: 'application/json; charset=UTF-8',
-      },
-    );
-    return response.statusCode;
-  }
 }

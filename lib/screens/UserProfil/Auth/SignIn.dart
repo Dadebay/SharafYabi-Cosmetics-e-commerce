@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:sharaf_yabi_ecommerce/constants/constants.dart';
 import 'package:sharaf_yabi_ecommerce/constants/widgets.dart';
 import 'package:sharaf_yabi_ecommerce/controllers/AuthController.dart';
@@ -53,7 +54,8 @@ class SingIN extends StatelessWidget {
                       UserSignInModel().signUp(fullname: signInNameController.text, phoneNumber: signInPhoneController.text, password: sigInPassswordController.text).then((value) {
                         if (value == true) {
                           showSnackBar("signIntitle", "signInSubtitle", kPrimaryColor);
-                          Get.to(() => BottomNavBar());
+ Get.to(() => BottomNavBar());
+                         
                         } else if (value == 409) {
                           showSnackBar("signInErrorTitle", "singInErrorSubtitle", Colors.red);
                           signInPhoneController.clear();

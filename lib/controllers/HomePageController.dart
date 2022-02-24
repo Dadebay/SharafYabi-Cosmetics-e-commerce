@@ -1,4 +1,4 @@
-// ignore_for_file: file_names, always_declare_return_types, type_annotate_public_apis, unnecessary_null_comparison, avoid_void_async, avoid_dynamic_calls, unrelated_type_equality_checks
+// ignore_for_file: file_names, always_declare_return_types, type_annotate_public_apis, unnecessary_null_comparison, avoid_void_async, avoid_dynamic_calls, unrelated_type_equality_checks, non_constant_identifier_names
 
 import 'dart:convert';
 

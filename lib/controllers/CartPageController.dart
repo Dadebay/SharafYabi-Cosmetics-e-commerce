@@ -3,11 +3,9 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:get/get_instance/src/extension_instance.dart';
-import 'package:get/state_manager.dart';
+import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:sharaf_yabi_ecommerce/constants/constants.dart';
-import 'package:sharaf_yabi_ecommerce/constants/widgets.dart';
 import 'package:sharaf_yabi_ecommerce/models/CartModel.dart';
 
 import 'Fav_Cart_Controller.dart';
@@ -51,7 +49,8 @@ class CartPageController extends GetxController {
   }
 
   Future<List<CartModel>> loadData({Map<String, String>? parametrs}) async {
-    languageCode();
+    String lang = Get.locale!.languageCode;
+    if (lang == "tr") lang = "tm";
     final response = await http.get(
         Uri.parse(
           "$serverURL/api/$lang/get-cart-products",
@@ -68,6 +67,7 @@ class CartPageController extends GetxController {
           "id": CartModel.fromJson(product).id,
           "name": CartModel.fromJson(product).name,
           "count": 0,
+          "discountValue": CartModel.fromJson(product).discountValue,
           "image": CartModel.fromJson(product).image,
           "price": CartModel.fromJson(product).price,
           "stockMin": CartModel.fromJson(product).stock

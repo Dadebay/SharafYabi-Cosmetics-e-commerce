@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:get/get_utils/src/extensions/internacionalization.dart';
+import 'package:sharaf_yabi_ecommerce/constants/constants.dart';
 import 'package:sharaf_yabi_ecommerce/widgets/appBar.dart';
 
 class OurDeliveryService extends StatelessWidget {
@@ -18,8 +19,18 @@ class OurDeliveryService extends StatelessWidget {
       ),
       body: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Text("deliveryText".tr),
+          padding: const EdgeInsets.all(10.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(top: 8),
+                child: Text("deliveryTextTitle".tr, style: const TextStyle(color: Colors.black, fontFamily: montserratMedium, fontSize: 18)),
+              ),
+              Text("deliveryText".tr, style: const TextStyle(color: Colors.black, fontFamily: montserratRegular, fontSize: 18)),
+            ],
+          ),
         ),
       ),
     );

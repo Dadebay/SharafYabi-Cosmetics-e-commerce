@@ -4,6 +4,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
 import 'package:get/get.dart';
+import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:sharaf_yabi_ecommerce/constants/constants.dart';
 import 'package:sharaf_yabi_ecommerce/constants/widgets.dart';
@@ -86,9 +87,14 @@ class _NewsState extends State<News> {
   ListTile newCard(int index) {
     return ListTile(
       onTap: () {
-        Get.to(() => NewsProfil(
-              id: newsController.list[index]["id"],
-            ));
+        pushNewScreen(
+          context,
+          screen: NewsProfil(
+            id: newsController.list[index]["id"],
+          ),
+          withNavBar: true, // OPTIONAL VALUE. True by default.
+          pageTransitionAnimation: PageTransitionAnimation.cupertino,
+        );
       },
       title: Row(
         children: [

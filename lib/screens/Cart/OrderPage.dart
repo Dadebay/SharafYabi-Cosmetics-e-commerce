@@ -1,4 +1,4 @@
-// ignore_for_file: must_be_immutable, deprecated_member_use, file_names, avoid_dynamic_calls, avoid_bool_literals_in_conditional_expressions, avoid_positional_boolean_parameters
+// ignore_for_file: must_be_immutable, deprecated_member_use, file_names, avoid_dynamic_calls, avoid_bool_literals_in_conditional_expressions, avoid_positional_boolean_parameters, always_declare_return_types, type_annotate_public_apis
 
 import 'dart:async';
 import 'dart:convert';
@@ -8,6 +8,7 @@ import 'package:flutter_iconly/flutter_iconly.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:lottie/lottie.dart';
+import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:sharaf_yabi_ecommerce/constants/constants.dart';
 import 'package:sharaf_yabi_ecommerce/constants/widgets.dart';
 import 'package:sharaf_yabi_ecommerce/controllers/CartPageController.dart';
@@ -161,7 +162,7 @@ class _OrderPageState extends State<OrderPage> {
               showSnackBar("retry", "errorAddress", Colors.red);
             } else {
               if (favCartController.cartList.isEmpty) {
-                completeOrder();
+                completeOrder(context);
               } else {
                 final storage = GetStorage();
                 final result = storage.read('data') ?? "[]";
@@ -182,7 +183,7 @@ class _OrderPageState extends State<OrderPage> {
                           payment: "${cartPageController.nagt.value}")
                       .then((value) {
                     if (value == true) {
-                      completeOrder();
+                      completeOrder(context);
                       setState(() {
                         sendButton = false;
                       });
@@ -225,12 +226,8 @@ class _OrderPageState extends State<OrderPage> {
           groupValue: payment,
           onChanged: (PaymentMethod? value) {
             setState(() {
-              print(value);
               payment = value!;
-              print(cartPageController.buttonColor.value);
-
               cartPageController.nagt.value = 1;
-              print(cartPageController.nagt.value);
             });
           },
           activeColor: kPrimaryColor,
@@ -252,12 +249,8 @@ class _OrderPageState extends State<OrderPage> {
           groupValue: payment,
           onChanged: (PaymentMethod? value) {
             setState(() {
-              print(value);
-
               payment = value!;
-
               cartPageController.nagt.value = 2;
-              print(cartPageController.nagt.value);
             });
           },
           activeColor: kPrimaryColor,
@@ -346,11 +339,10 @@ class _OrderPageState extends State<OrderPage> {
             onTap: () {
               Get.defaultDialog(
                   radius: 4,
-                  title: "Salgylarym",
+                  title: "myAddress".tr,
                   content: FutureBuilder<List<AddressModel>>(
                     future: AddressModel().getAddress(),
                     builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
-                      print(snapshot.data);
                       if (snapshot.connectionState == ConnectionState.waiting) {
                         return Center(
                           child: spinKit(),
@@ -361,12 +353,24 @@ class _OrderPageState extends State<OrderPage> {
                                 onTap: () {
                                   Get.back();
                                   Get.back();
-                                  Get.to(() => MyAddress());
+                                  pushNewScreen(
+                                    context,
+                                    screen: MyAddress(),
+                                    withNavBar: true, // OPTIONAL VALUE. True by default.
+                                    pageTransitionAnimation: PageTransitionAnimation.fade,
+                                  );
                                 },
                                 child: Column(
                                   children: [
-                                    Text("Address gos baran "),
-                                    Text("Hic hili address yok "),
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Text("noAddresses".tr, style: const TextStyle(color: Colors.black, fontFamily: montserratRegular)),
+                                    ),
+                                    Container(
+                                        padding: const EdgeInsets.all(8.0),
+                                        margin: const EdgeInsets.only(top: 10),
+                                        decoration: const BoxDecoration(color: kPrimaryColor, borderRadius: borderRadius5),
+                                        child: Text("${"addAddress".tr} + ", style: const TextStyle(color: Colors.white, fontFamily: montserratMedium))),
                                   ],
                                 ),
                               )
@@ -374,10 +378,8 @@ class _OrderPageState extends State<OrderPage> {
                                 mainAxisSize: MainAxisSize.min,
                                 children: List.generate(
                                     snapshot.data!.length,
-                                    (index) => CheckboxListTile(
-                                          value: false,
-                                          onChanged: (value) {
-                                            print("i tapped");
+                                    (index) => ListTile(
+                                          onTap: () {
                                             addressController.text = snapshot.data![index].address;
                                             noteController.text = snapshot.data![index].comment;
                                             Get.back();
@@ -392,12 +394,25 @@ class _OrderPageState extends State<OrderPage> {
                         onTap: () {
                           Get.back();
                           Get.back();
-                          Get.to(() => MyAddress());
+
+                          pushNewScreen(
+                            context,
+                            screen: MyAddress(),
+                            withNavBar: true, // OPTIONAL VALUE. True by default.
+                            pageTransitionAnimation: PageTransitionAnimation.fade,
+                          );
                         },
                         child: Column(
                           children: [
-                            Text("Address gos baran "),
-                            Text("Hic hili address yok "),
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text("noAddresses".tr, style: const TextStyle(color: Colors.black, fontFamily: montserratRegular)),
+                            ),
+                            Container(
+                                padding: const EdgeInsets.all(8.0),
+                                margin: const EdgeInsets.only(top: 10),
+                                decoration: const BoxDecoration(color: kPrimaryColor, borderRadius: borderRadius5),
+                                child: Text("${"addAddress".tr} + ", style: const TextStyle(color: Colors.white, fontFamily: montserratMedium))),
                           ],
                         ),
                       );
@@ -406,9 +421,9 @@ class _OrderPageState extends State<OrderPage> {
             },
             child: Padding(
               padding: const EdgeInsets.only(bottom: 15),
-              child: const Text(
-                "Salgylarymdan sayla",
-                style: TextStyle(color: kPrimaryColor, fontFamily: montserratMedium, decoration: TextDecoration.underline),
+              child: Text(
+                "selectMyaddresses".tr,
+                style: const TextStyle(color: kPrimaryColor, fontFamily: montserratMedium, decoration: TextDecoration.underline),
               ),
             ),
           )
@@ -426,6 +441,8 @@ class _OrderPageState extends State<OrderPage> {
                     if (value == false) {
                       showSnackBar("retry", "couponCodeError", Colors.red);
                     } else {
+                      showSnackBar("couponCodeDiscountTrueTitle", "${"couponCodeDiscountTrueSubtitle".tr} : $value%", kPrimaryColor);
+
                       favCartController.promoLottie.value = true;
                       favCartController.promoDiscount.value = value;
                     }
@@ -439,6 +456,7 @@ class _OrderPageState extends State<OrderPage> {
                 Vibration.vibrate();
               }
               Get.back();
+
               Vibration.vibrate();
             },
             padding: const EdgeInsets.symmetric(
@@ -492,7 +510,7 @@ class _OrderPageState extends State<OrderPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: Colors.white,
-        appBar: appbar(),
+        appBar: appbar(context),
         body: dataloaded
             ? Stack(
                 children: [
@@ -519,7 +537,7 @@ class _OrderPageState extends State<OrderPage> {
                           Padding(
                             padding: const EdgeInsets.symmetric(vertical: 20),
                             child: Text(
-                              "orderInfo".tr + " : ",
+                              "${"orderInfo".tr} : ",
                               style: const TextStyle(color: Colors.black, fontFamily: montserratSemiBold, fontSize: 20),
                             ),
                           ),
@@ -538,7 +556,7 @@ class _OrderPageState extends State<OrderPage> {
                     return Center(
                         child: favCartController.promoLottie.value == true
                             ? Lottie.asset(
-                                "assets/lottie/coupon_falling_confetti.json",
+                                couponFallingConfetti,
                                 animate: true,
                               )
                             : const SizedBox.shrink());
@@ -551,7 +569,7 @@ class _OrderPageState extends State<OrderPage> {
   }
 }
 
-Future<dynamic> completeOrder() {
+Future<dynamic> completeOrder(BuildContext context) {
   return Get.defaultDialog(
       radius: 25,
       backgroundColor: Colors.white,
@@ -602,13 +620,13 @@ Future<dynamic> completeOrder() {
                   color: Colors.white,
                 ),
                 padding: const EdgeInsets.all(15),
-                child: Lottie.asset("assets/lottie/cartblack.json", fit: BoxFit.cover, width: 110, height: 110)),
+                child: Lottie.asset(cartBlack, fit: BoxFit.cover, width: 110, height: 110)),
           )
         ],
       ));
 }
 
-AppBar appbar() {
+AppBar appbar(context) {
   return AppBar(
       elevation: 0.0,
       centerTitle: true,
@@ -617,7 +635,7 @@ AppBar appbar() {
           IconlyLight.arrowLeft2,
         ),
         onPressed: () {
-          Get.back();
+          Navigator.of(context).pop();
         },
       ),
       automaticallyImplyLeading: false,

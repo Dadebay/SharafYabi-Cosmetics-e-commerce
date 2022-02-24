@@ -94,7 +94,6 @@ class _SearchPageState extends State<SearchPage> {
   }
 
   TextEditingController textEditingController = TextEditingController();
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -106,7 +105,7 @@ class _SearchPageState extends State<SearchPage> {
           leadingWidth: 30,
           leading: IconButton(
               onPressed: () {
-                Get.back();
+                Navigator.of(context).pop();
               },
               icon: const Icon(IconlyLight.arrowLeft, color: Colors.black)),
           elevation: 0,
@@ -303,6 +302,7 @@ class _SearchPageState extends State<SearchPage> {
                               filterController.sortColumnName.value = "p.price";
                             }
                             filterController.fetchProducts();
+
                             Get.back();
                           });
                         },

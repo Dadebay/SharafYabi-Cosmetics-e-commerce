@@ -5,6 +5,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:lottie/lottie.dart';
 import 'package:sharaf_yabi_ecommerce/constants/constants.dart';
 import 'package:sharaf_yabi_ecommerce/constants/widgets.dart';
 import 'package:sharaf_yabi_ecommerce/controllers/ProductProfileController.dart';
@@ -52,7 +53,15 @@ class _CommentsPageState extends State<CommentsPage> {
               builder: (context, snapshot) {
                 if (snapshot.hasData == true) {
                   return snapshot.data!.count == 0
-                      ? Center(child: emptyDataLottie(imagePath: "assets/lottie/searchNotFound.json", errorSubtitle: "nocomment", errorTitle: ""))
+                      ? Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Lottie.asset("assets/lottie/NoComment.json", height: 300, animate: true),
+                              Text("nocomment".tr, style: const TextStyle(color: Colors.black, fontSize: 20, fontFamily: montserratSemiBold)),
+                            ],
+                          ),
+                        )
                       : Stack(
                           children: [
                             ListView.builder(
@@ -125,7 +134,6 @@ class _CommentsPageState extends State<CommentsPage> {
                                           const SizedBox(height: 20),
                                           SizedBox(
                                             width: Get.size.width,
-                                            // ignore: deprecated_member_use
                                             child: RaisedButton(
                                                 onPressed: () {
                                                   CommentModel()
@@ -176,7 +184,7 @@ class _CommentsPageState extends State<CommentsPage> {
                     child: spinKit(),
                   );
                 }
-                return Center(child: emptyDataLottie(imagePath: "assets/lottie/searchNotFound.json", errorSubtitle: "nocomment", errorTitle: ""));
+                return Center(child: emptyDataLottie(imagePath: "assets/lottie/NoComment.json", errorSubtitle: "nocomment", errorTitle: ""));
               })),
     );
   }

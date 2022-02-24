@@ -6,9 +6,9 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:sharaf_yabi_ecommerce/constants/constants.dart';
-import 'package:sharaf_yabi_ecommerce/constants/widgets.dart';
 
 class ProductProfilModel extends ChangeNotifier {
   ProductProfilModel({
@@ -67,7 +67,8 @@ class ProductProfilModel extends ChangeNotifier {
   final int? minValue;
 
   Future<ProductProfilModel> getRealEstatesById(int? id) async {
-    languageCode();
+    String lang = Get.locale!.languageCode;
+    if (lang == "tr") lang = "tm";
     final response = await http.get(
         Uri.parse(
           "$serverURL/api/$lang/get-product/$id",
@@ -75,7 +76,6 @@ class ProductProfilModel extends ChangeNotifier {
         headers: <String, String>{
           HttpHeaders.contentTypeHeader: 'application/json; charset=UTF-8',
         });
-
     if (response.statusCode == 200) {
       return ProductProfilModel.fromJson(jsonDecode(response.body)["rows"]);
     } else {

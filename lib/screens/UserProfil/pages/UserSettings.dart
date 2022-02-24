@@ -1,16 +1,14 @@
-// ignore_for_file: file_names
+// ignore_for_file: file_names, always_declare_return_types, type_annotate_public_apis, avoid_dynamic_calls
 
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:get/get_utils/src/extensions/internacionalization.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:sharaf_yabi_ecommerce/constants/constants.dart';
 import 'package:sharaf_yabi_ecommerce/constants/widgets.dart';
 import 'package:sharaf_yabi_ecommerce/screens/BottomNavBar.dart';
 import 'package:sharaf_yabi_ecommerce/widgets/appBar.dart';
-import 'package:vibration/vibration.dart';
 
 class UserSettings extends StatefulWidget {
   @override
@@ -42,7 +40,7 @@ class _UserSettingsState extends State<UserSettings> {
   changedata(String name) {
     final result = storage.read('data');
     final mine = jsonDecode(result);
-    mine["full_name"] = "$name";
+    mine["full_name"] = name;
     final String jsonString = jsonEncode(mine);
 
     storage.write('data', jsonString);
@@ -92,7 +90,7 @@ class _UserSettingsState extends State<UserSettings> {
                         labelStyle: const TextStyle(color: Colors.grey, fontFamily: montserratMedium),
                         isDense: true,
                         errorBorder: const OutlineInputBorder(borderRadius: borderRadius10, borderSide: BorderSide(color: Colors.red)),
-                        focusedErrorBorder: const OutlineInputBorder(borderRadius: borderRadius10, borderSide: BorderSide(color: Colors.red, width: 1)),
+                        focusedErrorBorder: const OutlineInputBorder(borderRadius: borderRadius10, borderSide: BorderSide(color: Colors.red)),
                         focusedBorder: const OutlineInputBorder(borderRadius: borderRadius10, borderSide: BorderSide(color: kPrimaryColor, width: 2)),
                         enabledBorder: const OutlineInputBorder(borderRadius: borderRadius10, borderSide: BorderSide(color: Colors.black12, width: 2)),
                       ),
@@ -121,13 +119,14 @@ class _UserSettingsState extends State<UserSettings> {
                       isDense: true,
                       disabledBorder: const OutlineInputBorder(borderRadius: borderRadius10, borderSide: BorderSide(color: Colors.black12, width: 2)),
                       errorBorder: const OutlineInputBorder(borderRadius: borderRadius10, borderSide: BorderSide(color: Colors.red)),
-                      focusedErrorBorder: const OutlineInputBorder(borderRadius: borderRadius10, borderSide: BorderSide(color: Colors.red, width: 1)),
+                      focusedErrorBorder: const OutlineInputBorder(borderRadius: borderRadius10, borderSide: BorderSide(color: Colors.red)),
                       focusedBorder: const OutlineInputBorder(borderRadius: borderRadius10, borderSide: BorderSide(color: kPrimaryColor, width: 2)),
                       enabledBorder: const OutlineInputBorder(borderRadius: borderRadius10, borderSide: BorderSide(color: Colors.black12, width: 2)),
                     ),
                   ),
                 ),
                 Center(
+                  // ignore: deprecated_member_use
                   child: RaisedButton(
                     onPressed: () {
                       if (_login.currentState!.validate()) {
@@ -138,7 +137,7 @@ class _UserSettingsState extends State<UserSettings> {
                       }
                     },
                     color: kPrimaryColor,
-                    padding: EdgeInsets.symmetric(vertical: 4, horizontal: 12),
+                    padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 12),
                     shape: const RoundedRectangleBorder(borderRadius: borderRadius10),
                     child: Row(
                       mainAxisSize: MainAxisSize.min,

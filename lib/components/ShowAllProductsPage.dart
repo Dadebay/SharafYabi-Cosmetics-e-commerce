@@ -164,7 +164,7 @@ class _ShowAllProductsPageState extends State<ShowAllProductsPage> {
             name: "sort",
             icon: Icons.sort_rounded,
             onTap: () {
-              filterBottomSheet();
+              sortBottomSheet();
             },
           ),
         ],
@@ -179,59 +179,56 @@ class _ShowAllProductsPageState extends State<ShowAllProductsPage> {
       "cheapest".tr,
       "expensive".tr,
     ];
-    showModalBottomSheet(
-        context: context,
-        builder: (builder) {
-          int? value;
-          return StatefulBuilder(
-            builder: (BuildContext context, StateSetter setState) => Container(
-                decoration: const BoxDecoration(color: Colors.white, borderRadius: BorderRadius.only(topLeft: Radius.circular(40.0), topRight: Radius.circular(40.0))),
-                child: Wrap(
-                  children: [
-                    const BottomSheetName(name: "sort"),
-                    const Divider(
-                      height: 0,
-                    ),
-                    ListView.builder(
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      itemCount: 3,
-                      itemBuilder: (context, index) => RadioListTile(
-                        value: index,
-                        groupValue: value ?? selectedIndex,
-                        activeColor: kPrimaryColor,
-                        onChanged: (val) {
-                          setState(() {
-                            value = index;
-                            selectedIndex = index;
-                            filterController.loading.value = 0;
-                            filterController.list.clear();
-                            if (index == 0) {
-                              filterController.sortName.value = "";
-                              filterController.sortColumnName.value = "";
-                            } else if (index == 1) {
-                              filterController.sortName.value = "ASC";
-                              filterController.sortColumnName.value = "p.price";
-                            } else {
-                              filterController.sortName.value = "DESC";
-                              filterController.sortColumnName.value = "p.price";
-                            }
-                            filterController.fetchProducts();
-                            Get.back();
-                          });
-                        },
-                        title: Text(title[index],
-                            style: const TextStyle(
-                              fontSize: 18,
-                              fontFamily: montserratRegular,
-                              color: Colors.black,
-                            )),
-                      ),
-                    ),
-                  ],
-                )),
-          );
-        });
+    Get.bottomSheet(StatefulBuilder(builder: (BuildContext context, StateSetter setState) {
+      int? value;
+
+      return Container(
+          color: Colors.white,
+          child: Wrap(
+            children: [
+              const BottomSheetName(name: "sort"),
+              const Divider(
+                height: 0,
+              ),
+              ListView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: 3,
+                itemBuilder: (context, index) => RadioListTile(
+                  value: index,
+                  groupValue: value ?? selectedIndex,
+                  activeColor: kPrimaryColor,
+                  onChanged: (val) {
+                    setState(() {
+                      value = index;
+                      selectedIndex = index;
+                      filterController.loading.value = 0;
+                      filterController.list.clear();
+                      if (index == 0) {
+                        filterController.sortName.value = "";
+                        filterController.sortColumnName.value = "";
+                      } else if (index == 1) {
+                        filterController.sortName.value = "ASC";
+                        filterController.sortColumnName.value = "p.price";
+                      } else {
+                        filterController.sortName.value = "DESC";
+                        filterController.sortColumnName.value = "p.price";
+                      }
+                      filterController.fetchProducts();
+                      Get.back();
+                    });
+                  },
+                  title: Text(title[index],
+                      style: const TextStyle(
+                        fontSize: 18,
+                        fontFamily: montserratRegular,
+                        color: Colors.black,
+                      )),
+                ),
+              ),
+            ],
+          ));
+    }));
   }
 
   void filterBottomSheet() {
@@ -257,6 +254,7 @@ class _ShowAllProductsPageState extends State<ShowAllProductsPage> {
                   filterController.loading.value = 0;
                   filterController.list.clear();
                   filterController.fetchProducts();
+
                   Get.back();
                 },
               ),
@@ -342,7 +340,9 @@ class _ShowAllProductsPageState extends State<ShowAllProductsPage> {
                   filterController.loading.value = 0;
                   filterController.list.clear();
                   filterController.fetchProducts();
+
                   Get.back();
+
                   Get.back();
                 },
               ),
@@ -497,6 +497,7 @@ class _ShowAllProductsPageState extends State<ShowAllProductsPage> {
                     filterController.loading.value = 0;
                     filterController.list.clear();
                     filterController.fetchProducts();
+
                     Get.back();
                     Get.back();
 

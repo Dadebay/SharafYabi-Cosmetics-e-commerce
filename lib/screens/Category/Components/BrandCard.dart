@@ -3,6 +3,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:sharaf_yabi_ecommerce/components/ShowAllProductsPage.dart';
 import 'package:sharaf_yabi_ecommerce/constants/constants.dart';
 import 'package:sharaf_yabi_ecommerce/constants/widgets.dart';
@@ -27,11 +28,15 @@ class BrandCard extends StatelessWidget {
           filterController.categoryID.clear();
 
           filterController.producersID.add(brand.id);
-
-          Get.to(() => ShowAllProductsPage(
-                pageName: '${brand.name}',
-                whichFilter: 4,
-              ));
+          pushNewScreen(
+            context,
+            screen: ShowAllProductsPage(
+              pageName: '${brand.name}',
+              whichFilter: 4,
+            ),
+            withNavBar: true, // OPTIONAL VALUE. True by default.
+            pageTransitionAnimation: PageTransitionAnimation.cupertino,
+          );
         },
         padding: EdgeInsets.zero,
         color: Colors.white,

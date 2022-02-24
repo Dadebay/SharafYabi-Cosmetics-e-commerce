@@ -1,31 +1,28 @@
-// ignore_for_file: file_names, must_be_immutable, non_constant_identifier_names, always_use_package_imports, noop_primitive_operations
+// ignore_for_file: file_names, must_be_immutable, non_constant_identifier_names, always_use_package_imports, noop_primitive_operations, type_annotate_public_apis
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
 import 'package:get/get.dart';
 import 'package:sharaf_yabi_ecommerce/constants/constants.dart';
-import 'package:sharaf_yabi_ecommerce/screens/UserProfil/Auth/ChangePassword.dart';
 import 'package:sharaf_yabi_ecommerce/screens/UserProfil/Auth/Login.dart';
 import 'package:sharaf_yabi_ecommerce/screens/UserProfil/Auth/SignIn.dart';
 
-import 'ForgotPassword.dart';
-
 class LoginPage extends StatelessWidget {
-  SizedBox ImagePart() {
+  SizedBox ImagePart(context) {
     return SizedBox(
       height: Get.size.height / 2.2,
       child: ClipRRect(
         borderRadius: borderRadius20,
         child: Stack(
           children: [
-            Positioned.fill(child: Image.asset("assets/appLogo/logo.png", fit: BoxFit.cover)),
+            Positioned.fill(child: Image.asset(appLogo2, fit: BoxFit.cover)),
             Positioned(
                 top: 30,
                 left: 15,
                 child: IconButton(
                   onPressed: () {
-                    Get.back();
+                    Navigator.of(context).pop();
                   },
                   icon: const Icon(
                     IconlyLight.arrowLeft2,
@@ -33,34 +30,6 @@ class LoginPage extends StatelessWidget {
                     size: 28,
                   ),
                 )),
-            // Positioned(
-            //   top: 30,
-            //   right: 15,
-            //   child: PopupMenuButton(
-            //     onSelected: (String a) {
-            //       if (a.toString() == "forgot") {
-            //         Get.to(() => ForgotPassword());
-            //       } else {
-            //         Get.to(() => ChangePassword());
-            //       }
-            //     },
-            //     icon: const Icon(
-            //       IconlyLight.moreCircle,
-            //       color: Colors.white,
-            //       size: 28,
-            //     ),
-            //     itemBuilder: (_) => <PopupMenuItem<String>>[
-            //       PopupMenuItem<String>(
-            //         value: 'forgot',
-            //         child: Text('forgotPassword'.tr, style: TextStyle(color: Colors.black, fontFamily: montserratMedium)),
-            //       ),
-            //       PopupMenuItem<String>(
-            //         value: 'change',
-            //         child: Text('changePassword'.tr, style: TextStyle(color: Colors.black, fontFamily: montserratMedium)),
-            //       ),
-            //     ],
-            //   ),
-            // ),
             Align(
               alignment: Alignment.bottomCenter,
               child: TabBar(
@@ -101,7 +70,7 @@ class LoginPage extends StatelessWidget {
               height: Get.size.height,
               child: Stack(
                 children: [
-                  ImagePart(),
+                  ImagePart(context),
                   Container(
                     padding: EdgeInsets.only(top: Get.size.height / 2.2),
                     child: TabBarView(children: [SingIN(), Login()]),

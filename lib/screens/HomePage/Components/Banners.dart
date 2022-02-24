@@ -4,6 +4,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:sharaf_yabi_ecommerce/components/ProductProfil.dart';
 import 'package:sharaf_yabi_ecommerce/components/ShowAllProductsPage.dart';
 import 'package:sharaf_yabi_ecommerce/constants/constants.dart';
@@ -53,16 +54,26 @@ class Banners extends StatelessWidget {
                                 final int? id = itemID;
                                 if (pathID == 2) {
                                   filterController.mainCategoryID.value = id!;
-                                  Get.to(() => const ShowAllProductsPage(
-                                        pageName: "Sharafyabi",
-                                        whichFilter: 0,
-                                      ));
+                                  pushNewScreen(
+                                    context,
+                                    screen: const ShowAllProductsPage(
+                                      pageName: "Sharafyabi",
+                                      whichFilter: 0,
+                                    ),
+                                    withNavBar: true, // OPTIONAL VALUE. True by default.
+                                    pageTransitionAnimation: PageTransitionAnimation.cupertino,
+                                  );
                                 } else if (pathID == 3) {
-                                  Get.to(() => ProductProfil(
-                                        id: id,
-                                        image: '',
-                                        productName: "",
-                                      ));
+                                  pushNewScreen(
+                                    context,
+                                    screen: ProductProfil(
+                                      id: id,
+                                      image: '',
+                                      productName: "",
+                                    ),
+                                    withNavBar: true, // OPTIONAL VALUE. True by default.
+                                    pageTransitionAnimation: PageTransitionAnimation.cupertino,
+                                  );
                                 }
                               },
                               shape: const RoundedRectangleBorder(borderRadius: borderRadius10),

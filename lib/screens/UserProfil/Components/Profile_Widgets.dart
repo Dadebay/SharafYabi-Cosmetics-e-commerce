@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
 import 'package:get/get.dart';
+import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:restart_app/restart_app.dart';
 import 'package:sharaf_yabi_ecommerce/constants/constants.dart';
 import 'package:sharaf_yabi_ecommerce/constants/widgets.dart';
@@ -14,7 +15,7 @@ import 'package:share/share.dart';
 
 final SettingsController _settingsController = Get.put(SettingsController());
 
-void logOut() {
+void logOut(BuildContext context) {
   Get.bottomSheet(Container(
     decoration: const BoxDecoration(color: Colors.white),
     child: Wrap(
@@ -58,9 +59,9 @@ void logOut() {
             Auth().logout();
             Auth().removeToken();
             Auth().removeRefreshToken();
-            Get.back();
-            // Restart.restartApp();
 
+            Get.back();
+            Restart.restartApp();
             Get.to(() => BottomNavBar());
           },
           child: Container(
@@ -140,7 +141,7 @@ Widget buttonProfile({required String name, required IconData icon, required Fun
   );
 }
 
-Container selectLang() {
+Container selectLang(BuildContext context) {
   void changeLanguage() {
     Get.bottomSheet(Container(
       padding: const EdgeInsets.only(bottom: 20),
@@ -176,6 +177,7 @@ Container selectLang() {
             child: ListTile(
                 onTap: () {
                   _settingsController.switchLang("tr");
+
                   Get.back();
                 },
                 leading: const CircleAvatar(
@@ -217,7 +219,6 @@ Container selectLang() {
             child: ListTile(
                 onTap: () {
                   _settingsController.switchLang("en");
-
                   Get.back();
                 },
                 leading: const CircleAvatar(
@@ -309,7 +310,7 @@ Container shareApp() {
           padding: const EdgeInsets.all(8),
           margin: const EdgeInsets.only(left: 8),
           decoration: BoxDecoration(color: Colors.grey[100], borderRadius: borderRadius15),
-          child: Image.asset("assets/icons/share.png", width: 25)),
+          child: Image.asset(shareIcon, width: 25)),
       title: Text(
         "share".tr,
         maxLines: 1,

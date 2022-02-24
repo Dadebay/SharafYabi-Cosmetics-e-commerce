@@ -7,7 +7,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:sharaf_yabi_ecommerce/constants/constants.dart';
-import 'package:sharaf_yabi_ecommerce/constants/widgets.dart';
 import 'package:sharaf_yabi_ecommerce/controllers/NewsController.dart';
 
 class NewsModel extends ChangeNotifier {
@@ -31,7 +30,8 @@ class NewsModel extends ChangeNotifier {
 
   Future<List<NewsModel>> getNews({required Map<String, String> parametrs}) async {
     final List<NewsModel> products = [];
-    languageCode();
+    String lang = Get.locale!.languageCode;
+    if (lang == "tr") lang = "tm";
     final response = await http.get(
         Uri.parse(
           "$serverURL/api/$lang/get-news",
@@ -53,7 +53,8 @@ class NewsModel extends ChangeNotifier {
   }
 
   Future<NewsModel?> getNewsProfil({int? id}) async {
-    languageCode();
+    String lang = Get.locale!.languageCode;
+    if (lang == "tr") lang = "tm";
     final response = await http.get(
         Uri.parse(
           "$serverURL/api/$lang/get-news-by-id/$id",

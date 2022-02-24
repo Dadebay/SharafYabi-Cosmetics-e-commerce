@@ -33,8 +33,6 @@ SnackbarController showSnackBar(String title, String subtitle, Color color) {
   );
 }
 
-String lang = "ru";
-
 void showCustomToast(BuildContext context, String name) {
   showToast(
     name.tr,
@@ -57,60 +55,50 @@ void showCustomToast(BuildContext context, String name) {
   );
 }
 
-Future<String> languageCode() async {
-  if (Get.locale!.languageCode == null) {
-    if (Get.locale!.languageCode == "en") {
-      lang = "tm";
-    } else if (Get.locale!.languageCode == "ru") {
-      return lang = "ru";
-    }
-  } else {
-    return lang = "ru";
-  }
-  return "ru";
-}
-
 Widget errorConnection({
   required Function() onTap,
   double? sizeWidth,
 }) {
-  return Center(
-    child: Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Lottie.asset("assets/lottie/noconnection.json", animate: true, fit: BoxFit.contain, height: sizeWidth! > 800 ? 500 : 300, width: sizeWidth > 800 ? 500 : 400),
-        Container(
-          color: Colors.white,
-          width: Get.size.width,
-          transform: Matrix4.translationValues(0, -30, 0),
-          padding: const EdgeInsets.only(left: 20, right: 20, top: 20),
-          child: Column(
-            children: [
-              Text(
-                "noConnection1".tr,
-                textAlign: TextAlign.center,
-                style: TextStyle(color: Colors.black, fontSize: sizeWidth > 800 ? 32 : 18, fontFamily: montserratMedium),
-              ),
-              const SizedBox(height: 15),
-              Text(
-                "error404".tr,
-                textAlign: TextAlign.center,
-                style: TextStyle(color: Colors.black, fontSize: sizeWidth > 800 ? 26 : 16, fontFamily: montserratRegular),
-              ),
-            ],
+  return Container(
+    color: Colors.white,
+    child: Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Lottie.asset("assets/lottie/noconnection.json", animate: true, fit: BoxFit.contain, height: sizeWidth! > 800 ? 500 : 300, width: sizeWidth > 800 ? 500 : 400),
+          Container(
+            color: Colors.white,
+            width: Get.size.width,
+            transform: Matrix4.translationValues(0, -30, 0),
+            padding: const EdgeInsets.only(left: 20, right: 20, top: 20),
+            child: Column(
+              children: [
+                Text(
+                  "noConnection1".tr,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(color: Colors.black, fontSize: sizeWidth > 800 ? 32 : 18, fontFamily: montserratMedium),
+                ),
+                const SizedBox(height: 15),
+                Text(
+                  "error404".tr,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(color: Colors.black, fontSize: sizeWidth > 800 ? 26 : 16, fontFamily: montserratRegular),
+                ),
+              ],
+            ),
           ),
-        ),
-        RaisedButton(
-          padding: sizeWidth > 800 ? const EdgeInsets.symmetric(horizontal: 15, vertical: 10) : const EdgeInsets.symmetric(horizontal: 5),
-          onPressed: onTap,
-          shape: const RoundedRectangleBorder(borderRadius: borderRadius10),
-          color: kPrimaryColor,
-          child: Text(
-            "retry".tr,
-            style: TextStyle(color: Colors.white, fontSize: sizeWidth > 800 ? 30 : 16, fontFamily: montserratSemiBold),
+          RaisedButton(
+            padding: sizeWidth > 800 ? const EdgeInsets.symmetric(horizontal: 15, vertical: 10) : const EdgeInsets.symmetric(horizontal: 5),
+            onPressed: onTap,
+            shape: const RoundedRectangleBorder(borderRadius: borderRadius10),
+            color: kPrimaryColor,
+            child: Text(
+              "retry".tr,
+              style: TextStyle(color: Colors.white, fontSize: sizeWidth > 800 ? 30 : 16, fontFamily: montserratSemiBold),
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     ),
   );
 }
@@ -202,7 +190,7 @@ Widget noImage() {
     padding: const EdgeInsets.all(6.0),
     decoration: BoxDecoration(color: Colors.grey[100], borderRadius: borderRadius15),
     child: Image.asset(
-      "assets/appLogo/greyLogo.png",
+      appLogo,
       color: Colors.grey,
     ),
   );
@@ -218,7 +206,7 @@ Widget dividerr() {
 }
 
 Widget spinKit() {
-  return Lottie.asset("assets/lottie/loading....json", animate: true, width: 200, height: 200);
+  return Lottie.asset(spinKitLoading, animate: true, width: 200, height: 200);
 }
 
 CustomFooter loadMore() {

@@ -28,7 +28,6 @@ class BottomNavBar extends StatefulWidget {
 class _BottomNavBarState extends State<BottomNavBar> with TickerProviderStateMixin {
   late TabController tabController;
   late PersistentTabController _controller;
-
   final SettingsController _settingsController = Get.put<SettingsController>(SettingsController());
   final Fav_Cart_Controller fav_cart_controller = Get.put<Fav_Cart_Controller>(Fav_Cart_Controller());
   @override
@@ -38,7 +37,6 @@ class _BottomNavBarState extends State<BottomNavBar> with TickerProviderStateMix
     fav_cart_controller.returnCartList();
     tabController = TabController(vsync: this, length: 5);
     _controller = PersistentTabController();
-
     checkConnection();
   }
 
@@ -63,119 +61,95 @@ class _BottomNavBarState extends State<BottomNavBar> with TickerProviderStateMix
     ];
   }
 
-  List<Widget> _errorScreens(double sizeWidth) {
-    return [
-      errorConnection(
-          onTap: () {
-            checkConnection();
-          },
-          sizeWidth: sizeWidth),
-      errorConnection(
-          onTap: () {
-            checkConnection();
-          },
-          sizeWidth: sizeWidth),
-      errorConnection(
-          onTap: () {
-            checkConnection();
-          },
-          sizeWidth: sizeWidth),
-      errorConnection(
-          onTap: () {
-            checkConnection();
-          },
-          sizeWidth: sizeWidth),
-      errorConnection(
-          onTap: () {
-            checkConnection();
-          },
-          sizeWidth: sizeWidth),
-    ];
-  }
-
   int selectedPageIndex = 0;
 
   @override
   Widget build(BuildContext context) {
     final double sizeWidth = MediaQuery.of(context).size.width;
     return Obx(() {
-      return PersistentTabView.custom(
-        context,
-        controller: _controller,
-        screens: _settingsController.connectionState.value ? _buildScreens() : _errorScreens(sizeWidth),
-        resizeToAvoidBottomInset: true,
-        itemCount: 5,
-        backgroundColor: kPrimaryColor,
-        screenTransitionAnimation: const ScreenTransitionAnimation(animateTabTransition: true),
-        customWidget: CustomNavBarWidget(
-          items: [
-            PersistentBottomNavBarItem(
-              activeColorPrimary: Colors.white,
-              inactiveColorPrimary: Colors.white70,
-              inactiveIcon: const Icon(IconlyLight.home),
-              icon: const Icon(IconlyBold.home),
-              title: 'homePage'.tr,
-              textStyle: const TextStyle(color: Colors.white70, fontFamily: montserratMedium),
-            ),
-            PersistentBottomNavBarItem(
-              activeColorPrimary: Colors.white,
-              inactiveIcon: const Icon(IconlyLight.category),
-              icon: const Icon(IconlyBold.category),
-              title: 'category'.tr,
-              textStyle: const TextStyle(color: Colors.white70, fontFamily: montserratMedium),
-              inactiveColorPrimary: Colors.white70,
-            ),
-            PersistentBottomNavBarItem(
-              inactiveIcon: fav_cart_controller.cartList.isEmpty
-                  ? const Icon(IconlyLight.bag)
-                  : Badge(
-                      badgeContent: Text('${fav_cart_controller.cartList.length}', style: const TextStyle(color: Colors.white, fontSize: 10, fontFamily: montserratMedium)),
-                      animationType: BadgeAnimationType.fade,
-                      child: const Icon(IconlyLight.bag)),
-              icon: fav_cart_controller.cartList.isEmpty
-                  ? const Icon(IconlyBold.bag)
-                  : Badge(
-                      badgeContent: Text('${fav_cart_controller.cartList.length}', style: const TextStyle(color: Colors.white, fontSize: 10, fontFamily: montserratMedium)),
-                      animationType: BadgeAnimationType.fade,
-                      child: const Icon(IconlyBold.bag)),
-              activeColorPrimary: Colors.white,
-              title: fav_cart_controller.cartList.isEmpty ? 'cart'.tr : "${fav_cart_controller.priceAll.value} TMT",
-              onPressed: (context) {},
-              textStyle: const TextStyle(color: Colors.white70, fontFamily: montserratMedium),
-              inactiveColorPrimary: Colors.white70,
-            ),
-            PersistentBottomNavBarItem(
-              activeColorPrimary: Colors.white,
-              inactiveIcon: const Icon(IconlyLight.paper),
-              icon: const Icon(IconlyBold.paper),
-              title: 'news'.tr,
-              onPressed: (context) {},
-              textStyle: const TextStyle(color: Colors.white70, fontFamily: montserratMedium),
-              inactiveColorPrimary: Colors.white70,
-            ),
-            PersistentBottomNavBarItem(
-              activeColorPrimary: Colors.white,
-              inactiveIcon: const Icon(IconlyLight.profile),
-              icon: const Icon(IconlyBold.profile),
-              title: 'profil'.tr,
-              textStyle: const TextStyle(color: Colors.white70, fontFamily: montserratMedium),
-              inactiveColorPrimary: Colors.white70,
-            ),
-          ],
-          selectedIndex: _controller.index,
-          onItemSelected: (index) {
-            if (index == 0) {
-            } else if (index == 1) {
-            } else if (index == 2) {
-              Get.find<CartPageController>().loadData(parametrs: {"products": jsonEncode(Get.find<Fav_Cart_Controller>().cartList)});
-            } else if (index == 3) {
-            } else if (index == 4) {}
-            setState(() {
-              _controller.index = index;
-            });
-          },
-        ),
-      );
+      return _settingsController.connectionState.value
+          ? PersistentTabView.custom(
+              context,
+              controller: _controller,
+              screens: _buildScreens(),
+              resizeToAvoidBottomInset: true,
+              itemCount: 5,
+              backgroundColor: kPrimaryColor,
+              screenTransitionAnimation: const ScreenTransitionAnimation(animateTabTransition: true),
+              customWidget: CustomNavBarWidget(
+                items: [
+                  PersistentBottomNavBarItem(
+                    activeColorPrimary: Colors.white,
+                    inactiveColorPrimary: Colors.white70,
+                    inactiveIcon: const Icon(IconlyLight.home),
+                    icon: const Icon(IconlyBold.home),
+                    title: 'homePage'.tr,
+                    textStyle: const TextStyle(color: Colors.white70, fontFamily: montserratMedium),
+                  ),
+                  PersistentBottomNavBarItem(
+                    activeColorPrimary: Colors.white,
+                    inactiveIcon: const Icon(IconlyLight.category),
+                    icon: const Icon(IconlyBold.category),
+                    title: 'category'.tr,
+                    textStyle: const TextStyle(color: Colors.white70, fontFamily: montserratMedium),
+                    inactiveColorPrimary: Colors.white70,
+                  ),
+                  PersistentBottomNavBarItem(
+                    inactiveIcon: fav_cart_controller.cartList.isEmpty
+                        ? const Icon(IconlyLight.bag)
+                        : Badge(
+                            badgeContent: Text('${fav_cart_controller.cartList.length}', style: const TextStyle(color: Colors.white, fontSize: 10, fontFamily: montserratMedium)),
+                            animationType: BadgeAnimationType.fade,
+                            child: const Icon(IconlyLight.bag)),
+                    icon: fav_cart_controller.cartList.isEmpty
+                        ? const Icon(IconlyBold.bag)
+                        : Badge(
+                            badgeContent: Text('${fav_cart_controller.cartList.length}', style: const TextStyle(color: Colors.white, fontSize: 10, fontFamily: montserratMedium)),
+                            animationType: BadgeAnimationType.fade,
+                            child: const Icon(IconlyBold.bag)),
+                    activeColorPrimary: Colors.white,
+                    title: fav_cart_controller.cartList.isEmpty ? 'cart'.tr : "${fav_cart_controller.priceAll.value} TMT",
+                    onPressed: (context) {},
+                    textStyle: const TextStyle(color: Colors.white70, fontFamily: montserratMedium),
+                    inactiveColorPrimary: Colors.white70,
+                  ),
+                  PersistentBottomNavBarItem(
+                    activeColorPrimary: Colors.white,
+                    inactiveIcon: const Icon(IconlyLight.paper),
+                    icon: const Icon(IconlyBold.paper),
+                    title: 'news'.tr,
+                    onPressed: (context) {},
+                    textStyle: const TextStyle(color: Colors.white70, fontFamily: montserratMedium),
+                    inactiveColorPrimary: Colors.white70,
+                  ),
+                  PersistentBottomNavBarItem(
+                    activeColorPrimary: Colors.white,
+                    inactiveIcon: const Icon(IconlyLight.profile),
+                    icon: const Icon(IconlyBold.profile),
+                    title: 'profil'.tr,
+                    textStyle: const TextStyle(color: Colors.white70, fontFamily: montserratMedium),
+                    inactiveColorPrimary: Colors.white70,
+                  ),
+                ],
+                selectedIndex: _controller.index,
+                onItemSelected: (index) {
+                  if (index == 0) {
+                  } else if (index == 1) {
+                  } else if (index == 2) {
+                    Get.find<CartPageController>().loadData(parametrs: {"products": jsonEncode(Get.find<Fav_Cart_Controller>().cartList)});
+                  } else if (index == 3) {
+                  } else if (index == 4) {}
+                  setState(() {
+                    _controller.index = index;
+                  });
+                },
+              ),
+            )
+          : errorConnection(
+              onTap: () {
+                checkConnection();
+              },
+              sizeWidth: sizeWidth);
     });
   }
 }

@@ -89,6 +89,7 @@ class Fav_Cart_Controller extends GetxController {
     priceAll.value = 0.0;
     for (final element in cartList) {
       final double price = double.parse(element["price"]);
+      // price - (price*element["price"])
       priceAll.value += price * element["count"];
     }
   }

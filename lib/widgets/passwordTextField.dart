@@ -1,4 +1,4 @@
-// ignore_for_file: file_names, require_trailing_commas, must_be_immutable
+// ignore_for_file: file_names, require_trailing_commas, must_be_immutable, noop_primitive_operations
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';

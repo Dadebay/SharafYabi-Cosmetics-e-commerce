@@ -4,9 +4,9 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:sharaf_yabi_ecommerce/constants/constants.dart';
-import 'package:sharaf_yabi_ecommerce/constants/widgets.dart';
 
 import 'UserModels/AuthModel.dart';
 
@@ -31,7 +31,8 @@ class OrdersModel extends ChangeNotifier {
   Future<List<OrdersModel>> getOrders({Map<String, dynamic>? parametrs}) async {
     final List<OrdersModel> products = [];
     final token = await Auth().getToken();
-    languageCode();
+    String lang = Get.locale!.languageCode;
+    if (lang == "tr") lang = "tm";
     final response = await http.get(
         Uri.parse(
           "$serverURL/api/user/$lang/get-orders",
@@ -53,7 +54,8 @@ class OrdersModel extends ChangeNotifier {
 
   Future<List<OrdersModel>> getOrdersNotLogin({required Map<String, String> parametrs}) async {
     final List<OrdersModel> products = [];
-    languageCode();
+    String lang = Get.locale!.languageCode;
+    if (lang == "tr") lang = "tm";
     final response = await http.get(
         Uri.parse(
           "$serverURL/api/$lang/get-orders-mobile",
@@ -99,7 +101,8 @@ class OrdersModelById extends ChangeNotifier {
   Future<List<OrdersModelById>> getOrderById({int? id}) async {
     final List<OrdersModelById> products = [];
     final token = await Auth().getToken();
-    languageCode();
+    String lang = Get.locale!.languageCode;
+    if (lang == "tr") lang = "tm";
     final response = await http.get(
         Uri.parse(
           "$serverURL/api/user/$lang/get-order/$id",
@@ -121,7 +124,8 @@ class OrdersModelById extends ChangeNotifier {
 
   Future<List<OrdersModelById>> getOrderByIdNotLogin({int? id}) async {
     final List<OrdersModelById> products = [];
-    languageCode();
+    String lang = Get.locale!.languageCode;
+    if (lang == "tr") lang = "tm";
     final response = await http.get(
         Uri.parse(
           "$serverURL/api/$lang/get-order/$id",

@@ -1,15 +1,19 @@
 // ignore_for_file: file_names, avoid_bool_literals_in_conditional_expressions, avoid_dynamic_calls, non_constant_identifier_names
 
+import 'dart:math';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
 import 'package:get/get.dart';
+import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:sharaf_yabi_ecommerce/components/ProductProfil.dart';
 import 'package:sharaf_yabi_ecommerce/constants/constants.dart';
 import 'package:sharaf_yabi_ecommerce/constants/widgets.dart';
 import 'package:sharaf_yabi_ecommerce/controllers/CartPageController.dart';
 import 'package:sharaf_yabi_ecommerce/controllers/Fav_Cart_Controller.dart';
+import 'package:sharaf_yabi_ecommerce/controllers/FilterController.dart';
 import 'package:sharaf_yabi_ecommerce/controllers/HomePageController.dart';
 import 'package:sharaf_yabi_ecommerce/screens/Cart/OrderPage.dart';
 import 'package:sharaf_yabi_ecommerce/screens/UserProfil/pages/FavoritePage/Components/FavCardShimmer.dart';
@@ -24,6 +28,7 @@ class _CartPageState extends State<CartPage> {
   final CartPageController cartPageController = Get.put(CartPageController());
   final Fav_Cart_Controller favCartController = Get.put(Fav_Cart_Controller());
   final HomePageController _homePageController = Get.put(HomePageController());
+  final FilterController filterController = Get.put(FilterController());
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +42,8 @@ class _CartPageState extends State<CartPage> {
           onTap: () {
             cartPageController.list.clear();
             favCartController.clearCartList();
-
+            filterController.list.clear();
+            filterController.fetchProducts();
             setState(() {
               _homePageController.refreshList();
             });
@@ -46,7 +52,7 @@ class _CartPageState extends State<CartPage> {
         body: Obx(() {
           if (cartPageController.loading.value == 1) {
             return favCartController.cartList.isEmpty
-                ? Center(child: emptyDataLottie(imagePath: "assets/lottie/emptyCart.json", errorTitle: "cartEmpty", errorSubtitle: "cartEmptySubtitle"))
+                ? Center(child: emptyDataLottie(imagePath: emptyCart, errorTitle: "cartEmpty", errorSubtitle: "cartEmptySubtitle"))
                 : ListView.builder(
                     physics: const BouncingScrollPhysics(),
                     itemCount: cartPageController.list.length,
@@ -55,7 +61,7 @@ class _CartPageState extends State<CartPage> {
                     },
                   );
           } else if (cartPageController.loading.value == 2) {
-            return emptyDataLottie(imagePath: "assets/lottie/emptyCart.json", errorTitle: "cartEmpty", errorSubtitle: "cartEmptySubtitle");
+            return emptyDataLottie(imagePath: emptyCart, errorTitle: "cartEmpty", errorSubtitle: "cartEmptySubtitle");
           } else if (cartPageController.loading.value == 0) {
             return FavCardShimmer();
           }
@@ -70,16 +76,27 @@ class _CartPageState extends State<CartPage> {
       onPressed: () {
         double sum = 0.0;
         int sumCount = 0;
+        double discountedPriceMine = 0.0;
+        double a = 0.0;
+        int discountValue = 0;
         for (int i = 0; i < cartPageController.list.length; i++) {
-          final double a = double.parse(cartPageController.list[i]["price"]);
+          a = double.parse(cartPageController.list[i]["price"]);
+          discountValue = cartPageController.list[i]["discountValue"] ?? 0;
+          discountedPriceMine = (a * discountValue) / 100;
+          a -= discountedPriceMine;
           final int b = cartPageController.list[i]["count"];
           sum += a * b;
           sumCount += b;
         }
-        Get.to(() => OrderPage(
-              totalPrice: sum,
-              productCount: sumCount,
-            ));
+        pushNewScreen(
+          context,
+          screen: OrderPage(
+            totalPrice: sum,
+            productCount: sumCount,
+          ),
+          withNavBar: true, // OPTIONAL VALUE. True by default.
+          pageTransitionAnimation: PageTransitionAnimation.fade,
+        );
       },
       backgroundColor: kPrimaryColor,
       splashColor: kPrimaryColor,
@@ -110,14 +127,30 @@ class _CartPageState extends State<CartPage> {
     );
   }
 
+  double priceOLD = 0.0;
+  double priceMine = 0.0;
+  double discountedPrice = 0.0;
+  int discountValue = 0;
   Widget CardMine(int index) {
+    priceMine = double.parse(cartPageController.list[index]["price"]);
+    if (cartPageController.list[index]["discountValue"] != null || cartPageController.list[index]["discountValue"] != 0) {
+      priceOLD = priceMine;
+      discountValue = cartPageController.list[index]["discountValue"] ?? 0;
+      discountedPrice = (priceMine * discountValue) / 100;
+      priceMine -= discountedPrice;
+    }
     return GestureDetector(
       onTap: () {
-        Get.to(() => ProductProfil(
-              id: cartPageController.list[index]["id"],
-              productName: cartPageController.list[index]["name"],
-              image: "$serverImage/${cartPageController.list[index]["image"]}-mini.webp",
-            ));
+        pushNewScreen(
+          context,
+          screen: ProductProfil(
+            id: cartPageController.list[index]["id"],
+            productName: cartPageController.list[index]["name"],
+            image: "$serverImage/${cartPageController.list[index]["image"]}-mini.webp",
+          ),
+          withNavBar: true, // OPTIONAL VALUE. True by default.
+          pageTransitionAnimation: PageTransitionAnimation.fade,
+        );
       },
       child: Container(
         height: 140,
@@ -126,25 +159,40 @@ class _CartPageState extends State<CartPage> {
         child: Row(
           children: [
             Expanded(
-              child: Container(
-                margin: const EdgeInsets.all(8.0),
-                decoration: BoxDecoration(borderRadius: borderRadius15, color: backgroundColor.withOpacity(0.6)),
-                child: CachedNetworkImage(
-                    fadeInCurve: Curves.ease,
-                    color: Colors.black,
-                    imageUrl: "$serverImage/${cartPageController.list[index]["image"]}-mini.webp",
-                    imageBuilder: (context, imageProvider) => Container(
-                          padding: EdgeInsets.zero,
-                          margin: const EdgeInsets.all(8),
-                          decoration: BoxDecoration(
-                            image: DecorationImage(
-                              image: imageProvider,
-                              fit: BoxFit.contain,
+              child: Stack(
+                children: [
+                  Container(
+                    margin: const EdgeInsets.all(8.0),
+                    decoration: BoxDecoration(borderRadius: borderRadius15, color: backgroundColor.withOpacity(0.6)),
+                    child: CachedNetworkImage(
+                        fadeInCurve: Curves.ease,
+                        color: Colors.black,
+                        imageUrl: "$serverImage/${cartPageController.list[index]["image"]}-mini.webp",
+                        imageBuilder: (context, imageProvider) => Container(
+                              padding: EdgeInsets.zero,
+                              margin: const EdgeInsets.all(8),
+                              decoration: BoxDecoration(
+                                image: DecorationImage(
+                                  image: imageProvider,
+                                  fit: BoxFit.contain,
+                                ),
+                              ),
                             ),
-                          ),
-                        ),
-                    placeholder: (context, url) => Center(child: spinKit()),
-                    errorWidget: (context, url, error) => noImage()),
+                        placeholder: (context, url) => Center(child: spinKit()),
+                        errorWidget: (context, url, error) => noImage()),
+                  ),
+                  if (discountValue != 0)
+                    Positioned(
+                        bottom: 15,
+                        right: 15,
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 4),
+                          decoration: const BoxDecoration(color: Colors.red, borderRadius: borderRadius5),
+                          child: Text("- $discountValue %", style: const TextStyle(color: Colors.white, fontFamily: montserratRegular, fontSize: 12)),
+                        ))
+                  else
+                    const SizedBox.shrink()
+                ],
               ),
             ),
             Expanded(
@@ -157,13 +205,41 @@ class _CartPageState extends State<CartPage> {
                     children: [
                       Text("${cartPageController.list[index]["name"]}",
                           overflow: TextOverflow.ellipsis, maxLines: 2, textAlign: TextAlign.start, style: const TextStyle(color: Colors.black, fontFamily: montserratMedium, fontSize: 16)),
-                      RichText(
-                        overflow: TextOverflow.ellipsis,
-                        text: TextSpan(children: <TextSpan>[
-                          TextSpan(text: "${cartPageController.list[index]["price"]}", style: const TextStyle(fontFamily: montserratSemiBold, fontSize: 20, color: Colors.black)),
-                          const TextSpan(text: "  TMT", style: TextStyle(fontFamily: montserratMedium, fontSize: 16, color: Colors.black))
-                        ]),
-                      ),
+                      if (discountValue > 0)
+                        Row(
+                          children: [
+                            RichText(
+                              overflow: TextOverflow.ellipsis,
+                              text: TextSpan(children: <TextSpan>[
+                                TextSpan(text: "$priceMine", style: const TextStyle(fontFamily: montserratSemiBold, fontSize: 20, color: Colors.black)),
+                                const TextSpan(text: "  TMT", style: TextStyle(fontFamily: montserratMedium, fontSize: 16, color: Colors.black))
+                              ]),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 8),
+                              child: Stack(
+                                children: [
+                                  Positioned(left: 0, right: 5, top: 10, child: Transform.rotate(angle: pi / -14, child: Container(height: 1, color: Colors.red))),
+                                  RichText(
+                                    overflow: TextOverflow.ellipsis,
+                                    text: TextSpan(children: <TextSpan>[
+                                      TextSpan(text: "$priceOLD", style: const TextStyle(fontFamily: montserratRegular, fontSize: 18, color: Colors.grey)),
+                                      const TextSpan(text: " TMT", style: TextStyle(fontFamily: montserratRegular, fontSize: 12, color: Colors.grey))
+                                    ]),
+                                  ),
+                                ],
+                              ),
+                            )
+                          ],
+                        )
+                      else
+                        Text(
+                          "${cartPageController.list[index]["price"]} m.",
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 4,
+                          textAlign: TextAlign.center,
+                          style: const TextStyle(fontFamily: montserratSemiBold, fontSize: 18, color: kPrimaryColor),
+                        ),
                       Row(
                         children: [
                           GestureDetector(

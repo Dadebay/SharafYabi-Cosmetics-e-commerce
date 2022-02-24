@@ -1,15 +1,14 @@
-// ignore_for_file: file_names, deprecated_member_use, always_use_package_imports, avoid_bool_literals_in_conditional_expressions, non_constant_identifier_names
-
-import 'dart:convert';
+// ignore_for_file: file_names, deprecated_member_use, always_use_package_imports, avoid_bool_literals_in_conditional_expressions, non_constant_identifier_names, avoid_dynamic_calls
 
 import 'package:flutter/material.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
 import 'package:get/get.dart';
 import 'package:sharaf_yabi_ecommerce/components/ProductCard3.dart';
+import 'package:sharaf_yabi_ecommerce/constants/constants.dart';
 import 'package:sharaf_yabi_ecommerce/constants/widgets.dart';
 import 'package:sharaf_yabi_ecommerce/controllers/Fav_Cart_Controller.dart';
+import 'package:sharaf_yabi_ecommerce/controllers/FilterController.dart';
 import 'package:sharaf_yabi_ecommerce/controllers/HomePageController.dart';
-import 'package:sharaf_yabi_ecommerce/models/ProductsModel.dart';
 import 'package:sharaf_yabi_ecommerce/widgets/appBar.dart';
 
 class FavoritePage extends StatefulWidget {
@@ -20,6 +19,7 @@ class FavoritePage extends StatefulWidget {
 class _FavoritePageState extends State<FavoritePage> {
   Fav_Cart_Controller fav_cart_controller = Get.put(Fav_Cart_Controller());
   final HomePageController _homePageController = Get.put(HomePageController());
+  final FilterController filterController = Get.put(FilterController());
 
   @override
   void initState() {
@@ -40,6 +40,8 @@ class _FavoritePageState extends State<FavoritePage> {
             onTap: () {
               fav_cart_controller.clearFavList();
               _homePageController.refreshList();
+              filterController.list.clear();
+              filterController.fetchProducts();
               setState(() {});
             },
             backArrow: true,
@@ -47,7 +49,7 @@ class _FavoritePageState extends State<FavoritePage> {
         body: Obx(() {
           if (_homePageController.loadingFavlist.value == 1) {
             return fav_cart_controller.favList.isEmpty
-                ? GestureDetector(onTap: () {}, child: emptyData(imagePath: "assets/emptyState/emptyFav.png", errorTitle: "emptyFavoriteTitle", errorSubtitle: "emptyFavoriteSubtitle"))
+                ? GestureDetector(onTap: () {}, child: emptyData(imagePath: emptyFav, errorTitle: "emptyFavoriteTitle", errorSubtitle: "emptyFavoriteSubtitle"))
                 : GridView.builder(
                     itemCount: _homePageController.listFavlist.length,
                     physics: const BouncingScrollPhysics(),

@@ -62,7 +62,7 @@ class MyAppBar extends StatelessWidget implements PreferredSize {
           : Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Image.asset("assets/appLogo/greyLogo.png", height: sizeWidth > 800 ? 65 : 45, width: sizeWidth > 800 ? 65 : 45, color: Colors.white),
+                Image.asset(appLogo, height: sizeWidth > 800 ? 65 : 45, width: sizeWidth > 800 ? 65 : 45, color: Colors.white),
                 Text(
                   "Sharafyabi",
                   maxLines: 1,

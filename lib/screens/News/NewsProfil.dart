@@ -43,13 +43,7 @@ class NewsProfil extends StatelessWidget {
                               ),
                             ),
                         placeholder: (context, url) => Center(child: spinKit()),
-                        errorWidget: (context, url, error) => Padding(
-                              padding: const EdgeInsets.all(30.0),
-                              child: Image.asset(
-                                "assets/appLogo/greyLogo.png",
-                                color: Colors.grey,
-                              ),
-                            )),
+                        errorWidget: (context, url, error) => noImage()),
                     Container(
                       padding: const EdgeInsets.all(8.0),
                       child: Column(
@@ -67,7 +61,7 @@ class NewsProfil extends StatelessWidget {
                                     maxRadius: 25,
                                     minRadius: 24,
                                     backgroundImage: AssetImage(
-                                      "assets/appLogo/logo.png",
+                                      appLogo2,
                                     ),
                                   ),
                                 ),

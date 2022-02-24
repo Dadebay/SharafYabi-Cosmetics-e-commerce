@@ -4,9 +4,9 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:sharaf_yabi_ecommerce/constants/constants.dart';
-import 'package:sharaf_yabi_ecommerce/constants/widgets.dart';
 import 'package:sharaf_yabi_ecommerce/models/UserModels/AuthModel.dart';
 
 class AddressModel extends ChangeNotifier {
@@ -31,7 +31,8 @@ class AddressModel extends ChangeNotifier {
     final List<AddressModel> products = [];
     final token = await Auth().getToken();
 
-    languageCode();
+    String lang = Get.locale!.languageCode;
+    if (lang == "tr") lang = "tm";
     final response = await http.get(
         Uri.parse(
           "$serverURL/api/user/$lang/get-my-locations",
@@ -53,7 +54,8 @@ class AddressModel extends ChangeNotifier {
 
   Future deleteLocation(int? id) async {
     final token = await Auth().getToken();
-    languageCode();
+    String lang = Get.locale!.languageCode;
+    if (lang == "tr") lang = "tm";
     final response = await http.post(
       Uri.parse(
         "$serverURL/api/user/$lang/delete-location/$id",
@@ -63,7 +65,6 @@ class AddressModel extends ChangeNotifier {
         HttpHeaders.authorizationHeader: 'Bearer $token',
       },
     );
-    print(response.statusCode);
     if (response.statusCode == 200) {
       return response.statusCode;
     } else {
@@ -77,7 +78,8 @@ class AddressModel extends ChangeNotifier {
       "address": address,
       "comment": comment,
     });
-    languageCode();
+    String lang = Get.locale!.languageCode;
+    if (lang == "tr") lang = "tm";
     final response = await http.post(
         Uri.parse(
           "$serverURL/api/user/$lang/add-user-location",

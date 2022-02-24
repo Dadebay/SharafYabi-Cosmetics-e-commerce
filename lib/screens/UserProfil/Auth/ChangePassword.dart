@@ -1,9 +1,7 @@
-// ignore_for_file: file_names, must_be_immutable, deprecated_member_use, duplicate_ignore
+// ignore_for_file: file_names, must_be_immutable, deprecated_member_use, duplicate_ignore, noop_primitive_operations
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_iconly/flutter_iconly.dart';
 import 'package:get/get_utils/src/extensions/internacionalization.dart';
 import 'package:sharaf_yabi_ecommerce/constants/constants.dart';
 import 'package:sharaf_yabi_ecommerce/constants/widgets.dart';
@@ -15,7 +13,7 @@ import 'package:vibration/vibration.dart';
 class ChangePassword extends StatefulWidget {
   final String otpCode;
 
-  ChangePassword({Key? key, required this.otpCode}) : super(key: key);
+  const ChangePassword({Key? key, required this.otpCode}) : super(key: key);
 
   @override
   State<ChangePassword> createState() => _ChangePasswordState();
@@ -50,7 +48,7 @@ class _ChangePasswordState extends State<ChangePassword> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                "newUserPasswordSubtitle".tr + " : ",
+                "${"newUserPasswordSubtitle".tr} : ",
                 style: const TextStyle(color: Colors.black, fontSize: 18, fontFamily: montserratMedium),
               ),
               Form(
@@ -85,7 +83,7 @@ class _ChangePasswordState extends State<ChangePassword> {
                           isDense: true,
                           errorBorder: const OutlineInputBorder(borderRadius: borderRadius10, borderSide: BorderSide(color: Colors.red)),
                           hintStyle: const TextStyle(color: Colors.grey, fontSize: 18, fontFamily: montserratMedium),
-                          focusedErrorBorder: const OutlineInputBorder(borderRadius: borderRadius10, borderSide: BorderSide(color: Colors.red, width: 1)),
+                          focusedErrorBorder: const OutlineInputBorder(borderRadius: borderRadius10, borderSide: BorderSide(color: Colors.red)),
                           focusedBorder: const OutlineInputBorder(borderRadius: borderRadius10, borderSide: BorderSide(color: kPrimaryColor, width: 2)),
                           enabledBorder: const OutlineInputBorder(borderRadius: borderRadius10, borderSide: BorderSide(color: Colors.black12, width: 2)),
                         ),
@@ -119,7 +117,7 @@ class _ChangePasswordState extends State<ChangePassword> {
                           isDense: true,
                           errorBorder: const OutlineInputBorder(borderRadius: borderRadius10, borderSide: BorderSide(color: Colors.red)),
                           hintStyle: const TextStyle(color: Colors.grey, fontSize: 18, fontFamily: montserratMedium),
-                          focusedErrorBorder: const OutlineInputBorder(borderRadius: borderRadius10, borderSide: BorderSide(color: Colors.red, width: 1)),
+                          focusedErrorBorder: const OutlineInputBorder(borderRadius: borderRadius10, borderSide: BorderSide(color: Colors.red)),
                           focusedBorder: const OutlineInputBorder(borderRadius: borderRadius10, borderSide: BorderSide(color: kPrimaryColor, width: 2)),
                           enabledBorder: const OutlineInputBorder(borderRadius: borderRadius10, borderSide: BorderSide(color: Colors.black12, width: 2)),
                         ),

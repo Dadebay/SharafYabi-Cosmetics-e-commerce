@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:sharaf_yabi_ecommerce/constants/constants.dart';
 import 'package:sharaf_yabi_ecommerce/constants/widgets.dart';
 import 'package:sharaf_yabi_ecommerce/controllers/SettingsController.dart';
@@ -47,7 +48,7 @@ class _OrdersState extends State<Orders> {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return Center(child: spinKit());
             } else if (snapshot.data == null || snapshot.data!.isEmpty) {
-              return emptyData(imagePath: "assets/emptyState/emptyProducts.png", errorTitle: "orderEmpty", errorSubtitle: "orderEmptySubtitle");
+              return emptyData(imagePath: emptyProducts, errorTitle: "orderEmpty", errorSubtitle: "orderEmptySubtitle");
             } else if (snapshot.hasError) {
               return errorConnection(onTap: () {
                 OrdersModel().getOrders();
@@ -57,6 +58,7 @@ class _OrdersState extends State<Orders> {
               itemCount: snapshot.data!.length,
               shrinkWrap: true,
               reverse: true,
+              physics: const BouncingScrollPhysics(),
               itemBuilder: (BuildContext context, int index) {
                 return Padding(
                   padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 6),
@@ -67,9 +69,14 @@ class _OrdersState extends State<Orders> {
                     elevation: 2,
                     padding: const EdgeInsets.fromLTRB(10, 10, 0, 10),
                     onPressed: () {
-                      Get.to(() => OrderProfile(
-                            id: snapshot.data![index].id,
-                          ));
+                      pushNewScreen(
+                        context,
+                        screen: OrderProfile(
+                          id: snapshot.data![index].id,
+                        ),
+                        withNavBar: true, // OPTIONAL VALUE. True by default.
+                        pageTransitionAnimation: PageTransitionAnimation.cupertino,
+                      );
                     },
                     child: Row(
                       children: [
@@ -127,7 +134,7 @@ class OrderProfile extends StatelessWidget {
               if (snapshot.hasData) {
                 return GridView.builder(
                   itemCount: snapshot.data?.length,
-                  physics: const NeverScrollableScrollPhysics(),
+                  physics: const BouncingScrollPhysics(),
                   shrinkWrap: true,
                   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2, childAspectRatio: 2 / 3),
                   itemBuilder: (BuildContext context, int index) {

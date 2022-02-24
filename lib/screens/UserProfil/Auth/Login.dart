@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:sharaf_yabi_ecommerce/constants/constants.dart';
 import 'package:sharaf_yabi_ecommerce/constants/widgets.dart';
 import 'package:sharaf_yabi_ecommerce/controllers/AuthController.dart';
@@ -69,8 +70,9 @@ class Login extends StatelessWidget {
             GestureDetector(
               onTap: () {
                 Get.to(() => ForgotPassword());
+                
               },
-              child: Text("forgotPassword".tr + ".", style: TextStyle(color: kPrimaryColor, decoration: TextDecoration.underline, fontFamily: montserratMedium, fontSize: 18)),
+              child: Text("${"forgotPassword".tr}.", style: const TextStyle(color: kPrimaryColor, decoration: TextDecoration.underline, fontFamily: montserratMedium, fontSize: 18)),
             ),
             Center(
               child: AgreeButton(
@@ -82,6 +84,7 @@ class Login extends StatelessWidget {
                       if (value == true) {
                         showSnackBar("signIntitle", "signInSubtitle", kPrimaryColor);
                         Get.to(() => BottomNavBar());
+                        
                       } else if (value == 409) {
                         showSnackBar("signInErrorTitle", "errorLogin", Colors.red);
 

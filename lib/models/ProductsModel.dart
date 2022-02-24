@@ -7,7 +7,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:sharaf_yabi_ecommerce/constants/constants.dart';
-import 'package:sharaf_yabi_ecommerce/constants/widgets.dart';
 import 'package:sharaf_yabi_ecommerce/controllers/FilterController.dart';
 
 class ProductsModel extends ChangeNotifier {
@@ -35,7 +34,8 @@ class ProductsModel extends ChangeNotifier {
 
   Future<List<ProductsModel>> getFavorites({required Map<String, String> parametrs}) async {
     final List<ProductsModel> products = [];
-    languageCode();
+    String lang = Get.locale!.languageCode;
+    if (lang == "tr") lang = "tm";
     final response = await http.get(
         Uri.parse(
           "$serverURL/api/$lang/get-wish-list",
@@ -60,7 +60,8 @@ class ProductsModel extends ChangeNotifier {
 
   Future<List<ProductsModel>> getProducts({Map<String, dynamic>? parametrs}) async {
     final List<ProductsModel> products = [];
-    languageCode();
+    String lang = Get.locale!.languageCode;
+    if (lang == "tr") lang = "tm";
     final response = await http.get(
         Uri.parse(
           "$serverURL/api/$lang/get-products",

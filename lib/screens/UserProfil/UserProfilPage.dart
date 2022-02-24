@@ -7,9 +7,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_instance/src/extension_instance.dart';
-import 'package:get/get_navigation/src/extension_navigation.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:lottie/lottie.dart';
+import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:sharaf_yabi_ecommerce/constants/constants.dart';
 import 'package:sharaf_yabi_ecommerce/controllers/AuthController.dart';
 import 'package:sharaf_yabi_ecommerce/screens/UserProfil/Components/Profile_Widgets.dart';
@@ -69,7 +69,12 @@ class _UserProfilState extends State<UserProfil> {
                   name: "myAddress",
                   icon: IconlyLight.location,
                   onTap: () {
-                    Get.to(() => MyAddress());
+                    pushNewScreen(
+                      context,
+                      screen: MyAddress(),
+                      withNavBar: true, // OPTIONAL VALUE. True by default.
+                      pageTransitionAnimation: PageTransitionAnimation.cupertino,
+                    );
                   },
                 )
               else
@@ -78,15 +83,25 @@ class _UserProfilState extends State<UserProfil> {
                 name: "orders",
                 icon: CupertinoIcons.cube_box,
                 onTap: () {
-                  Get.to(() => Orders());
+                  pushNewScreen(
+                    context,
+                    screen: Orders(),
+                    withNavBar: true, // OPTIONAL VALUE. True by default.
+                    pageTransitionAnimation: PageTransitionAnimation.cupertino,
+                  );
                 },
               ),
-              selectLang(),
+              selectLang(context),
               buttonProfile(
                 name: "favorite",
                 icon: IconlyLight.heart,
                 onTap: () async {
-                  Get.to(() => FavoritePage());
+                  pushNewScreen(
+                    context,
+                    screen: FavoritePage(),
+                    withNavBar: true, // OPTIONAL VALUE. True by default.
+                    pageTransitionAnimation: PageTransitionAnimation.cupertino,
+                  );
                 },
               ),
               shareApp(),
@@ -94,14 +109,24 @@ class _UserProfilState extends State<UserProfil> {
                 name: "ourDeliveryService",
                 icon: IconlyLight.paper,
                 onTap: () {
-                  Get.to(() => OurDeliveryService());
+                  pushNewScreen(
+                    context,
+                    screen: OurDeliveryService(),
+                    withNavBar: true, // OPTIONAL VALUE. True by default.
+                    pageTransitionAnimation: PageTransitionAnimation.cupertino,
+                  );
                 },
               ),
               buttonProfile(
                 name: "aboutUS",
                 icon: IconlyLight.infoSquare,
                 onTap: () {
-                  Get.to(() => AboutUS());
+                  pushNewScreen(
+                    context,
+                    screen: AboutUS(),
+                    withNavBar: true, // OPTIONAL VALUE. True by default.
+                    pageTransitionAnimation: PageTransitionAnimation.cupertino,
+                  );
                 },
               ),
               buttonProfile(
@@ -110,7 +135,14 @@ class _UserProfilState extends State<UserProfil> {
                 onTap: () {
                   authController.loginInAnimation.value = false;
                   authController.signInAnimation.value = false;
-                  storage.read("AccessToken") != null ? logOut() : Get.to(() => LoginPage());
+                  storage.read("AccessToken") != null
+                      ? logOut(context)
+                      : pushNewScreen(
+                          context,
+                          screen: LoginPage(),
+                          withNavBar: true, // OPTIONAL VALUE. True by default.
+                          pageTransitionAnimation: PageTransitionAnimation.cupertino,
+                        );
                 },
               ),
             ],
@@ -134,7 +166,12 @@ class _UserProfilState extends State<UserProfil> {
             right: 6,
             child: GestureDetector(
               onTap: () {
-                Get.to(() => UserSettings());
+                pushNewScreen(
+                  context,
+                  screen: UserSettings(),
+                  withNavBar: true, // OPTIONAL VALUE. True by default.
+                  pageTransitionAnimation: PageTransitionAnimation.cupertino,
+                );
               },
               child: const Icon(IconlyLight.editSquare, color: kPrimaryColor, size: 30),
             ),

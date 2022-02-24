@@ -2,8 +2,8 @@
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
+import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:sharaf_yabi_ecommerce/constants/constants.dart';
 import 'package:sharaf_yabi_ecommerce/constants/widgets.dart';
 import 'package:sharaf_yabi_ecommerce/models/getVideosModel.dart';
@@ -27,9 +27,14 @@ class VideoPlayerListView extends StatelessWidget {
                 itemBuilder: (BuildContext context, int index) {
                   return GestureDetector(
                     onTap: () {
-                      Get.to(() => VideoPLayerMine(
-                            videoURL: "$serverImage/${snapshot.data![index].videoPath}",
-                          ));
+                      pushNewScreen(
+                        context,
+                        screen: VideoPLayerMine(
+                          videoURL: "$serverImage/${snapshot.data![index].videoPath}",
+                        ),
+                        withNavBar: true, // OPTIONAL VALUE. True by default.
+                        pageTransitionAnimation: PageTransitionAnimation.cupertino,
+                      );
                     },
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -60,7 +65,7 @@ class VideoPlayerListView extends StatelessWidget {
                             )),
                             Center(
                               child: Lottie.asset(
-                                "assets/lottie/lf30_editor_5zxz64e7.json",
+                                videoPlayButton,
                                 repeat: true,
                                 animate: true,
                                 width: 200,

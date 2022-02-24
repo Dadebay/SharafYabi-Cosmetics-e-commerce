@@ -1,11 +1,13 @@
-// ignore_for_file: deprecated_member_use, file_names, avoid_dynamic_calls, unnecessary_statements
+// ignore_for_file: deprecated_member_use, file_names, avoid_dynamic_calls, unnecessary_statements, always_declare_return_types, type_annotate_public_apis
 
-import 'package:animations/animations.dart';
+import 'dart:math';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
 import 'package:get/get.dart';
+import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:sharaf_yabi_ecommerce/components/ProductProfil.dart';
 import 'package:sharaf_yabi_ecommerce/constants/constants.dart';
 import 'package:sharaf_yabi_ecommerce/constants/widgets.dart';
@@ -37,6 +39,7 @@ class _ProductCard3State extends State<ProductCard3> {
   @override
   void initState() {
     super.initState();
+    changeCartCount();
   }
 
   changeCartCount() {
@@ -50,7 +53,6 @@ class _ProductCard3State extends State<ProductCard3> {
       if (element["id"] == widget.id!) {
         addCart = true;
         value = true;
-        print(element["count"]);
         quantity = element["count"];
       }
     }
@@ -62,34 +64,50 @@ class _ProductCard3State extends State<ProductCard3> {
     favCartController.cartList.isNotEmpty ? changeCartCount() : null;
     final double sizeHeight = MediaQuery.of(context).size.height;
     final double sizeWidth = MediaQuery.of(context).size.width;
-    return OpenContainer(
-      closedShape: const RoundedRectangleBorder(borderRadius: borderRadius5),
-      closedColor: Colors.white,
-      closedElevation: 1,
-      useRootNavigator: true,
-      closedBuilder: (context, openWidget) {
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.end,
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-            imageExpanded(),
-            namePartMine(sizeWidth, sizeHeight),
-          ],
-        );
-      },
-      openBuilder: (context, closeWidget) {
+    return GestureDetector(
+      onTap: () {
         final int? a = widget.id;
-
-        return ProductProfil(
-          id: a,
-          productName: widget.name,
-          image: "$serverImage/${widget.image}-mini.webp",
+        pushNewScreen(
+          context,
+          screen: ProductProfil(
+            id: a,
+            productName: widget.name,
+            image: "$serverImage/${widget.image}-mini.webp",
+          ),
+          withNavBar: true, // OPTIONAL VALUE. True by default.
+          pageTransitionAnimation: PageTransitionAnimation.cupertino,
         );
       },
+      child: Material(
+        elevation: 1,
+        shape: const RoundedRectangleBorder(borderRadius: borderRadius5),
+        child: Container(
+          decoration: const BoxDecoration(color: Colors.white, borderRadius: borderRadius5),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              imageExpanded(),
+              namePartMine(sizeWidth, sizeHeight),
+            ],
+          ),
+        ),
+      ),
     );
   }
 
+  double priceOLD = 0.0;
+  double priceMine = 0.0;
+  double discountedPrice = 0.0;
+  int discountValue = 0;
   Expanded namePartMine(double sizeWidth, double sizeHeight) {
+    priceMine = double.parse(widget.price!);
+    if (widget.discountValue != null || widget.discountValue != 0) {
+      priceOLD = priceMine;
+      discountValue = widget.discountValue ?? 0;
+      discountedPrice = (priceMine * discountValue) / 100;
+      priceMine -= discountedPrice;
+    }
     return Expanded(
       flex: 3,
       child: Padding(
@@ -103,16 +121,45 @@ class _ProductCard3State extends State<ProductCard3> {
                 overflow: TextOverflow.ellipsis,
                 maxLines: 4,
                 textAlign: TextAlign.center,
-                style: TextStyle(fontFamily: montserratRegular, fontSize: sizeWidth > 800 ? 15 : sizeWidth / 30),
+                style: TextStyle(fontFamily: montserratRegular, fontSize: sizeWidth > 800 ? 15 : sizeWidth / 34),
               ),
             ),
-            Text(
-              "${widget.price} m.",
-              overflow: TextOverflow.ellipsis,
-              maxLines: 4,
-              textAlign: TextAlign.center,
-              style: TextStyle(fontFamily: montserratSemiBold, fontSize: sizeWidth > 800 ? 22 : 18, color: kPrimaryColor),
-            ),
+            if (discountValue > 0)
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    "$priceMine m.",
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 4,
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(fontFamily: montserratSemiBold, fontSize: 18, color: kPrimaryColor),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8),
+                    child: Stack(
+                      children: [
+                        Positioned(left: 0, right: 5, top: 10, child: Transform.rotate(angle: pi / -14, child: Container(height: 1, color: Colors.red))),
+                        RichText(
+                          overflow: TextOverflow.ellipsis,
+                          text: TextSpan(children: <TextSpan>[
+                            TextSpan(text: "$priceOLD", style: const TextStyle(fontFamily: montserratRegular, fontSize: 16, color: Colors.grey)),
+                            const TextSpan(text: " m.", style: TextStyle(fontFamily: montserratRegular, fontSize: 10, color: Colors.grey))
+                          ]),
+                        ),
+                      ],
+                    ),
+                  )
+                ],
+              )
+            else
+              Text(
+                "${widget.price} m.",
+                overflow: TextOverflow.ellipsis,
+                maxLines: 4,
+                textAlign: TextAlign.center,
+                style: TextStyle(fontFamily: montserratSemiBold, fontSize: sizeWidth > 800 ? 22 : 18, color: kPrimaryColor),
+              ),
             SizedBox(width: MediaQuery.of(context).size.width, child: addCart ? addRemoveButton() : addButton()),
           ],
         ),
@@ -140,6 +187,7 @@ class _ProductCard3State extends State<ProductCard3> {
       color: kPrimaryColor,
       child: Text(
         "addCart".tr,
+        textAlign: TextAlign.center,
         style: const TextStyle(color: Colors.white, fontFamily: montserratSemiBold),
       ),
     );
@@ -165,6 +213,9 @@ class _ProductCard3State extends State<ProductCard3> {
                 widget.id!,
               );
               quantity--;
+              if (quantity <= 0) {
+                addCart = false;
+              }
               setState(() {});
             },
             child: PhysicalModel(
@@ -235,13 +286,7 @@ class _ProductCard3State extends State<ProductCard3> {
                       ),
                     ),
                 placeholder: (context, url) => Center(child: spinKit()),
-                errorWidget: (context, url, error) => Padding(
-                      padding: const EdgeInsets.all(15.0),
-                      child: Image.asset(
-                        "assets/appLogo/greyLogo.png",
-                        color: Colors.grey,
-                      ),
-                    )),
+                errorWidget: (context, url, error) => noImage()),
           ),
           Positioned(
             top: 8,

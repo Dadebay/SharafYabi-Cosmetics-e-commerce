@@ -13,6 +13,7 @@ class SettingsController extends GetxController {
   RxBool connectionState = false.obs;
   RxInt bannerSelectedIndex = 0.obs;
   RxInt bottomBadgeCount = 0.obs;
+  RxInt addressCount = 0.obs;
 
   var tm = const Locale(
     'tr',

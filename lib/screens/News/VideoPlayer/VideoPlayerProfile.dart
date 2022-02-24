@@ -3,7 +3,6 @@
 import 'package:flick_video_player/flick_video_player.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
-import 'package:get/get.dart';
 import 'package:video_player/video_player.dart';
 
 class VideoPLayerMine extends StatefulWidget {
@@ -52,7 +51,7 @@ class _VideoPLayerMineState extends State<VideoPLayerMine> {
             left: 20,
             child: GestureDetector(
               onTap: () {
-                Get.back();
+                Navigator.of(context).pop();
               },
               child: const Icon(IconlyLight.arrowLeftCircle, color: Colors.white, size: 30),
             ),

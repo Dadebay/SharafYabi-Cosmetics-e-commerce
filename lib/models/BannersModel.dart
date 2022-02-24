@@ -4,9 +4,9 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:sharaf_yabi_ecommerce/constants/constants.dart';
-import 'package:sharaf_yabi_ecommerce/constants/widgets.dart';
 
 class BannerModel extends ChangeNotifier {
   BannerModel({this.id, this.imagePath, this.pathID, this.itemID});
@@ -21,7 +21,8 @@ class BannerModel extends ChangeNotifier {
   final int? itemID;
   Future<List<BannerModel>> getBanners() async {
     final List<BannerModel> products = [];
-    languageCode();
+    String lang = Get.locale!.languageCode;
+    if (lang == "tr") lang = "tm";
     final response = await http.get(
         Uri.parse(
           "$serverURL/api/$lang/get-banners/1",
@@ -53,7 +54,8 @@ class AboutUSModel extends ChangeNotifier {
     return AboutUSModel(id: json["id"], phoneNumber1: json["phone1"], phoneNumber2: json["phone2"], address: json["address"], email: json["email"]);
   }
   Future<AboutUSModel> getAboutUS() async {
-    languageCode();
+    String lang = Get.locale!.languageCode;
+    if (lang == "tr") lang = "tm";
     final response = await http.get(
         Uri.parse(
           "$serverURL/api/$lang/get-shop-data",

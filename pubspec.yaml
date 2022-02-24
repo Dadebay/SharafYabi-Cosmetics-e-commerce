@@ -1,12 +1,13 @@
 name: sharaf_yabi_ecommerce
 description: A new Flutter project.
 publish_to: 'none'
-
+version: 1.4.0+20
 environment:
   sdk: ">=2.12.0 <3.0.0"
 
 dependencies:
-  animations: ^2.0.2
+  flutter:
+    sdk: flutter
   badges: ^2.0.2
   cached_network_image: null
   carousel_slider: ^4.0.0
@@ -14,11 +15,10 @@ dependencies:
   device_preview: ^1.0.0
   persistent_bottom_nav_bar: ^4.0.2
   firebase_analytics: ^9.1.0
+  upgrader: ^3.13.0
   firebase_core: null
   firebase_messaging: ^11.2.6
   flick_video_player: null
-  flutter:
-    sdk: flutter
   flutter_iconly: ^1.0.2
   flutter_launcher_icons: ^0.9.2
   flutter_local_notifications: null
@@ -26,7 +26,6 @@ dependencies:
   get: null
   get_storage: ^2.0.3
   http: null
-  intl: ^0.17.0
   lint: null
   lottie: ^1.2.1
   photo_view: ^0.13.0
@@ -70,6 +69,3 @@ flutter:
     - family: Montserrat_Regular
       fonts:
         - asset: assets/fonts/NunitoSans-Regular.ttf
-    - family: Montserrat_Thin
-      fonts:
-        - asset: assets/fonts/NunitoSans-Light.ttf

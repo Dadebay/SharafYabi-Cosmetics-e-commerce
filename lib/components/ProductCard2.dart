@@ -1,11 +1,13 @@
 // ignore_for_file: deprecated_member_use, file_names, avoid_dynamic_calls, invariant_booleans, always_use_package_imports
 
-import 'package:animations/animations.dart';
+import 'dart:math';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
 import 'package:get/get.dart';
+import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:sharaf_yabi_ecommerce/constants/constants.dart';
 import 'package:sharaf_yabi_ecommerce/constants/widgets.dart';
 import 'package:sharaf_yabi_ecommerce/controllers/Fav_Cart_Controller.dart';
@@ -57,31 +59,51 @@ class _ProductCard2State extends State<ProductCard2> {
 
   @override
   Widget build(BuildContext context) {
-    return OpenContainer(
-      closedShape: const RoundedRectangleBorder(borderRadius: borderRadius10),
-      closedColor: Colors.white,
-      closedElevation: 1,
-      closedBuilder: (context, openWidget) {
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-            imageExpanded(),
-            nameAndButtonPart(),
-          ],
+    final double sizeWidth = MediaQuery.of(context).size.width;
+
+    return GestureDetector(
+      onTap: () {
+        pushNewScreen(
+          context,
+          screen: ProductProfil(
+            id: _filterController.list[widget.indexx]!["id"],
+            productName: _filterController.list[widget.indexx]["name"],
+            image: "$serverImage/${_filterController.list[widget.indexx]["image"]}-mini.webp",
+          ),
+          withNavBar: true, // OPTIONAL VALUE. True by default.
+          pageTransitionAnimation: PageTransitionAnimation.cupertino,
         );
       },
-      openBuilder: (context, closeWidget) {
-        return ProductProfil(
-          id: _filterController.list[widget.indexx]!["id"],
-          productName: _filterController.list[widget.indexx]["name"],
-          image: "$serverImage/${_filterController.list[widget.indexx]["image"]}-mini.webp",
-        );
-      },
+      child: Material(
+        elevation: 1,
+        shape: const RoundedRectangleBorder(borderRadius: borderRadius5),
+        child: Container(
+          decoration: const BoxDecoration(color: Colors.white, borderRadius: borderRadius5),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              imageExpanded(),
+              nameAndButtonPart(sizeWidth),
+            ],
+          ),
+        ),
+      ),
     );
   }
 
-  Padding nameAndButtonPart() {
+  double priceOLD = 0.0;
+  double priceMine = 0.0;
+  double discountedPrice = 0.0;
+  int discountValue = 0;
+  Padding nameAndButtonPart(double sizeWidth) {
+    priceMine = double.parse(_filterController.list[widget.indexx]["price"]);
+    if (_filterController.list[widget.indexx]["discountValue"] != null || _filterController.list[widget.indexx]["discountValue"] != 0) {
+      priceOLD = priceMine;
+      discountValue = _filterController.list[widget.indexx]["discountValue"] ?? 0;
+      discountedPrice = (priceMine * discountValue) / 100;
+      priceMine -= discountedPrice;
+    }
     return Padding(
       padding: const EdgeInsets.only(left: 7, right: 7, bottom: 3, top: 7),
       child: Column(
@@ -92,15 +114,44 @@ class _ProductCard2State extends State<ProductCard2> {
             overflow: TextOverflow.ellipsis,
             maxLines: 3,
             textAlign: TextAlign.center,
-            style: const TextStyle(fontFamily: montserratRegular, fontSize: 14),
+            style: TextStyle(fontFamily: montserratRegular, fontSize: sizeWidth / 34),
           ),
-          Text(
-            "${_filterController.list[widget.indexx]["price"]} m.",
-            overflow: TextOverflow.ellipsis,
-            maxLines: 4,
-            textAlign: TextAlign.center,
-            style: const TextStyle(fontFamily: montserratSemiBold, fontSize: 18, color: kPrimaryColor),
-          ),
+          if (discountValue > 0)
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  "$priceMine m.",
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 4,
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(fontFamily: montserratSemiBold, fontSize: 18, color: kPrimaryColor),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8),
+                  child: Stack(
+                    children: [
+                      Positioned(left: 0, right: 5, top: 10, child: Transform.rotate(angle: pi / -14, child: Container(height: 1, color: Colors.red))),
+                      RichText(
+                        overflow: TextOverflow.ellipsis,
+                        text: TextSpan(children: <TextSpan>[
+                          TextSpan(text: "$priceOLD", style: const TextStyle(fontFamily: montserratRegular, fontSize: 16, color: Colors.grey)),
+                          const TextSpan(text: " m.", style: TextStyle(fontFamily: montserratRegular, fontSize: 10, color: Colors.grey))
+                        ]),
+                      ),
+                    ],
+                  ),
+                )
+              ],
+            )
+          else
+            Text(
+              "$priceMine m.",
+              overflow: TextOverflow.ellipsis,
+              maxLines: 4,
+              textAlign: TextAlign.center,
+              style: const TextStyle(fontFamily: montserratSemiBold, fontSize: 18, color: kPrimaryColor),
+            ),
           SizedBox(
             width: Get.size.width,
             child: addCart
@@ -216,6 +267,7 @@ class _ProductCard2State extends State<ProductCard2> {
                     color: kPrimaryColor,
                     child: Text(
                       "addCart".tr,
+                      textAlign: TextAlign.center,
                       style: const TextStyle(color: Colors.white, fontFamily: montserratSemiBold),
                     ),
                   ),
@@ -246,13 +298,7 @@ class _ProductCard2State extends State<ProductCard2> {
                     ),
                   ),
               placeholder: (context, url) => Center(child: spinKit()),
-              errorWidget: (context, url, error) => Padding(
-                    padding: const EdgeInsets.all(30.0),
-                    child: Image.asset(
-                      "assets/appLogo/greyLogo.png",
-                      color: Colors.grey,
-                    ),
-                  )),
+              errorWidget: (context, url, error) => noImage()),
           Positioned(
             top: 8,
             right: 8,
@@ -286,7 +332,7 @@ class _ProductCard2State extends State<ProductCard2> {
                 child: Container(
                   padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 4),
                   decoration: const BoxDecoration(color: Colors.red, borderRadius: borderRadius5),
-                  child: Text("${_filterController.list[widget.indexx]["discountValue"]} %", style: const TextStyle(color: Colors.white, fontFamily: montserratRegular, fontSize: 14)),
+                  child: Text(" - ${_filterController.list[widget.indexx]["discountValue"]} %", style: const TextStyle(color: Colors.white, fontFamily: montserratRegular, fontSize: 14)),
                 ))
           else
             const SizedBox.shrink()
