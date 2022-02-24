@@ -3,11 +3,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get_utils/src/extensions/internacionalization.dart';
+import 'package:sharaf_yabi_ecommerce/components/appBar.dart';
 import 'package:sharaf_yabi_ecommerce/constants/constants.dart';
 import 'package:sharaf_yabi_ecommerce/constants/widgets.dart';
 import 'package:sharaf_yabi_ecommerce/models/UserModels/UserSignInModel.dart';
 import 'package:sharaf_yabi_ecommerce/screens/BottomNavBar.dart';
-import 'package:sharaf_yabi_ecommerce/widgets/appBar.dart';
 import 'package:vibration/vibration.dart';
 
 class ChangePassword extends StatefulWidget {

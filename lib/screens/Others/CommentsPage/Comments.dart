@@ -6,12 +6,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
+import 'package:sharaf_yabi_ecommerce/components/appBar.dart';
 import 'package:sharaf_yabi_ecommerce/constants/constants.dart';
 import 'package:sharaf_yabi_ecommerce/constants/widgets.dart';
 import 'package:sharaf_yabi_ecommerce/controllers/ProductProfileController.dart';
 import 'package:sharaf_yabi_ecommerce/models/CommentModel.dart';
 import 'package:sharaf_yabi_ecommerce/models/UserModels/AuthModel.dart';
-import 'package:sharaf_yabi_ecommerce/widgets/appBar.dart';
 import 'package:vibration/vibration.dart';
 
 class CommentsPage extends StatefulWidget {
@@ -57,7 +57,7 @@ class _CommentsPageState extends State<CommentsPage> {
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Lottie.asset("assets/lottie/NoComment.json", height: 300, animate: true),
+                              Lottie.asset(noCommentJson, height: 300, animate: true),
                               Text("nocomment".tr, style: const TextStyle(color: Colors.black, fontSize: 20, fontFamily: montserratSemiBold)),
                             ],
                           ),
@@ -184,7 +184,15 @@ class _CommentsPageState extends State<CommentsPage> {
                     child: spinKit(),
                   );
                 }
-                return Center(child: emptyDataLottie(imagePath: "assets/lottie/NoComment.json", errorSubtitle: "nocomment", errorTitle: ""));
+                return Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Lottie.asset(noCommentJson, height: 300, animate: true),
+                      Text("nocomment".tr, style: const TextStyle(color: Colors.black, fontSize: 20, fontFamily: montserratSemiBold)),
+                    ],
+                  ),
+                );
               })),
     );
   }

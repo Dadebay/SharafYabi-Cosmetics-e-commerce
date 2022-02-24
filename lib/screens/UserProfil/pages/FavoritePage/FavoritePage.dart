@@ -4,12 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
 import 'package:get/get.dart';
 import 'package:sharaf_yabi_ecommerce/components/ProductCard3.dart';
+import 'package:sharaf_yabi_ecommerce/components/appBar.dart';
 import 'package:sharaf_yabi_ecommerce/constants/constants.dart';
 import 'package:sharaf_yabi_ecommerce/constants/widgets.dart';
 import 'package:sharaf_yabi_ecommerce/controllers/Fav_Cart_Controller.dart';
 import 'package:sharaf_yabi_ecommerce/controllers/FilterController.dart';
 import 'package:sharaf_yabi_ecommerce/controllers/HomePageController.dart';
-import 'package:sharaf_yabi_ecommerce/widgets/appBar.dart';
 
 class FavoritePage extends StatefulWidget {
   @override
@@ -68,7 +68,6 @@ class _FavoritePageState extends State<FavoritePage> {
                           price: _homePageController.listFavlist[index]["price"],
                           image: _homePageController.listFavlist[index]["image"],
                           discountValue: _homePageController.listFavlist[index]["discountValue"],
-                          index: index,
                         ),
                       );
                     });
@@ -84,41 +83,6 @@ class _FavoritePageState extends State<FavoritePage> {
           return Center(
             child: spinKit(),
           );
-
-          // FutureBuilder<List<ProductsModel>>(
-          //     future: ProductsModel().getFavorites(parametrs: {"products": jsonEncode(fav_cart_controller.favList)}),
-          //     builder: (context, snapshot) {
-          //       if (snapshot.hasError) {
-          //         return errorConnection(
-          //             onTap: () {
-          //               ProductsModel().getFavorites(parametrs: {"products": jsonEncode(fav_cart_controller.favList)});
-          //             },
-          //             sizeWidth: sizeWidth);
-          //       } else if (snapshot.hasData) {
-          // return GridView.builder(
-          //   itemCount: snapshot.data?.length,
-          //   physics: const NeverScrollableScrollPhysics(),
-          //   shrinkWrap: true,
-          //   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: sizeWidth > 800 ? 3 : 2, childAspectRatio: 1.5 / 2.5),
-          //           itemBuilder: (BuildContext context, int index) {
-          //             return Padding(
-          //               padding: const EdgeInsets.all(8.0),
-          //               child: ProductCard3(
-          //                 id: snapshot.data![index].id,
-          //                 name: snapshot.data![index].productName,
-          //                 price: snapshot.data![index].price,
-          //                 image: snapshot.data![index].imagePath,
-          //                 discountValue: snapshot.data![index].discountValue,
-          //                 index: index,
-          //               ),
-          //             );
-          //           },
-          //         );
-          //       }
-          //       return Center(
-          //         child: spinKit(),
-          //       );
-          //     });
         }));
   }
 }

@@ -9,6 +9,7 @@ import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:lottie/lottie.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
+import 'package:sharaf_yabi_ecommerce/components/appBar.dart';
 import 'package:sharaf_yabi_ecommerce/constants/constants.dart';
 import 'package:sharaf_yabi_ecommerce/constants/widgets.dart';
 import 'package:sharaf_yabi_ecommerce/controllers/CartPageController.dart';
@@ -279,13 +280,119 @@ class _OrderPageState extends State<OrderPage> {
         leading: Icon(icon, color: kPrimaryColor),
         trailing: Icon(changeIcon ? Icons.done : IconlyLight.arrowRightCircle, color: kPrimaryColor),
         onTap: () {
-          Get.defaultDialog(
-              radius: 8,
-              titlePadding: const EdgeInsets.only(top: 15, left: 15, right: 15),
-              title: dialogTitle.tr,
-              contentPadding: const EdgeInsets.symmetric(horizontal: 10),
-              titleStyle: const TextStyle(color: Colors.black, fontSize: 20, fontFamily: montserratMedium),
-              content: customTextField(labelText, controllermine, textLength));
+          textLength == 50
+              ? Get.defaultDialog(
+                  radius: 4,
+                  title: "myAddress".tr,
+                  content: FutureBuilder<List<AddressModel>>(
+                    future: AddressModel().getAddress(),
+                    builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return Center(
+                          child: spinKit(),
+                        );
+                      } else if (snapshot.hasData) {
+                        return snapshot.data.toString() == "[]"
+                            ? GestureDetector(
+                                onTap: () {
+                                  Get.back();
+                                  Get.back();
+                                  pushNewScreen(
+                                    context,
+                                    screen: MyAddress(),
+                                    withNavBar: true, // OPTIONAL VALUE. True by default.
+                                    pageTransitionAnimation: PageTransitionAnimation.fade,
+                                  );
+                                },
+                                child: Column(
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Text("noAddresses".tr, style: const TextStyle(color: Colors.black, fontFamily: montserratRegular)),
+                                    ),
+                                    Container(
+                                        padding: const EdgeInsets.all(8.0),
+                                        margin: const EdgeInsets.only(top: 10),
+                                        decoration: const BoxDecoration(color: kPrimaryColor, borderRadius: borderRadius5),
+                                        child: Text("${"addAddress".tr} + ", style: const TextStyle(color: Colors.white, fontFamily: montserratMedium))),
+                                  ],
+                                ),
+                              )
+                            : Column(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: List.generate(
+                                          snapshot.data!.length,
+                                          (index) => CheckboxListTile(
+                                                value: favCartController.orderTick.value == index ? true : false,
+                                                activeColor: kPrimaryColor,
+                                                onChanged: (value) {
+                                                  favCartController.orderTick.value = index;
+                                                  addressController.text = snapshot.data![index].address;
+                                                  noteController.text = snapshot.data![index].comment;
+                                                  Get.back();
+                                                  Get.back();
+                                                  setState(() {});
+                                                },
+                                                title: Text(snapshot.data![index].address, maxLines: 2, style: TextStyle(color: Colors.black, fontFamily: montserratMedium)),
+                                                subtitle: Text(snapshot.data![index].comment, maxLines: 2, style: TextStyle(color: Colors.grey, fontFamily: montserratRegular)),
+                                              ))),
+                                  GestureDetector(
+                                    onTap: () {
+                                      Get.back();
+                                      Get.defaultDialog(
+                                          radius: 8,
+                                          titlePadding: const EdgeInsets.only(top: 15, left: 15, right: 15),
+                                          title: dialogTitle.tr,
+                                          contentPadding: const EdgeInsets.symmetric(horizontal: 10),
+                                          titleStyle: const TextStyle(color: Colors.black, fontSize: 20, fontFamily: montserratMedium),
+                                          content: customTextField(labelText, controllermine, textLength));
+                                    },
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(vertical: 8),
+                                      child: Text("selectMyaddresses".tr, style: TextStyle(color: kPrimaryColor, decoration: TextDecoration.underline, fontFamily: montserratMedium)),
+                                    ),
+                                  )
+                                ],
+                              );
+                      }
+                      return GestureDetector(
+                        onTap: () {
+                          Get.back();
+                          Get.back();
+
+                          pushNewScreen(
+                            context,
+                            screen: MyAddress(),
+                            withNavBar: true, // OPTIONAL VALUE. True by default.
+                            pageTransitionAnimation: PageTransitionAnimation.fade,
+                          );
+                        },
+                        child: Column(
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text("noAddresses".tr, style: const TextStyle(color: Colors.black, fontFamily: montserratRegular)),
+                            ),
+                            Container(
+                                padding: const EdgeInsets.all(8.0),
+                                margin: const EdgeInsets.only(top: 10),
+                                decoration: const BoxDecoration(color: kPrimaryColor, borderRadius: borderRadius5),
+                                child: Text("${"addAddress".tr} + ", style: const TextStyle(color: Colors.white, fontFamily: montserratMedium))),
+                          ],
+                        ),
+                      );
+                    },
+                  ))
+              : Get.defaultDialog(
+                  radius: 8,
+                  titlePadding: const EdgeInsets.only(top: 15, left: 15, right: 15),
+                  title: dialogTitle.tr,
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 10),
+                  titleStyle: const TextStyle(color: Colors.black, fontSize: 20, fontFamily: montserratMedium),
+                  content: customTextField(labelText, controllermine, textLength));
         },
       ),
     );
@@ -334,101 +441,6 @@ class _OrderPageState extends State<OrderPage> {
                   ),
           ),
         ),
-        if (lenght == 50)
-          GestureDetector(
-            onTap: () {
-              Get.defaultDialog(
-                  radius: 4,
-                  title: "myAddress".tr,
-                  content: FutureBuilder<List<AddressModel>>(
-                    future: AddressModel().getAddress(),
-                    builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
-                      if (snapshot.connectionState == ConnectionState.waiting) {
-                        return Center(
-                          child: spinKit(),
-                        );
-                      } else if (snapshot.hasData) {
-                        return snapshot.data.toString() == "[]"
-                            ? GestureDetector(
-                                onTap: () {
-                                  Get.back();
-                                  Get.back();
-                                  pushNewScreen(
-                                    context,
-                                    screen: MyAddress(),
-                                    withNavBar: true, // OPTIONAL VALUE. True by default.
-                                    pageTransitionAnimation: PageTransitionAnimation.fade,
-                                  );
-                                },
-                                child: Column(
-                                  children: [
-                                    Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: Text("noAddresses".tr, style: const TextStyle(color: Colors.black, fontFamily: montserratRegular)),
-                                    ),
-                                    Container(
-                                        padding: const EdgeInsets.all(8.0),
-                                        margin: const EdgeInsets.only(top: 10),
-                                        decoration: const BoxDecoration(color: kPrimaryColor, borderRadius: borderRadius5),
-                                        child: Text("${"addAddress".tr} + ", style: const TextStyle(color: Colors.white, fontFamily: montserratMedium))),
-                                  ],
-                                ),
-                              )
-                            : Column(
-                                mainAxisSize: MainAxisSize.min,
-                                children: List.generate(
-                                    snapshot.data!.length,
-                                    (index) => ListTile(
-                                          onTap: () {
-                                            addressController.text = snapshot.data![index].address;
-                                            noteController.text = snapshot.data![index].comment;
-                                            Get.back();
-                                            Get.back();
-                                            setState(() {});
-                                          },
-                                          title: Text(snapshot.data![index].address),
-                                          subtitle: Text(snapshot.data![index].comment),
-                                        )));
-                      }
-                      return GestureDetector(
-                        onTap: () {
-                          Get.back();
-                          Get.back();
-
-                          pushNewScreen(
-                            context,
-                            screen: MyAddress(),
-                            withNavBar: true, // OPTIONAL VALUE. True by default.
-                            pageTransitionAnimation: PageTransitionAnimation.fade,
-                          );
-                        },
-                        child: Column(
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Text("noAddresses".tr, style: const TextStyle(color: Colors.black, fontFamily: montserratRegular)),
-                            ),
-                            Container(
-                                padding: const EdgeInsets.all(8.0),
-                                margin: const EdgeInsets.only(top: 10),
-                                decoration: const BoxDecoration(color: kPrimaryColor, borderRadius: borderRadius5),
-                                child: Text("${"addAddress".tr} + ", style: const TextStyle(color: Colors.white, fontFamily: montserratMedium))),
-                          ],
-                        ),
-                      );
-                    },
-                  ));
-            },
-            child: Padding(
-              padding: const EdgeInsets.only(bottom: 15),
-              child: Text(
-                "selectMyaddresses".tr,
-                style: const TextStyle(color: kPrimaryColor, fontFamily: montserratMedium, decoration: TextDecoration.underline),
-              ),
-            ),
-          )
-        else
-          const SizedBox.shrink(),
         SizedBox(
           width: Get.size.width,
           child: RaisedButton(
@@ -456,8 +468,6 @@ class _OrderPageState extends State<OrderPage> {
                 Vibration.vibrate();
               }
               Get.back();
-
-              Vibration.vibrate();
             },
             padding: const EdgeInsets.symmetric(
               vertical: 10,
@@ -510,7 +520,14 @@ class _OrderPageState extends State<OrderPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: Colors.white,
-        appBar: appbar(context),
+        appBar: MyAppBar(
+          icon: Icons.add,
+          onTap: () {},
+          backArrow: true,
+          iconRemove: false,
+          name: "orders",
+          addName: true,
+        ),
         body: dataloaded
             ? Stack(
                 children: [
@@ -623,27 +640,5 @@ Future<dynamic> completeOrder(BuildContext context) {
                 child: Lottie.asset(cartBlack, fit: BoxFit.cover, width: 110, height: 110)),
           )
         ],
-      ));
-}
-
-AppBar appbar(context) {
-  return AppBar(
-      elevation: 0.0,
-      centerTitle: true,
-      leading: IconButton(
-        icon: const Icon(
-          IconlyLight.arrowLeft2,
-        ),
-        onPressed: () {
-          Navigator.of(context).pop();
-        },
-      ),
-      automaticallyImplyLeading: false,
-      backgroundColor: kPrimaryColor,
-      title: Text(
-        "order".tr,
-        maxLines: 1,
-        textAlign: TextAlign.center,
-        style: const TextStyle(color: Colors.white, fontFamily: montserratSemiBold, fontSize: 18),
       ));
 }

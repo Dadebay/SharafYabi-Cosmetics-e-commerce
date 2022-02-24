@@ -13,10 +13,10 @@ import 'package:sharaf_yabi_ecommerce/constants/widgets.dart';
 import 'package:sharaf_yabi_ecommerce/controllers/CartPageController.dart';
 import 'package:sharaf_yabi_ecommerce/controllers/Fav_Cart_Controller.dart';
 import 'package:sharaf_yabi_ecommerce/controllers/SettingsController.dart';
-import 'package:sharaf_yabi_ecommerce/screens/News/TabbarViewPage.dart';
+import 'package:sharaf_yabi_ecommerce/screens/Category_Brands/Category/CategoryPage.dart';
+import 'package:sharaf_yabi_ecommerce/screens/News_Videos/TabbarViewPage.dart';
 
 import 'Cart/CartPage.dart';
-import 'Category/CategoryPage.dart';
 import 'HomePage/HomePage.dart';
 import 'UserProfil/UserProfilPage.dart';
 
@@ -145,11 +145,13 @@ class _BottomNavBarState extends State<BottomNavBar> with TickerProviderStateMix
                 },
               ),
             )
-          : errorConnection(
-              onTap: () {
-                checkConnection();
-              },
-              sizeWidth: sizeWidth);
+          : Scaffold(
+              body: errorConnection(
+                  onTap: () {
+                    checkConnection();
+                  },
+                  sizeWidth: sizeWidth),
+            );
     });
   }
 }

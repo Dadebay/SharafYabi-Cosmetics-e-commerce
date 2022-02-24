@@ -185,7 +185,7 @@ class MyTranslations extends Translations {
           "writeComment": "Teswir ýaz",
           "writeSmsKod": "Sms kody giriziň",
           "yes": "Hawwa",
-          "selectMyaddresses": "Salgylarymdan saýla",
+          "selectMyaddresses": "Täze salgy giriz.",
         },
         'ru': {
           "aboutUS": "О нас",
@@ -367,10 +367,10 @@ class MyTranslations extends Translations {
           "writeComment": "Написать комментарий",
           "writeSmsKod": "Напишите смс код",
           "yes": "Да",
-          "selectMyaddresses": "Выберите из моих адресов",
+          "selectMyaddresses": "Введите новый адрес.",
         },
         'en': {
-          "selectMyaddresses": "Choose from my addresses",
+          "selectMyaddresses": "Enter a new address.",
           "aboutUS": "About Us",
           "aboutUsSubtitle":
               "We sell more than 300 types of cosmetic and hygiene products. All groups of the population, from newborns to people of the age, are consumers of our products. The company was founded in 1997. Currently, the sale of goods is carried out in retail outlets in the city of Ashgabat and in all regions of Turkmenistan.",

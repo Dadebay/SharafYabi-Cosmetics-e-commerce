@@ -13,13 +13,9 @@ class PhoneNumber extends StatelessWidget {
     required this.requestFocus,
   });
   final AuthController authController = Get.put(AuthController());
-
   final TextEditingController controller;
   final FocusNode mineFocus;
   final FocusNode requestFocus;
-
-  String a = "errorEmpty".tr;
-  String b = "errorPhoneCount".tr;
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -39,7 +35,7 @@ class PhoneNumber extends StatelessWidget {
             if (value!.isEmpty) {
               return "errorEmpty".tr;
             } else if (value.length != 8) {
-              return b;
+              return "errorPhoneCount".tr;
             }
             return null;
           },

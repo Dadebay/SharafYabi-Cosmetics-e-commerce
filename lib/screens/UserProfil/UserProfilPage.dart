@@ -10,6 +10,7 @@ import 'package:get/get_instance/src/extension_instance.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:lottie/lottie.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
+import 'package:sharaf_yabi_ecommerce/components/appBar.dart';
 import 'package:sharaf_yabi_ecommerce/constants/constants.dart';
 import 'package:sharaf_yabi_ecommerce/controllers/AuthController.dart';
 import 'package:sharaf_yabi_ecommerce/screens/UserProfil/Components/Profile_Widgets.dart';
@@ -18,7 +19,6 @@ import 'package:sharaf_yabi_ecommerce/screens/UserProfil/pages/MyAddress.dart';
 import 'package:sharaf_yabi_ecommerce/screens/UserProfil/pages/Orders.dart';
 import 'package:sharaf_yabi_ecommerce/screens/UserProfil/pages/UserSettings.dart';
 import 'package:sharaf_yabi_ecommerce/screens/UserProfil/pages/ourDeliveryService.dart';
-import 'package:sharaf_yabi_ecommerce/widgets/appBar.dart';
 
 import 'Auth/LoginPage.dart';
 import 'pages/FavoritePage/FavoritePage.dart';
@@ -183,7 +183,7 @@ class _UserProfilState extends State<UserProfil> {
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Lottie.asset(
-                    "assets/lottie/user.json",
+                    userProfile,
                     repeat: false,
                     width: 70,
                     height: 70,

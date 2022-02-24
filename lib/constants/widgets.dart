@@ -65,7 +65,7 @@ Widget errorConnection({
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Lottie.asset("assets/lottie/noconnection.json", animate: true, fit: BoxFit.contain, height: sizeWidth! > 800 ? 500 : 300, width: sizeWidth > 800 ? 500 : 400),
+          Lottie.asset(noConnection, animate: true, fit: BoxFit.contain, height: sizeWidth! > 800 ? 500 : 300, width: sizeWidth > 800 ? 500 : 400),
           Container(
             color: Colors.white,
             width: Get.size.width,
@@ -270,124 +270,12 @@ Padding namePart({Function()? onTap, String? name, double? sizeWidth, double? si
   );
 }
 
-Container shimmerHomeCard() {
+Widget discountText(String discountText) {
   return Container(
-    width: 140,
-    margin: const EdgeInsets.only(left: 15, top: 25),
-    decoration: const BoxDecoration(color: Colors.white, borderRadius: borderRadius5),
-    child: Column(
-      children: [
-        Expanded(
-          flex: 2,
-          child: Shimmer.fromColors(
-            baseColor: Colors.grey[300]!,
-            period: const Duration(seconds: 2),
-            highlightColor: Colors.grey.withOpacity(0.1),
-            child: Container(
-              decoration: const BoxDecoration(color: Colors.white, borderRadius: BorderRadius.only(topLeft: Radius.circular(5), topRight: Radius.circular(5))),
-            ),
-          ),
-        ),
-        Expanded(
-            child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Shimmer.fromColors(
-                baseColor: Colors.grey[300]!,
-                period: const Duration(seconds: 2),
-                highlightColor: Colors.grey.withOpacity(0.1),
-                child: Container(
-                  color: Colors.white,
-                  height: 20,
-                  margin: const EdgeInsets.only(
-                    left: 8,
-                    right: 8,
-                    top: 8,
-                  ),
-                  width: Get.size.width,
-                )),
-            Shimmer.fromColors(
-                baseColor: Colors.grey[300]!,
-                period: const Duration(seconds: 2),
-                highlightColor: Colors.grey.withOpacity(0.1),
-                child: Container(
-                  color: Colors.white,
-                  height: 20,
-                  margin: const EdgeInsets.only(
-                    right: 8,
-                    top: 8,
-                    left: 8,
-                  ),
-                  width: 80,
-                )),
-          ],
-        ))
-      ],
-    ),
+    padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 4),
+    decoration: const BoxDecoration(color: Colors.red, borderRadius: borderRadius5),
+    child: Text("- $discountText %", style: const TextStyle(color: Colors.white, fontFamily: montserratRegular, fontSize: 12)),
   );
-}
-
-//
-GridView shimmer(int count) {
-  return GridView.builder(
-      itemCount: count,
-      shrinkWrap: true,
-      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: Get.size.width <= 800 ? 2 : 4, childAspectRatio: 3 / 4.5),
-      itemBuilder: (BuildContext context, int index) {
-        return Container(
-          margin: const EdgeInsets.all(10),
-          child: RaisedButton(
-              padding: const EdgeInsets.all(10),
-              elevation: 1,
-              shape: const RoundedRectangleBorder(borderRadius: borderRadius10),
-              color: Colors.white,
-              onPressed: () {},
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Expanded(
-                    child: Shimmer.fromColors(
-                      baseColor: Colors.grey.shade300,
-                      highlightColor: Colors.grey.shade100,
-                      child: Container(
-                        decoration: const BoxDecoration(color: Colors.white, borderRadius: borderRadius5),
-                      ),
-                    ),
-                  ),
-                  Shimmer.fromColors(
-                    baseColor: Colors.grey.shade300,
-                    highlightColor: Colors.grey.shade100,
-                    child: Container(
-                      margin: const EdgeInsets.only(top: 10),
-                      width: Get.size.width / 4,
-                      color: Colors.grey,
-                      height: 20,
-                    ),
-                  ),
-                  Shimmer.fromColors(
-                    baseColor: Colors.grey.shade300,
-                    highlightColor: Colors.grey.shade100,
-                    child: Container(
-                      margin: const EdgeInsets.only(top: 10),
-                      width: Get.size.width / 3,
-                      color: Colors.grey,
-                      height: 20,
-                    ),
-                  ),
-                  Shimmer.fromColors(
-                    baseColor: Colors.grey.shade300,
-                    highlightColor: Colors.grey.shade100,
-                    child: Container(
-                      margin: const EdgeInsets.only(top: 10),
-                      width: Get.size.width,
-                      decoration: const BoxDecoration(color: Colors.grey, borderRadius: borderRadius5),
-                      height: 35,
-                    ),
-                  ),
-                ],
-              )),
-        );
-      });
 }
 
 Center retryButton(Function() onTap) {

@@ -12,7 +12,6 @@ class FilterButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Expanded(
-      // ignore: deprecated_member_use
       child: RaisedButton(
         onPressed: onTap,
         color: Colors.white,

@@ -10,6 +10,7 @@ class Fav_Cart_Controller extends GetxController {
   RxList favList = [].obs;
   RxDouble priceAll = 0.0.obs;
 
+  RxInt orderTick = 0.obs;
   RxInt promoDiscount = 0.obs;
   RxBool promoLottie = false.obs;
   final storage = GetStorage();

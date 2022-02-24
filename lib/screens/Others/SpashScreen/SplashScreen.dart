@@ -4,8 +4,8 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import 'constants/constants.dart';
-import 'screens/BottomNavBar.dart';
+import '../../../constants/constants.dart';
+import '../../BottomNavBar.dart';
 
 class MyCustomSplashScreen extends StatefulWidget {
   @override

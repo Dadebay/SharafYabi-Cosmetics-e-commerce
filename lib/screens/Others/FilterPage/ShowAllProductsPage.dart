@@ -4,15 +4,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
 import 'package:get/get.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
-import 'package:sharaf_yabi_ecommerce/components/ProductCard2.dart';
+import 'package:sharaf_yabi_ecommerce/components/ProductCard3.dart';
+import 'package:sharaf_yabi_ecommerce/components/agreeButton.dart';
+import 'package:sharaf_yabi_ecommerce/components/appBar.dart';
+import 'package:sharaf_yabi_ecommerce/components/bottomSheetName.dart';
 import 'package:sharaf_yabi_ecommerce/constants/constants.dart';
+import 'package:sharaf_yabi_ecommerce/constants/shimmers.dart';
 import 'package:sharaf_yabi_ecommerce/constants/widgets.dart';
 import 'package:sharaf_yabi_ecommerce/controllers/FilterController.dart';
 import 'package:sharaf_yabi_ecommerce/models/CategoryModel.dart';
-import 'package:sharaf_yabi_ecommerce/widgets/agreeButton.dart';
-import 'package:sharaf_yabi_ecommerce/widgets/bottomSheetName.dart';
 
-import 'filterButton.dart';
+import '../../../components/filterButton.dart';
 
 class ShowAllProductsPage extends StatefulWidget {
   final String pageName;
@@ -78,19 +80,13 @@ class _ShowAllProductsPageState extends State<ShowAllProductsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: backgroundColor,
-        appBar: AppBar(
-          backgroundColor: Colors.white,
-          centerTitle: true,
-          title: Text(
-            widget.pageName,
-            style: const TextStyle(color: kPrimaryColor, fontFamily: montserratSemiBold),
-          ),
-          leading: IconButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              icon: const Icon(IconlyLight.arrowLeft, color: Colors.black)),
-          elevation: 0,
+        appBar: MyAppBar(
+          icon: Icons.add,
+          onTap: () {},
+          backArrow: true,
+          iconRemove: false,
+          name: widget.pageName,
+          addName: true,
         ),
         body: Column(
           children: [
@@ -121,12 +117,16 @@ class _ShowAllProductsPageState extends State<ShowAllProductsPage> {
                           itemBuilder: (BuildContext context, int index) {
                             return Padding(
                                 padding: const EdgeInsets.all(4.0),
-                                child: ProductCard2(
-                                  indexx: index,
+                                child: ProductCard3(
+                                  id: filterController.list[index]["id"],
+                                  image: filterController.list[index]["image"],
+                                  name: filterController.list[index]["name"],
+                                  price: filterController.list[index]["price"],
+                                  discountValue: filterController.list[index]["discountValue"],
                                 ));
                           });
                     } else if (filterController.loading.value == 2) {
-                      return emptyDataLottie(imagePath: "assets/lottie/searchNotFound.json", errorTitle: "emptyProducts", errorSubtitle: "emptyProductsSubtitle");
+                      return emptyDataLottie(imagePath: searchNotFound, errorTitle: "emptyProducts", errorSubtitle: "emptyProductsSubtitle");
                     } else if (filterController.loading.value == 3) {
                       return retryButton(() {
                         filterController.fetchProducts();

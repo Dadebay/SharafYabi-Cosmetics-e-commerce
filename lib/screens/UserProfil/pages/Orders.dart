@@ -8,11 +8,11 @@ import 'package:flutter_iconly/flutter_iconly.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
+import 'package:sharaf_yabi_ecommerce/components/appBar.dart';
 import 'package:sharaf_yabi_ecommerce/constants/constants.dart';
 import 'package:sharaf_yabi_ecommerce/constants/widgets.dart';
 import 'package:sharaf_yabi_ecommerce/controllers/SettingsController.dart';
 import 'package:sharaf_yabi_ecommerce/models/OrdersModel.dart';
-import 'package:sharaf_yabi_ecommerce/widgets/appBar.dart';
 
 class Orders extends StatefulWidget {
   @override

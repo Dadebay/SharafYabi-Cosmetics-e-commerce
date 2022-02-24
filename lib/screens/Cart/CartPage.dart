@@ -8,16 +8,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
 import 'package:get/get.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
-import 'package:sharaf_yabi_ecommerce/components/ProductProfil.dart';
+import 'package:sharaf_yabi_ecommerce/components/appBar.dart';
 import 'package:sharaf_yabi_ecommerce/constants/constants.dart';
+import 'package:sharaf_yabi_ecommerce/constants/shimmers.dart';
+import 'package:sharaf_yabi_ecommerce/screens/Others/ProductProfilPage/ProductProfil.dart';
 import 'package:sharaf_yabi_ecommerce/constants/widgets.dart';
 import 'package:sharaf_yabi_ecommerce/controllers/CartPageController.dart';
 import 'package:sharaf_yabi_ecommerce/controllers/Fav_Cart_Controller.dart';
 import 'package:sharaf_yabi_ecommerce/controllers/FilterController.dart';
 import 'package:sharaf_yabi_ecommerce/controllers/HomePageController.dart';
 import 'package:sharaf_yabi_ecommerce/screens/Cart/OrderPage.dart';
-import 'package:sharaf_yabi_ecommerce/screens/UserProfil/pages/FavoritePage/Components/FavCardShimmer.dart';
-import 'package:sharaf_yabi_ecommerce/widgets/appBar.dart';
 
 class CartPage extends StatefulWidget {
   @override
@@ -63,9 +63,9 @@ class _CartPageState extends State<CartPage> {
           } else if (cartPageController.loading.value == 2) {
             return emptyDataLottie(imagePath: emptyCart, errorTitle: "cartEmpty", errorSubtitle: "cartEmptySubtitle");
           } else if (cartPageController.loading.value == 0) {
-            return FavCardShimmer();
+            return cartCardShimmer();
           }
-          return FavCardShimmer();
+          return cartCardShimmer();
         }));
   }
 
@@ -183,13 +183,10 @@ class _CartPageState extends State<CartPage> {
                   ),
                   if (discountValue != 0)
                     Positioned(
-                        bottom: 15,
-                        right: 15,
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 4),
-                          decoration: const BoxDecoration(color: Colors.red, borderRadius: borderRadius5),
-                          child: Text("- $discountValue %", style: const TextStyle(color: Colors.white, fontFamily: montserratRegular, fontSize: 12)),
-                        ))
+                      bottom: 15,
+                      right: 15,
+                      child: discountText("$discountValue"),
+                    )
                   else
                     const SizedBox.shrink()
                 ],

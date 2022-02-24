@@ -2,11 +2,11 @@
 
 import 'package:flutter/material.dart';
 import 'package:get/get_utils/src/extensions/internacionalization.dart';
+import 'package:sharaf_yabi_ecommerce/components/appBar.dart';
 import 'package:sharaf_yabi_ecommerce/constants/constants.dart';
-import 'package:sharaf_yabi_ecommerce/widgets/appBar.dart';
+import 'package:sharaf_yabi_ecommerce/screens/News_Videos/News/News.dart';
 
-import 'News.dart';
-import 'VideoPlayer/VideoPlayerListView.dart';
+import 'Videos/VideoPlayerListView.dart';
 
 class TabbarViewPage extends StatelessWidget {
   const TabbarViewPage({Key? key}) : super(key: key);

@@ -8,7 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
 import 'package:get/get.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
-import 'package:sharaf_yabi_ecommerce/components/ProductProfil.dart';
+import 'package:sharaf_yabi_ecommerce/screens/Others/ProductProfilPage/ProductProfil.dart';
 import 'package:sharaf_yabi_ecommerce/constants/constants.dart';
 import 'package:sharaf_yabi_ecommerce/constants/widgets.dart';
 import 'package:sharaf_yabi_ecommerce/controllers/Fav_Cart_Controller.dart';
@@ -21,9 +21,8 @@ class ProductCard3 extends StatefulWidget {
   final String? price;
   final String? image;
   final int? discountValue;
-  final int? index;
 
-  const ProductCard3({Key? key, this.index, this.name, this.id, this.discountValue, this.price, this.image}) : super(key: key);
+  const ProductCard3({Key? key, this.name, this.id, this.discountValue, this.price, this.image}) : super(key: key);
 
   @override
   State<ProductCard3> createState() => _ProductCard3State();

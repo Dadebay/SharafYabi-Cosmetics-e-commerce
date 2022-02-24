@@ -7,10 +7,9 @@ import 'package:get/get.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:sharaf_yabi_ecommerce/constants/constants.dart';
+import 'package:sharaf_yabi_ecommerce/constants/shimmers.dart';
 import 'package:sharaf_yabi_ecommerce/constants/widgets.dart';
 import 'package:sharaf_yabi_ecommerce/controllers/NewsController.dart';
-import 'package:sharaf_yabi_ecommerce/screens/Category/Components/ShimmerCategory.dart';
-
 import 'NewsProfil.dart';
 
 class News extends StatefulWidget {
@@ -72,13 +71,13 @@ class _NewsState extends State<News> {
                   ),
                 );
               } else if (newsController.loading.value == 2) {
-                return emptyDataLottie(imagePath: "assets/lottie/noNews.json", errorTitle: "newsEmpty", errorSubtitle: "newsEmptySubtitle");
+                return emptyDataLottie(imagePath: noNews, errorTitle: "newsEmpty", errorSubtitle: "newsEmptySubtitle");
               } else if (newsController.loading.value == 3) {
                 return retryButton(() {
                   newsController.fetchProducts();
                 });
               } else if (newsController.loading.value == 0) {
-                return const ShimmerCategory();
+                return shimmerCategory();
               }
               return const Text("Loading...", style: TextStyle(color: Colors.black, fontFamily: montserratSemiBold));
             })));

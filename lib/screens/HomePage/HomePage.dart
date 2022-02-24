@@ -5,7 +5,8 @@ import 'package:flutter_iconly/flutter_iconly.dart';
 import 'package:get/get.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:sharaf_yabi_ecommerce/components/ProductCard3.dart';
-import 'package:sharaf_yabi_ecommerce/components/ShowAllProductsPage.dart';
+import 'package:sharaf_yabi_ecommerce/components/appBar.dart';
+import 'package:sharaf_yabi_ecommerce/screens/Others/FilterPage/ShowAllProductsPage.dart';
 import 'package:sharaf_yabi_ecommerce/constants/constants.dart';
 import 'package:sharaf_yabi_ecommerce/constants/widgets.dart';
 import 'package:sharaf_yabi_ecommerce/controllers/FilterController.dart';
@@ -13,7 +14,6 @@ import 'package:sharaf_yabi_ecommerce/controllers/HomePageController.dart';
 import 'package:sharaf_yabi_ecommerce/models/BannersModel.dart';
 import 'package:sharaf_yabi_ecommerce/screens/HomePage/Components/Banners.dart';
 import 'package:sharaf_yabi_ecommerce/screens/HomePage/SearchPage/Search.dart';
-import 'package:sharaf_yabi_ecommerce/widgets/appBar.dart';
 import 'package:shimmer/shimmer.dart';
 
 class HomePage extends StatefulWidget {
@@ -135,7 +135,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                     price: _homePageController.listRecomended[index]["price"],
                     image: _homePageController.listRecomended[index]["image"],
                     discountValue: _homePageController.listRecomended[index]["discountValue"],
-                    index: index,
                   ),
                 );
               },
@@ -206,7 +205,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                             price: _homePageController.list[index]["price"],
                             image: _homePageController.list[index]["image"],
                             discountValue: _homePageController.list[index]["discountValue"],
-                            index: index,
                           ),
                         );
                       })),
@@ -277,7 +275,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                             price: _homePageController.listNewInCome[index]["price"],
                             image: _homePageController.listNewInCome[index]["image"],
                             discountValue: _homePageController.listNewInCome[index]["discountValue"],
-                            index: index,
                           ),
                         );
                       })),
@@ -297,33 +294,5 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         child: spinKit(),
       );
     });
-  }
-
-  SizedBox shimmerListView() {
-    return SizedBox(
-      height: 250,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Shimmer.fromColors(
-              baseColor: Colors.grey[300]!,
-              period: const Duration(seconds: 2),
-              highlightColor: Colors.grey.withOpacity(0.1),
-              child:
-                  Container(color: Colors.white, padding: const EdgeInsets.symmetric(vertical: 5), margin: const EdgeInsets.only(left: 15, top: 20), child: const Text("asdasd;akmsodkasdjkasodasd"))),
-          Expanded(
-            child: ListView.builder(
-              shrinkWrap: true,
-              physics: const BouncingScrollPhysics(),
-              scrollDirection: Axis.horizontal,
-              itemCount: 20,
-              itemBuilder: (BuildContext context, int index) {
-                return shimmerHomeCard();
-              },
-            ),
-          ),
-        ],
-      ),
-    );
   }
 }

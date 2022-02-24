@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-const String langKey = "language";
 const String serverURL = "https://sharafyabi.com";
 const String serverImage = "https://sharafyabi.com";
 const String authServerUrl = "https://sharafyabi.com";
@@ -35,5 +34,10 @@ const String emptyProducts = 'assets/emptyState/emptyProducts.png';
 const String cartBlack = 'assets/lottie/cartblack.json';
 const String emptyCart = 'assets/lottie/emptyCart.json';
 const String spinKitLoading = 'assets/lottie/loading....json';
+const String noCommentJson = 'assets/lottie/NoComment.json';
+const String noNews = 'assets/lottie/noNews.json';
+const String searchNotFound = 'assets/lottie/searchNotFound.json';
+const String userProfile = 'assets/lottie/user.json';
+const String noConnection = 'assets/lottie/noconnection.json';
 const String videoPlayButton = 'assets/lottie/lf30_editor_5zxz64e7.json';
 const String couponFallingConfetti = 'assets/lottie/coupon_falling_confetti.json';

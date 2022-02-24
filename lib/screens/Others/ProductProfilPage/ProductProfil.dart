@@ -11,9 +11,9 @@ import 'package:flutter_iconly/flutter_iconly.dart';
 import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
-import 'package:sharaf_yabi_ecommerce/components/Comments.dart';
+import 'package:sharaf_yabi_ecommerce/constants/shimmers.dart';
+import 'package:sharaf_yabi_ecommerce/screens/Others/CommentsPage/Comments.dart';
 import 'package:sharaf_yabi_ecommerce/components/ProductCard3.dart';
-import 'package:sharaf_yabi_ecommerce/components/ShowAllProductsPage.dart';
 
 import 'package:sharaf_yabi_ecommerce/constants/constants.dart';
 import 'package:sharaf_yabi_ecommerce/constants/widgets.dart';
@@ -25,10 +25,11 @@ import 'package:sharaf_yabi_ecommerce/models/CommentModel.dart';
 import 'package:sharaf_yabi_ecommerce/models/ProductProfilModel.dart';
 import 'package:sharaf_yabi_ecommerce/models/ProductsModel.dart';
 import 'package:sharaf_yabi_ecommerce/models/UserModels/AuthModel.dart';
+import 'package:sharaf_yabi_ecommerce/screens/Others/FilterPage/ShowAllProductsPage.dart';
 import 'package:share/share.dart';
 import 'package:vibration/vibration.dart';
 
-import '../controllers/ProductProfileController.dart';
+import '../../../controllers/ProductProfileController.dart';
 import 'PhotoView.dart';
 
 class ProductProfil extends StatefulWidget {
@@ -294,12 +295,10 @@ class _ProductProfilState extends State<ProductProfil> {
             ),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
-                return Center(
-                  child: spinKit(),
-                );
+                return shimmer(10);
               } else if (snapshot.hasData) {
                 return snapshot.data.toString() == "[]"
-                    ? Center(child: emptyDataLottie(imagePath: "assets/lottie/searchNotFound.json", errorSubtitle: "noSameProducts", errorTitle: ""))
+                    ? Center(child: emptyDataLottie(imagePath: searchNotFound, errorSubtitle: "noSameProducts", errorTitle: ""))
                     : GridView.builder(
                         itemCount: snapshot.data?.length,
                         physics: const NeverScrollableScrollPhysics(),
@@ -314,13 +313,12 @@ class _ProductProfilState extends State<ProductProfil> {
                               price: snapshot.data![index].price,
                               image: snapshot.data![index].imagePath,
                               discountValue: snapshot.data![index].discountValue,
-                              index: index,
                             ),
                           );
                         },
                       );
               }
-              return Center(child: emptyDataLottie(imagePath: "assets/lottie/searchNotFound.json", errorSubtitle: "noSameProducts", errorTitle: ""));
+              return Center(child: emptyDataLottie(imagePath: searchNotFound, errorSubtitle: "noSameProducts", errorTitle: ""));
             })
       ],
     );
@@ -456,14 +454,7 @@ class _ProductProfilState extends State<ProductProfil> {
               )),
         ),
         if (snapshot.data!.discountValue != 0 && snapshot.data!.discountValue != null)
-          Positioned(
-              bottom: 10,
-              left: 10,
-              child: Container(
-                padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-                decoration: const BoxDecoration(color: Colors.red, borderRadius: borderRadius5),
-                child: Text("- ${snapshot.data!.discountValue} %", style: const TextStyle(color: Colors.white, fontFamily: montserratMedium, fontSize: 16)),
-              ))
+          Positioned(bottom: 10, left: 10, child: discountText("${snapshot.data!.discountValue}"))
         else
           const SizedBox.shrink(),
       ],
@@ -720,7 +711,7 @@ class _ProductProfilState extends State<ProductProfil> {
                                         ? Column(
                                             mainAxisAlignment: MainAxisAlignment.center,
                                             children: [
-                                              Lottie.asset("assets/lottie/NoComment.json", height: 300, animate: true),
+                                              Lottie.asset(noCommentJson, height: 300, animate: true),
                                               Text("nocomment".tr, style: const TextStyle(color: Colors.black, fontSize: 20, fontFamily: montserratSemiBold)),
                                             ],
                                           )

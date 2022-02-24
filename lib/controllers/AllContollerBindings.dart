@@ -2,19 +2,21 @@
 
 import 'package:get/get.dart';
 import 'package:sharaf_yabi_ecommerce/controllers/FilterController.dart';
+import 'package:sharaf_yabi_ecommerce/controllers/NewsController.dart';
 
 import 'AuthController.dart';
 import 'CartPageController.dart';
 import 'Fav_Cart_Controller.dart';
+import 'HomePageController.dart';
 import 'SettingsController.dart';
 
 class AllControllerBindings implements Bindings {
   @override
   void dependencies() {
-    Get.lazyPut<AuthController>(() => AuthController());
     Get.lazyPut<CartPageController>(() => CartPageController());
     Get.lazyPut<Fav_Cart_Controller>(() => Fav_Cart_Controller());
     Get.lazyPut<SettingsController>(() => SettingsController());
-    Get.lazyPut<FilterController>(() => FilterController());
+    Get.lazyPut<HomePageController>(() => HomePageController());
+    Get.lazyPut<NewsController>(() => NewsController());
   }
 }

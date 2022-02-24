@@ -3,15 +3,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
 import 'package:get/get_utils/src/extensions/internacionalization.dart';
+import 'package:sharaf_yabi_ecommerce/components/appBar.dart';
 import 'package:sharaf_yabi_ecommerce/constants/constants.dart';
+import 'package:sharaf_yabi_ecommerce/constants/shimmers.dart';
 import 'package:sharaf_yabi_ecommerce/constants/widgets.dart';
 import 'package:sharaf_yabi_ecommerce/models/CategoryModel.dart';
-import 'package:sharaf_yabi_ecommerce/screens/Category/Components/CategoryCard.dart';
-import 'package:sharaf_yabi_ecommerce/widgets/appBar.dart';
-
-import 'Components/BrandCard.dart';
-import 'Components/ShimmerBrands.dart';
-import 'Components/ShimmerCategory.dart';
+import 'package:sharaf_yabi_ecommerce/screens/Category_Brands/Brands/BrandCard.dart';
+import 'package:sharaf_yabi_ecommerce/screens/Category_Brands/Category/CategoryCard.dart';
 
 class CategoryPage extends StatefulWidget {
   @override
@@ -21,11 +19,6 @@ class CategoryPage extends StatefulWidget {
 class _CategoryPageState extends State<CategoryPage> {
   Future<List<CategoryModel>>? getCategory;
   Future<List<CategoryModel>>? getBrand;
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-  }
 
   @override
   void initState() {
@@ -91,7 +84,7 @@ class _CategoryPageState extends State<CategoryPage> {
                               },
                             );
                           }
-                          return const ShimmerCategory();
+                          return shimmerCategory();
                         }),
                     FutureBuilder<List<CategoryModel>>(
                         future: getBrand,
@@ -111,7 +104,7 @@ class _CategoryPageState extends State<CategoryPage> {
                               },
                             );
                           }
-                          return const ShimmerCategoryPart2();
+                          return shimmerBrand();
                         }),
                   ],
                 ),

@@ -4,11 +4,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:sharaf_yabi_ecommerce/components/appBar.dart';
 import 'package:sharaf_yabi_ecommerce/constants/constants.dart';
 import 'package:sharaf_yabi_ecommerce/constants/widgets.dart';
 import 'package:sharaf_yabi_ecommerce/controllers/SettingsController.dart';
 import 'package:sharaf_yabi_ecommerce/models/AddresModel.dart';
-import 'package:sharaf_yabi_ecommerce/widgets/appBar.dart';
 import 'package:vibration/vibration.dart';
 
 class MyAddress extends StatefulWidget {

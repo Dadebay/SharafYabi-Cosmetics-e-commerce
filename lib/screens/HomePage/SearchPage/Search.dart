@@ -7,12 +7,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
 import 'package:get/get.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
-import 'package:sharaf_yabi_ecommerce/components/ProductCard2.dart';
+
+import 'package:sharaf_yabi_ecommerce/components/ProductCard3.dart';
+import 'package:sharaf_yabi_ecommerce/components/bottomSheetName.dart';
 import 'package:sharaf_yabi_ecommerce/constants/constants.dart';
+import 'package:sharaf_yabi_ecommerce/constants/shimmers.dart';
 import 'package:sharaf_yabi_ecommerce/constants/widgets.dart';
 import 'package:sharaf_yabi_ecommerce/controllers/FilterController.dart';
 import 'package:sharaf_yabi_ecommerce/models/CategoryModel.dart';
-import 'package:sharaf_yabi_ecommerce/widgets/bottomSheetName.dart';
 
 class SearchPage extends StatefulWidget {
   @override
@@ -140,14 +142,18 @@ class _SearchPageState extends State<SearchPage> {
                             shrinkWrap: true,
                             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2, childAspectRatio: 4 / 6, mainAxisSpacing: 12, crossAxisSpacing: 12),
                             itemBuilder: (BuildContext context, int index) {
-                              return ProductCard2(
-                                indexx: index,
+                              return ProductCard3(
+                                id: filterController.list[index]["id"],
+                                image: filterController.list[index]["image"],
+                                name: filterController.list[index]["name"],
+                                price: filterController.list[index]["price"],
+                                discountValue: filterController.list[index]["discountValue"],
                               );
                             }),
                       );
                     } else if (filterController.loading.value == 2) {
                       return SingleChildScrollView(
-                        child: Center(child: emptyDataLottie(imagePath: "assets/lottie/searchNotFound.json", errorTitle: "emptyProducts", errorSubtitle: "emptyProductsSubtitle")),
+                        child: Center(child: emptyDataLottie(imagePath: searchNotFound, errorTitle: "emptyProducts", errorSubtitle: "emptyProductsSubtitle")),
                       );
                     } else if (filterController.loading.value == 3) {
                       return retryButton(() {

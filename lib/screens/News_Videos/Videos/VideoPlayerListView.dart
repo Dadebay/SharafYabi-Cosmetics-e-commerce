@@ -7,7 +7,7 @@ import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:sharaf_yabi_ecommerce/constants/constants.dart';
 import 'package:sharaf_yabi_ecommerce/constants/widgets.dart';
 import 'package:sharaf_yabi_ecommerce/models/getVideosModel.dart';
-import 'package:sharaf_yabi_ecommerce/screens/News/VideoPlayer/VideoPlayerProfile.dart';
+import 'package:sharaf_yabi_ecommerce/screens/News_Videos/Videos/VideoPlayerProfile.dart';
 
 class VideoPlayerListView extends StatelessWidget {
   @override
@@ -99,7 +99,7 @@ class VideoPlayerListView extends StatelessWidget {
               child: spinKit(),
             );
           }
-          return emptyDataLottie(imagePath: "assets/lottie/noNews.json", errorTitle: "noVideoTitle", errorSubtitle: "noVideoSubtitle");
+          return emptyDataLottie(imagePath: noNews, errorTitle: "noVideoTitle", errorSubtitle: "noVideoSubtitle");
         },
       ),
     );

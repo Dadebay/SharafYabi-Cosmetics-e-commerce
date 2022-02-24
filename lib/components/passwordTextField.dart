@@ -18,8 +18,6 @@ class PasswordTextFieldMine extends StatelessWidget {
   final String hintText;
   final FocusNode mineFocus;
   final FocusNode requestFocus;
-  String a = "errorPassword1".tr;
-  String b = "errorPassword2".tr;
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -43,9 +41,9 @@ class PasswordTextFieldMine extends StatelessWidget {
               if (value!.isEmpty) {
                 return "errorEmpty".tr;
               } else if (value == "") {
-                return a;
+                return "errorPassword1".tr;
               } else if (value.toString().length < 8) {
-                return b;
+                return "errorPassword2".tr;
               }
               return null;
             },

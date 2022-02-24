@@ -2,10 +2,10 @@
 
 import 'package:flutter/material.dart';
 import 'package:get/get_utils/src/extensions/internacionalization.dart';
+import 'package:sharaf_yabi_ecommerce/components/appBar.dart';
 import 'package:sharaf_yabi_ecommerce/constants/constants.dart';
 import 'package:sharaf_yabi_ecommerce/constants/widgets.dart';
 import 'package:sharaf_yabi_ecommerce/models/BannersModel.dart';
-import 'package:sharaf_yabi_ecommerce/widgets/appBar.dart';
 
 class AboutUS extends StatefulWidget {
   @override
