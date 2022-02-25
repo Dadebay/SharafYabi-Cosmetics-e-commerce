@@ -17,20 +17,23 @@ class PhotoViewPage extends StatelessWidget {
         backgroundColor: Colors.black,
         body: Stack(
           children: [
-            Center(
-                child: PhotoView(
-              minScale: 0.4,
-              maxScale: 2.0,
-              imageProvider: CachedNetworkImageProvider(
-                image!,
-                errorListener: () {
-                  const Icon(Icons.error_outline, color: Colors.white);
-                },
-              ),
-              tightMode: true,
-              errorBuilder: (context, url, error) => const Icon(Icons.error_outline),
-              loadingBuilder: (context, url) => Center(child: spinKit()),
-            )),
+            Padding(
+              padding: const EdgeInsets.all(12.0),
+              child: Center(
+                  child: PhotoView(
+                minScale: 0.4,
+                maxScale: 2.0,
+                imageProvider: CachedNetworkImageProvider(
+                  image!,
+                  errorListener: () {
+                    const Icon(Icons.error_outline, color: Colors.white);
+                  },
+                ),
+                tightMode: false,
+                errorBuilder: (context, url, error) => const Icon(Icons.error_outline),
+                loadingBuilder: (context, url) => Center(child: spinKit()),
+              )),
+            ),
             Positioned(
               right: 20.0,
               top: 20.0,

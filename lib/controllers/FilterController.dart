@@ -22,6 +22,7 @@ class FilterController extends GetxController {
   RxBool newInCome = false.obs;
   RxString search = "".obs;
   RxInt pageNumberFilterController = 0.obs;
+  RxString scroltoName = "scrollTop".obs;
 
   void fetchProducts() async {
     if (categoryID.isNotEmpty) {
@@ -66,9 +67,10 @@ class FilterController extends GetxController {
       }
 
       loading.value = 1;
-    } else if (products.isEmpty || products == null) {
+    }
+    if (products.toString() == "[]") {
       loading.value = 2;
-    } else {
+    } else if (products.isEmpty || products == null) {
       loading.value = 3;
     }
   }
@@ -76,9 +78,14 @@ class FilterController extends GetxController {
   addPage() {
     int a = 0;
     a = pageNumberFilterController.value;
-    if ((a / 20) > page.value + 1) {
+    print(a / 20);
+    print(page.value + 1);
+    if ((a / 20) > page.value) {
       page.value += 1;
       fetchProducts();
+      scroltoName.value = "scrollTop";
+    } else {
+      scroltoName.value = "";
     }
   }
 

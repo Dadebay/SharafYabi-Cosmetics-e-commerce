@@ -6,6 +6,7 @@ import 'package:flutter_iconly/flutter_iconly.dart';
 import 'package:get/get.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:sharaf_yabi_ecommerce/cards/NewsCard.dart';
 import 'package:sharaf_yabi_ecommerce/constants/constants.dart';
 import 'package:sharaf_yabi_ecommerce/constants/shimmers.dart';
 import 'package:sharaf_yabi_ecommerce/constants/widgets.dart';
@@ -25,7 +26,6 @@ class _NewsState extends State<News> {
   @override
   void initState() {
     super.initState();
-
     newsController.page.value = 0;
     newsController.pageNumberNews.value = 0;
     newsController.list.clear();
@@ -66,7 +66,12 @@ class _NewsState extends State<News> {
                     physics: const BouncingScrollPhysics(),
                     itemCount: newsController.list.length,
                     itemBuilder: (BuildContext context, int index) {
-                      return newCard(index);
+                      return NewsCard(
+                        id: newsController.list[index]["id"] ?? 0,
+                        createdAt: newsController.list[index]["createdAt"] ?? "0",
+                        image: "$serverImage/${newsController.list[index]["image"]}-mini.webp",
+                        name: newsController.list[index]["name"] ?? "Sharafyabi",
+                      );
                     },
                   ),
                 );
@@ -81,107 +86,5 @@ class _NewsState extends State<News> {
               }
               return const Text("Loading...", style: TextStyle(color: Colors.black, fontFamily: montserratSemiBold));
             })));
-  }
-
-  ListTile newCard(int index) {
-    return ListTile(
-      onTap: () {
-        pushNewScreen(
-          context,
-          screen: NewsProfil(
-            id: newsController.list[index]["id"],
-          ),
-          withNavBar: true, // OPTIONAL VALUE. True by default.
-          pageTransitionAnimation: PageTransitionAnimation.cupertino,
-        );
-      },
-      title: Row(
-        children: [
-          imagePart(index),
-          const SizedBox(
-            width: 10,
-          ),
-          Expanded(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                SizedBox(
-                  width: Get.size.width,
-                  child: Text(
-                    newsController.list[index]["title"],
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(
-                      color: Colors.black,
-                      fontSize: 17,
-                      fontFamily: montserratSemiBold,
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 8),
-                  child: Row(
-                    children: [
-                      const Icon(IconlyLight.calendar, size: 18, color: Colors.black38),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 10),
-                        child: Text(
-                          newsController.list[index]["createdAt"],
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: const TextStyle(
-                            color: Colors.black38,
-                            fontSize: 14,
-                            fontFamily: montserratRegular,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                )
-              ],
-            ),
-          ),
-          const SizedBox(
-            width: 10,
-          ),
-          const Icon(
-            IconlyLight.arrowRightCircle,
-            color: Colors.black,
-          ),
-        ],
-      ),
-      minLeadingWidth: 120,
-      minVerticalPadding: 8,
-      contentPadding: const EdgeInsets.symmetric(horizontal: 5),
-    );
-  }
-
-  ConstrainedBox imagePart(int index) {
-    return ConstrainedBox(
-      constraints: const BoxConstraints(
-        minWidth: 55,
-        minHeight: 55,
-        maxWidth: 90,
-        maxHeight: 80,
-      ),
-      child: CachedNetworkImage(
-        fadeInCurve: Curves.ease,
-        imageUrl: "$serverImage/${newsController.list[index]["image"]}-mini.webp",
-        imageBuilder: (context, imageProvider) => Container(
-          padding: EdgeInsets.zero,
-          decoration: BoxDecoration(
-            borderRadius: borderRadius15,
-            image: DecorationImage(
-              image: imageProvider,
-              fit: BoxFit.cover,
-            ),
-          ),
-        ),
-        placeholder: (context, url) => Center(child: spinKit()),
-        errorWidget: (context, url, error) => noImage(),
-      ),
-    );
   }
 }

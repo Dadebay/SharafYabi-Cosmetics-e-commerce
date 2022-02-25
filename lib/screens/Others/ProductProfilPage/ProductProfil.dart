@@ -13,7 +13,7 @@ import 'package:lottie/lottie.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:sharaf_yabi_ecommerce/constants/shimmers.dart';
 import 'package:sharaf_yabi_ecommerce/screens/Others/CommentsPage/Comments.dart';
-import 'package:sharaf_yabi_ecommerce/components/ProductCard3.dart';
+import 'package:sharaf_yabi_ecommerce/cards/ProductCard3.dart';
 
 import 'package:sharaf_yabi_ecommerce/constants/constants.dart';
 import 'package:sharaf_yabi_ecommerce/constants/widgets.dart';
@@ -345,7 +345,7 @@ class _ProductProfilState extends State<ProductProfil> {
                           overflow: TextOverflow.ellipsis,
                           text: TextSpan(children: <TextSpan>[
                             TextSpan(text: priceMine.toStringAsFixed(2), style: const TextStyle(fontFamily: montserratSemiBold, fontSize: 24, color: Colors.black)),
-                            const TextSpan(text: " TMT", style: TextStyle(fontFamily: montserratSemiBold, fontSize: 18, color: Colors.black))
+                            const TextSpan(text: " m.", style: TextStyle(fontFamily: montserratSemiBold, fontSize: 18, color: Colors.black))
                           ]),
                         ),
                         if (snapshot.data!.discountValue != 0 && snapshot.data!.discountValue != null)
@@ -358,7 +358,7 @@ class _ProductProfilState extends State<ProductProfil> {
                                   overflow: TextOverflow.ellipsis,
                                   text: TextSpan(children: <TextSpan>[
                                     TextSpan(text: "$priceOLD", style: const TextStyle(fontFamily: montserratRegular, fontSize: 18, color: Colors.grey)),
-                                    const TextSpan(text: " TMT", style: TextStyle(fontFamily: montserratRegular, fontSize: 12, color: Colors.grey))
+                                    const TextSpan(text: " m.", style: TextStyle(fontFamily: montserratRegular, fontSize: 12, color: Colors.grey))
                                   ]),
                                 ),
                               ],
@@ -400,33 +400,29 @@ class _ProductProfilState extends State<ProductProfil> {
               ),
               itemBuilder: (BuildContext context, int index, int realIndex) {
                 return GestureDetector(
-                  onTap: () {
-                    pushNewScreen(
-                      context,
-                      screen: PhotoViewPage(
-                        image: "$serverImage/${snapshot.data!.images[index]["destination"]}-mini.webp",
-                      ),
-                      withNavBar: true, // OPTIONAL VALUE. True by default.
-                      pageTransitionAnimation: PageTransitionAnimation.fade,
-                    );
-                  },
-                  child: CachedNetworkImage(
-                      fadeInCurve: Curves.ease,
-                      imageUrl: "$serverImage/${snapshot.data!.images[index]["destination"]}-big.webp",
-                      imageBuilder: (context, imageProvider) => Container(
-                            padding: EdgeInsets.zero,
-                            margin: EdgeInsets.zero,
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              image: DecorationImage(
-                                image: imageProvider,
-                                fit: BoxFit.contain,
+                    onTap: () {
+                      pushNewScreen(
+                        context,
+                        screen: PhotoViewPage(
+                          image: "$serverImage/${snapshot.data!.images[index]["destination"]}-mini.webp",
+                        ),
+                        withNavBar: true, // OPTIONAL VALUE. True by default.
+                        pageTransitionAnimation: PageTransitionAnimation.fade,
+                      );
+                    },
+                    child: CachedNetworkImage(
+                        fadeInCurve: Curves.ease,
+                        imageUrl: "$serverImage/${snapshot.data!.images[index]["destination"]}-big.webp",
+                        imageBuilder: (context, imageProvider) => Container(
+                              decoration: BoxDecoration(
+                                image: DecorationImage(
+                                  image: imageProvider,
+                                  fit: BoxFit.contain,
+                                ),
                               ),
                             ),
-                          ),
-                      placeholder: (context, url) => Center(child: spinKit()),
-                      errorWidget: (context, url, error) => noImage()),
-                );
+                        placeholder: (context, url) => Center(child: spinKit()),
+                        errorWidget: (context, url, error) => noImage()));
               },
             ),
           ),
@@ -454,7 +450,14 @@ class _ProductProfilState extends State<ProductProfil> {
               )),
         ),
         if (snapshot.data!.discountValue != 0 && snapshot.data!.discountValue != null)
-          Positioned(bottom: 10, left: 10, child: discountText("${snapshot.data!.discountValue}"))
+          Positioned(
+              bottom: 10,
+              right: 20,
+              child: Container(
+                padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 4),
+                decoration: const BoxDecoration(color: Colors.red, borderRadius: borderRadius5),
+                child: Text("- ${snapshot.data!.discountValue} %", style: const TextStyle(color: Colors.white, fontFamily: montserratRegular, fontSize: 16)),
+              ))
         else
           const SizedBox.shrink(),
       ],

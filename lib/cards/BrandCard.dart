@@ -1,4 +1,4 @@
-// ignore_for_file: file_names, must_be_immutable, deprecated_member_use
+// ignore_for_file: file_names, must_be_immutable, deprecated_member_use, unnecessary_statements
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -26,6 +26,7 @@ class BrandCard extends StatelessWidget {
         onPressed: () {
           filterController.producersID.clear();
           filterController.categoryID.clear();
+          filterController.mainCategoryID.value = 0;
 
           filterController.producersID.add(brand.id);
           pushNewScreen(

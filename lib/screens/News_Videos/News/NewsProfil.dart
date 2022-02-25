@@ -26,24 +26,7 @@ class NewsProfil extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    CachedNetworkImage(
-                        fadeInCurve: Curves.ease,
-                        imageUrl: "$serverImage/${snapshot.data?.imagePath}-big.webp",
-                        imageBuilder: (context, imageProvider) => Container(
-                              padding: EdgeInsets.zero,
-                              height: 250,
-                              width: Get.size.width,
-                              margin: const EdgeInsets.only(bottom: 10),
-                              decoration: BoxDecoration(
-                                borderRadius: borderRadius10,
-                                image: DecorationImage(
-                                  image: imageProvider,
-                                  fit: BoxFit.cover,
-                                ),
-                              ),
-                            ),
-                        placeholder: (context, url) => Center(child: spinKit()),
-                        errorWidget: (context, url, error) => noImage()),
+                    SizedBox(height: 250, child: cachedMyImage("$serverImage/${snapshot.data?.imagePath}-big.webp")),
                     Container(
                       padding: const EdgeInsets.all(8.0),
                       child: Column(

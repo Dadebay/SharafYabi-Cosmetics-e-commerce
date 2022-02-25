@@ -163,15 +163,15 @@ class _CartPageState extends State<CartPage> {
                 children: [
                   Container(
                     margin: const EdgeInsets.all(8.0),
-                    decoration: BoxDecoration(borderRadius: borderRadius15, color: backgroundColor.withOpacity(0.6)),
+                    padding: EdgeInsets.all(8.0),
+                    decoration: BoxDecoration(borderRadius: borderRadius15, color: Colors.white),
                     child: CachedNetworkImage(
                         fadeInCurve: Curves.ease,
-                        color: Colors.black,
                         imageUrl: "$serverImage/${cartPageController.list[index]["image"]}-mini.webp",
                         imageBuilder: (context, imageProvider) => Container(
-                              padding: EdgeInsets.zero,
-                              margin: const EdgeInsets.all(8),
                               decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: borderRadius20,
                                 image: DecorationImage(
                                   image: imageProvider,
                                   fit: BoxFit.contain,
@@ -209,7 +209,7 @@ class _CartPageState extends State<CartPage> {
                               overflow: TextOverflow.ellipsis,
                               text: TextSpan(children: <TextSpan>[
                                 TextSpan(text: "$priceMine", style: const TextStyle(fontFamily: montserratSemiBold, fontSize: 20, color: Colors.black)),
-                                const TextSpan(text: "  TMT", style: TextStyle(fontFamily: montserratMedium, fontSize: 16, color: Colors.black))
+                                const TextSpan(text: "  m.", style: TextStyle(fontFamily: montserratMedium, fontSize: 16, color: Colors.black))
                               ]),
                             ),
                             Padding(
@@ -221,7 +221,7 @@ class _CartPageState extends State<CartPage> {
                                     overflow: TextOverflow.ellipsis,
                                     text: TextSpan(children: <TextSpan>[
                                       TextSpan(text: "$priceOLD", style: const TextStyle(fontFamily: montserratRegular, fontSize: 18, color: Colors.grey)),
-                                      const TextSpan(text: " TMT", style: TextStyle(fontFamily: montserratRegular, fontSize: 12, color: Colors.grey))
+                                      const TextSpan(text: " m.", style: TextStyle(fontFamily: montserratRegular, fontSize: 12, color: Colors.grey))
                                     ]),
                                   ),
                                 ],

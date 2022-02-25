@@ -70,7 +70,7 @@ class Login extends StatelessWidget {
               onTap: () {
                 Get.to(() => ForgotPassword());
               },
-              child: Text("${"forgotPassword".tr}.", style: const TextStyle(color: kPrimaryColor, decoration: TextDecoration.underline, fontFamily: montserratMedium, fontSize: 18)),
+              child: Text("${"forgotPasswordText".tr}.", style: const TextStyle(color: kPrimaryColor, decoration: TextDecoration.underline, fontFamily: montserratMedium, fontSize: 18)),
             ),
             Center(
               child: AgreeButton(

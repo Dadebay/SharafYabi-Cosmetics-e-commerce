@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
 import 'package:get/get.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
-import 'package:sharaf_yabi_ecommerce/components/ProductCard3.dart';
+import 'package:sharaf_yabi_ecommerce/cards/ProductCard3.dart';
 import 'package:sharaf_yabi_ecommerce/components/appBar.dart';
 import 'package:sharaf_yabi_ecommerce/screens/Others/FilterPage/ShowAllProductsPage.dart';
 import 'package:sharaf_yabi_ecommerce/constants/constants.dart';

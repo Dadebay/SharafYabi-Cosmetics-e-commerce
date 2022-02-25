@@ -3,7 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
 import 'package:get/get.dart';
-import 'package:sharaf_yabi_ecommerce/components/ProductCard3.dart';
+import 'package:sharaf_yabi_ecommerce/cards/ProductCard3.dart';
 import 'package:sharaf_yabi_ecommerce/components/appBar.dart';
 import 'package:sharaf_yabi_ecommerce/constants/constants.dart';
 import 'package:sharaf_yabi_ecommerce/constants/widgets.dart';
@@ -47,6 +47,7 @@ class _FavoritePageState extends State<FavoritePage> {
             backArrow: true,
             iconRemove: fav_cart_controller.favList.isNotEmpty ? true : false),
         body: Obx(() {
+          print(_homePageController.loadingFavlist.value);
           if (_homePageController.loadingFavlist.value == 1) {
             return fav_cart_controller.favList.isEmpty
                 ? GestureDetector(onTap: () {}, child: emptyData(imagePath: emptyFav, errorTitle: "emptyFavoriteTitle", errorSubtitle: "emptyFavoriteSubtitle"))

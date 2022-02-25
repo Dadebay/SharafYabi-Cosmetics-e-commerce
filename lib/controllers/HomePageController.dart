@@ -37,6 +37,7 @@ class HomePageController extends GetxController {
     fetchDiscountedProducts();
     fetchPopularProducts();
     fetchNewInComeProducts();
+    fetcbFavListProducts();
   }
 
   void fetchDiscountedProducts() async {

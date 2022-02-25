@@ -5,11 +5,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
 import 'package:get/get.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
-import 'package:sharaf_yabi_ecommerce/screens/Others/FilterPage/ShowAllProductsPage.dart';
 import 'package:sharaf_yabi_ecommerce/constants/constants.dart';
 import 'package:sharaf_yabi_ecommerce/constants/widgets.dart';
 import 'package:sharaf_yabi_ecommerce/controllers/FilterController.dart';
 import 'package:sharaf_yabi_ecommerce/models/CategoryModel.dart';
+import 'package:sharaf_yabi_ecommerce/screens/Others/FilterPage/ShowAllProductsPage.dart';
 
 class CategoryCard extends StatelessWidget {
   final CategoryModel? category;
@@ -51,20 +51,7 @@ class CategoryCard extends StatelessWidget {
               ),
               margin: const EdgeInsets.fromLTRB(0, 0, 15, 0),
               width: sizeWidth > 800 ? 100 : 85,
-              child: CachedNetworkImage(
-                  fadeInCurve: Curves.ease,
-                  imageUrl: "$serverImage/${category!.imagePath}-mini.webp",
-                  imageBuilder: (context, imageProvider) => Container(
-                        decoration: BoxDecoration(
-                          borderRadius: borderRadius20,
-                          image: DecorationImage(
-                            image: imageProvider,
-                            fit: BoxFit.fill,
-                          ),
-                        ),
-                      ),
-                  placeholder: (context, url) => Center(child: spinKit()),
-                  errorWidget: (context, url, error) => noImage()),
+              child: cachedMyImage("$serverImage/${category!.imagePath}-mini.webp"),
             ),
             Expanded(
               child: Column(

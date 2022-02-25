@@ -1,5 +1,6 @@
 // ignore_for_file: deprecated_member_use, duplicate_ignore, implementation_imports, avoid_positional_boolean_parameters, unnecessary_null_comparison, always_use_package_imports
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
@@ -7,6 +8,7 @@ import 'package:flutter_styled_toast/flutter_styled_toast.dart';
 import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:sharaf_yabi_ecommerce/controllers/FilterController.dart';
 import 'package:shimmer/shimmer.dart';
 
 import 'constants.dart';
@@ -223,7 +225,9 @@ CustomFooter loadMore() {
   return CustomFooter(builder: (BuildContext context, LoadStatus? mode) {
     Widget body;
     if (mode == LoadStatus.idle) {
-      body = myText("scrollTop");
+      body = Obx(() {
+        return myText(Get.find<FilterController>().scroltoName.value);
+      });
     } else if (mode == LoadStatus.loading) {
       body = const CupertinoActivityIndicator(
         radius: 15,
@@ -298,4 +302,21 @@ Center retryButton(Function() onTap) {
               ),
             ],
           )));
+}
+
+Widget cachedMyImage(String image) {
+  return CachedNetworkImage(
+      fadeInCurve: Curves.ease,
+      imageUrl: image,
+      imageBuilder: (context, imageProvider) => Container(
+            decoration: BoxDecoration(
+              borderRadius: borderRadius20,
+              image: DecorationImage(
+                image: imageProvider,
+                fit: BoxFit.cover,
+              ),
+            ),
+          ),
+      placeholder: (context, url) => Center(child: spinKit()),
+      errorWidget: (context, url, error) => noImage());
 }

@@ -10,7 +10,7 @@ GridView shimmer(int count) {
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: Get.size.width <= 800 ? 2 : 4, childAspectRatio: 3 / 4.5),
       itemBuilder: (BuildContext context, int index) {
         return Container(
-          margin: const EdgeInsets.all(10),
+          margin: const EdgeInsets.all(4),
           child: RaisedButton(
               padding: const EdgeInsets.all(10),
               elevation: 1,

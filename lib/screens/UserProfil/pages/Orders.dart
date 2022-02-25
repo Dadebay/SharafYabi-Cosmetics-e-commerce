@@ -8,6 +8,7 @@ import 'package:flutter_iconly/flutter_iconly.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
+import 'package:sharaf_yabi_ecommerce/cards/ProductCard3.dart';
 import 'package:sharaf_yabi_ecommerce/components/appBar.dart';
 import 'package:sharaf_yabi_ecommerce/constants/constants.dart';
 import 'package:sharaf_yabi_ecommerce/constants/widgets.dart';
@@ -93,7 +94,7 @@ class _OrdersState extends State<Orders> {
                         ),
                         Expanded(
                           child: Text(
-                            "${snapshot.data![index].totalPrice} " + "TMT",
+                            "${snapshot.data![index].totalPrice} " + "m.",
                             textAlign: TextAlign.end,
                             style: const TextStyle(fontFamily: montserratMedium, color: Colors.black),
                           ),
@@ -138,28 +139,15 @@ class OrderProfile extends StatelessWidget {
                   shrinkWrap: true,
                   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2, childAspectRatio: 2 / 3),
                   itemBuilder: (BuildContext context, int index) {
-                    return Container(
-                      margin: const EdgeInsets.only(left: 5, right: 5, top: 5, bottom: 5),
-                      child: RaisedButton(
-                        onPressed: () {},
-                        shape: const RoundedRectangleBorder(borderRadius: borderRadius5),
-                        color: Colors.white,
-                        disabledColor: Colors.white,
-                        padding: EdgeInsets.zero,
-                        elevation: 1,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            imageExpanded(
-                              snapshot.data![index].imagePath,
-                            ),
-                            namePartMine(
-                              snapshot.data![index].productName,
-                              snapshot.data![index].price,
-                            ),
-                          ],
-                        ),
+                    return Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: ProductCard3(
+                        id: snapshot.data![index].id,
+                        name: snapshot.data![index].productName,
+                        price: snapshot.data![index].price,
+                        image: snapshot.data![index].imagePath,
+                        discountValue: snapshot.data![index].discountValue,
+                        addCart: false,
                       ),
                     );
                   },
@@ -168,64 +156,5 @@ class OrderProfile extends StatelessWidget {
                 return Center(child: spinKit());
               }
             }));
-  }
-
-  Expanded namePartMine(String? name, String? price) {
-    return Expanded(
-      child: Padding(
-        padding: const EdgeInsets.only(left: 5),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 5),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      "$name",
-                      overflow: TextOverflow.ellipsis,
-                      maxLines: 2,
-                      style: const TextStyle(fontFamily: montserratMedium, fontSize: 16),
-                    ),
-                    RichText(
-                      overflow: TextOverflow.ellipsis,
-                      text: TextSpan(children: <TextSpan>[
-                        TextSpan(text: "$price", style: const TextStyle(fontFamily: montserratSemiBold, fontSize: 20, color: kPrimaryColor)),
-                        const TextSpan(text: " TMT", style: TextStyle(fontFamily: montserratMedium, fontSize: 16, color: kPrimaryColor))
-                      ]),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Expanded imageExpanded(String? image) {
-    return Expanded(
-      flex: 2,
-      child: CachedNetworkImage(
-          fadeInCurve: Curves.ease,
-          imageUrl: "$serverImage/$image-mini.webp",
-          imageBuilder: (context, imageProvider) => Container(
-                padding: EdgeInsets.zero,
-                margin: const EdgeInsets.all(8),
-                decoration: BoxDecoration(
-                  borderRadius: const BorderRadius.only(topRight: Radius.circular(5), topLeft: Radius.circular(5)),
-                  image: DecorationImage(
-                    image: imageProvider,
-                    fit: BoxFit.contain,
-                  ),
-                ),
-              ),
-          placeholder: (context, url) => Center(child: spinKit()),
-          errorWidget: (context, url, error) => noImage()),
-    );
   }
 }

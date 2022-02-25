@@ -89,12 +89,11 @@ class Banners extends StatelessWidget {
                                     fadeInCurve: Curves.ease,
                                     imageUrl: "$serverImage/${snapshot.data![index].imagePath}-big.webp",
                                     imageBuilder: (context, imageProvider) => Container(
-                                          padding: EdgeInsets.zero,
                                           decoration: BoxDecoration(
-                                            borderRadius: const BorderRadius.only(topRight: Radius.circular(10), topLeft: Radius.circular(10)),
+                                            borderRadius: borderRadius10,
                                             image: DecorationImage(
                                               image: imageProvider,
-                                              fit: BoxFit.fill,
+                                              fit: BoxFit.cover,
                                             ),
                                           ),
                                         ),

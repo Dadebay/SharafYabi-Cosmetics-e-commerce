@@ -13,7 +13,7 @@ import 'package:sharaf_yabi_ecommerce/constants/widgets.dart';
 import 'package:sharaf_yabi_ecommerce/controllers/CartPageController.dart';
 import 'package:sharaf_yabi_ecommerce/controllers/Fav_Cart_Controller.dart';
 import 'package:sharaf_yabi_ecommerce/controllers/SettingsController.dart';
-import 'package:sharaf_yabi_ecommerce/screens/Category_Brands/Category/CategoryPage.dart';
+import 'package:sharaf_yabi_ecommerce/screens/Category_Brands/CategoryPage.dart';
 import 'package:sharaf_yabi_ecommerce/screens/News_Videos/TabbarViewPage.dart';
 
 import 'Cart/CartPage.dart';
@@ -108,7 +108,7 @@ class _BottomNavBarState extends State<BottomNavBar> with TickerProviderStateMix
                             animationType: BadgeAnimationType.fade,
                             child: const Icon(IconlyBold.bag)),
                     activeColorPrimary: Colors.white,
-                    title: fav_cart_controller.cartList.isEmpty ? 'cart'.tr : "${fav_cart_controller.priceAll.value} TMT",
+                    title: fav_cart_controller.cartList.isEmpty ? 'cart'.tr : "${fav_cart_controller.priceAll.value} m.",
                     onPressed: (context) {},
                     textStyle: const TextStyle(color: Colors.white70, fontFamily: montserratMedium),
                     inactiveColorPrimary: Colors.white70,

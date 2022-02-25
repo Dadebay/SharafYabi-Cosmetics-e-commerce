@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
 import 'package:get/get.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
-import 'package:sharaf_yabi_ecommerce/components/ProductCard3.dart';
+import 'package:sharaf_yabi_ecommerce/cards/ProductCard3.dart';
 import 'package:sharaf_yabi_ecommerce/components/agreeButton.dart';
 import 'package:sharaf_yabi_ecommerce/components/appBar.dart';
 import 'package:sharaf_yabi_ecommerce/components/bottomSheetName.dart';
@@ -68,7 +68,9 @@ class _ShowAllProductsPageState extends State<ShowAllProductsPage> {
       filterController.newInCome.value = false;
     }
     filterController.loading.value = 0;
+    filterController.sortColumnName.value = "";
     filterController.list.clear();
+    filterController.page.value = 1;
     filterController.fetchProducts();
     filterController.page.value = 1;
     filterController.search.value = "";
@@ -108,6 +110,7 @@ class _ShowAllProductsPageState extends State<ShowAllProductsPage> {
                   onRefresh: _onRefresh,
                   onLoading: _onLoading,
                   child: Obx(() {
+                    print(filterController.loading.value);
                     if (filterController.loading.value == 1) {
                       return GridView.builder(
                           physics: const NeverScrollableScrollPhysics(),
@@ -126,7 +129,13 @@ class _ShowAllProductsPageState extends State<ShowAllProductsPage> {
                                 ));
                           });
                     } else if (filterController.loading.value == 2) {
-                      return emptyDataLottie(imagePath: searchNotFound, errorTitle: "emptyProducts", errorSubtitle: "emptyProductsSubtitle");
+                      return GestureDetector(
+                        onTap: () {
+                          print(filterController.page.value);
+                          filterController.fetchProducts();
+                        },
+                        child: Center(child: emptyDataLottie(imagePath: searchNotFound, errorTitle: "emptyProducts", errorSubtitle: "emptyProductsSubtitle")),
+                      );
                     } else if (filterController.loading.value == 3) {
                       return retryButton(() {
                         filterController.fetchProducts();

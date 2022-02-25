@@ -68,7 +68,6 @@ class _CommentsPageState extends State<CommentsPage> {
                               itemCount: snapshot.data!.comments!.length,
                               itemBuilder: (BuildContext context, int index) {
                                 return Column(
-                                  // direction: Axis.vertical,
                                   children: [
                                     commentCard("${snapshot.data!.comments![index].fullName}", "${snapshot.data!.comments![index].commentMine}", true, snapshot.data!.comments![index].id),
                                     Padding(

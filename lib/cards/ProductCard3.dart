@@ -21,8 +21,9 @@ class ProductCard3 extends StatefulWidget {
   final String? price;
   final String? image;
   final int? discountValue;
+  final bool? addCart;
 
-  const ProductCard3({Key? key, this.name, this.id, this.discountValue, this.price, this.image}) : super(key: key);
+  const ProductCard3({Key? key, this.name, this.id, this.discountValue, this.price, this.image, this.addCart}) : super(key: key);
 
   @override
   State<ProductCard3> createState() => _ProductCard3State();
@@ -108,7 +109,7 @@ class _ProductCard3State extends State<ProductCard3> {
       priceMine -= discountedPrice;
     }
     return Expanded(
-      flex: 3,
+      flex: widget.addCart == false ? 2 : 3,
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 6),
         child: Column(
@@ -124,45 +125,59 @@ class _ProductCard3State extends State<ProductCard3> {
               ),
             ),
             if (discountValue > 0)
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    "$priceMine m.",
-                    overflow: TextOverflow.ellipsis,
-                    maxLines: 4,
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(fontFamily: montserratSemiBold, fontSize: 18, color: kPrimaryColor),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 8),
-                    child: Stack(
-                      children: [
-                        Positioned(left: 0, right: 5, top: 10, child: Transform.rotate(angle: pi / -14, child: Container(height: 1, color: Colors.red))),
-                        RichText(
-                          overflow: TextOverflow.ellipsis,
-                          text: TextSpan(children: <TextSpan>[
-                            TextSpan(text: "$priceOLD", style: const TextStyle(fontFamily: montserratRegular, fontSize: 16, color: Colors.grey)),
-                            const TextSpan(text: " m.", style: TextStyle(fontFamily: montserratRegular, fontSize: 10, color: Colors.grey))
-                          ]),
-                        ),
-                      ],
-                    ),
-                  )
-                ],
-              )
+              widget.addCart == false ? Expanded(child: discountedPriceWidget() as Widget) : discountedPriceWidget() as Widget
             else
-              Text(
-                "${widget.price} m.",
-                overflow: TextOverflow.ellipsis,
-                maxLines: 4,
-                textAlign: TextAlign.center,
-                style: TextStyle(fontFamily: montserratSemiBold, fontSize: sizeWidth > 800 ? 22 : 18, color: kPrimaryColor),
-              ),
-            SizedBox(width: MediaQuery.of(context).size.width, child: addCart ? addRemoveButton() : addButton()),
+              widget.addCart == false
+                  ? Expanded(
+                      child: Text(
+                        "${widget.price} m.",
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 4,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(fontFamily: montserratSemiBold, fontSize: sizeWidth > 800 ? 22 : 18, color: kPrimaryColor),
+                      ),
+                    )
+                  : Text(
+                      "${widget.price} m.",
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 4,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(fontFamily: montserratSemiBold, fontSize: sizeWidth > 800 ? 22 : 18, color: kPrimaryColor),
+                    ),
+            if (widget.addCart == false) const SizedBox.shrink() else SizedBox(width: MediaQuery.of(context).size.width, child: addCart ? addRemoveButton() : addButton()),
           ],
         ),
       ),
+    );
+  }
+
+  discountedPriceWidget() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Text(
+          "$priceMine m.",
+          overflow: TextOverflow.ellipsis,
+          maxLines: 1,
+          textAlign: TextAlign.center,
+          style: const TextStyle(fontFamily: montserratSemiBold, fontSize: 18, color: kPrimaryColor),
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 8),
+          child: Stack(
+            children: [
+              Positioned(left: 0, right: 5, top: 10, child: Transform.rotate(angle: pi / -14, child: Container(height: 1, color: Colors.red))),
+              RichText(
+                overflow: TextOverflow.ellipsis,
+                text: TextSpan(children: <TextSpan>[
+                  TextSpan(text: "$priceOLD", style: const TextStyle(fontFamily: montserratRegular, fontSize: 16, color: Colors.grey)),
+                  const TextSpan(text: " m.", style: TextStyle(fontFamily: montserratRegular, fontSize: 10, color: Colors.grey))
+                ]),
+              ),
+            ],
+          ),
+        )
+      ],
     );
   }
 

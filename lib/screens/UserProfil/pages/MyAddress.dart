@@ -4,6 +4,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:sharaf_yabi_ecommerce/cards/MyAddressCard.dart';
 import 'package:sharaf_yabi_ecommerce/components/appBar.dart';
 import 'package:sharaf_yabi_ecommerce/constants/constants.dart';
 import 'package:sharaf_yabi_ecommerce/constants/widgets.dart';
@@ -18,9 +19,10 @@ class MyAddress extends StatefulWidget {
 
 class _MyAddressState extends State<MyAddress> {
   TextEditingController address = TextEditingController();
-
   TextEditingController comment = TextEditingController();
   final SettingsController settingsController = Get.put(SettingsController());
+
+  bool buttonLoading = false;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -55,53 +57,21 @@ class _MyAddressState extends State<MyAddress> {
                     return ListView.builder(
                       itemCount: snapshot.data!.length,
                       itemBuilder: (BuildContext context, int index) {
-                        return Stack(
-                          children: [
-                            Card(
-                              elevation: 1,
-                              margin: const EdgeInsets.all(8),
-                              shape: const RoundedRectangleBorder(borderRadius: borderRadius10),
-                              child: Padding(
-                                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-                                child: Column(
-                                  children: [
-                                    Row(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Text("${"orderAddress".tr} : ", style: const TextStyle(color: Colors.black38, fontFamily: montserratRegular, fontSize: 16)),
-                                        Expanded(child: Text(snapshot.data![index].address!, maxLines: 4, style: const TextStyle(color: Colors.black, fontFamily: montserratRegular, fontSize: 18))),
-                                      ],
-                                    ),
-                                    Row(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Text("${"orderNote".tr} : ", style: const TextStyle(color: Colors.black38, fontFamily: montserratRegular, fontSize: 16)),
-                                        Expanded(child: Text(snapshot.data![index].comment!, maxLines: 4, style: const TextStyle(color: Colors.black, fontFamily: montserratRegular, fontSize: 18))),
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                            Positioned(
-                                right: 0,
-                                top: 0,
-                                child: GestureDetector(
-                                  onTap: () {
-                                    final int id = int.parse(snapshot.data![index].id!);
-                                    AddressModel().deleteLocation(id).then((value) {
-                                      if (value == 200) {
-                                        showCustomToast(context, "addressDeleted");
-                                        setState(() {});
-                                      } else {
-                                        showSnackBar("retry", "error404", Colors.red);
-                                        Vibration.vibrate();
-                                      }
-                                    });
-                                  },
-                                  child: const Icon(CupertinoIcons.xmark_circle, size: 30, color: Colors.black),
-                                )),
-                          ],
+                        return MyAddressCard(
+                          address: snapshot.data![index].address!,
+                          comment: snapshot.data![index].comment!,
+                          onDelete: () {
+                            final int id = int.parse(snapshot.data![index].id!);
+                            AddressModel().deleteLocation(id).then((value) {
+                              if (value == 200) {
+                                showCustomToast(context, "addressDeleted");
+                                setState(() {});
+                              } else {
+                                showSnackBar("retry", "error404", Colors.red);
+                                Vibration.vibrate();
+                              }
+                            });
+                          },
                         );
                       },
                     );
@@ -135,7 +105,8 @@ class _MyAddressState extends State<MyAddress> {
                                       enabledBorder: const OutlineInputBorder(borderRadius: borderRadius5, borderSide: BorderSide(color: Colors.grey)),
                                     ),
                                   ),
-                                  Padding(
+                                  Container(
+                                    width: Get.size.width,
                                     padding: const EdgeInsets.symmetric(vertical: 15),
                                     child: TextField(
                                       controller: comment,
@@ -150,36 +121,50 @@ class _MyAddressState extends State<MyAddress> {
                                       ),
                                     ),
                                   ),
-                                  SizedBox(
-                                    width: Get.size.width,
-                                    child: RaisedButton(
-                                      onPressed: () {
-                                        AddressModel().addLocation(address.text, comment.text).then((value) {
-                                          if (value == true) {
-                                            showCustomToast(context, "AddressAdded");
-
-                                            Get.back();
-
-                                            address.clear();
-                                            comment.clear();
-                                            setState(() {});
+                                  StatefulBuilder(builder: (BuildContext context, StateSetter setStates) {
+                                    return SizedBox(
+                                      width: buttonLoading ? 70 : Get.size.width - 50,
+                                      child: RaisedButton(
+                                        onPressed: () {
+                                          setStates(() {
+                                            buttonLoading = true;
+                                          });
+                                          if (address.text.length > 4) {
+                                            AddressModel().addLocation(address.text, comment.text).then((value) {
+                                              if (value == true) {
+                                                showCustomToast(context, "AddressAdded");
+                                                Get.back();
+                                                address.clear();
+                                                comment.clear();
+                                              } else {
+                                                showSnackBar("retry", "errorAddress", Colors.red);
+                                              }
+                                              setState(() {
+                                                buttonLoading = false;
+                                              });
+                                            });
                                           } else {
-                                            showSnackBar("retry", "errorAddress", Colors.red);
+                                            Vibration.vibrate();
+                                            showSnackBar("retry", "addressError", Colors.red);
                                           }
-                                        });
-                                      },
-                                      color: kPrimaryColor,
-                                      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 12),
-                                      shape: const RoundedRectangleBorder(borderRadius: borderRadius10),
-                                      child: Text("${"addAddress".tr}   + ", style: const TextStyle(color: Colors.white, fontFamily: montserratSemiBold, fontSize: 18)),
-                                    ),
-                                  )
+                                        },
+                                        color: kPrimaryColor,
+                                        padding: EdgeInsets.symmetric(vertical: buttonLoading ? 8 : 12, horizontal: 12),
+                                        shape: const RoundedRectangleBorder(borderRadius: borderRadius10),
+                                        child: buttonLoading
+                                            ? const CircularProgressIndicator(
+                                                color: Colors.white,
+                                              )
+                                            : Text("${"addAddress".tr}   + ", style: const TextStyle(color: Colors.white, fontFamily: montserratSemiBold, fontSize: 18)),
+                                      ),
+                                    );
+                                  })
                                 ],
                               ));
                         },
                         color: kPrimaryColor,
                         padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 12),
-                        shape: const RoundedRectangleBorder(borderRadius: borderRadius5),
+                        shape: const RoundedRectangleBorder(borderRadius: borderRadius10),
                         child: Text("${"addAddress".tr}   + ", style: const TextStyle(color: Colors.white, fontFamily: montserratSemiBold, fontSize: 18)),
                       ),
               );

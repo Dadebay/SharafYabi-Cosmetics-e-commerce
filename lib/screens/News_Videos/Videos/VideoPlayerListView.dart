@@ -1,13 +1,10 @@
 // ignore_for_file: file_names, unnecessary_null_checks
 
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:lottie/lottie.dart';
-import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
+import 'package:sharaf_yabi_ecommerce/cards/VideoCard.dart';
 import 'package:sharaf_yabi_ecommerce/constants/constants.dart';
 import 'package:sharaf_yabi_ecommerce/constants/widgets.dart';
 import 'package:sharaf_yabi_ecommerce/models/getVideosModel.dart';
-import 'package:sharaf_yabi_ecommerce/screens/News_Videos/Videos/VideoPlayerProfile.dart';
 
 class VideoPlayerListView extends StatelessWidget {
   @override
@@ -25,71 +22,10 @@ class VideoPlayerListView extends StatelessWidget {
                 physics: const BouncingScrollPhysics(),
                 itemCount: snapshot.data!.length,
                 itemBuilder: (BuildContext context, int index) {
-                  return GestureDetector(
-                    onTap: () {
-                      pushNewScreen(
-                        context,
-                        screen: VideoPLayerMine(
-                          videoURL: "$serverImage/${snapshot.data![index].videoPath}",
-                        ),
-                        withNavBar: true, // OPTIONAL VALUE. True by default.
-                        pageTransitionAnimation: PageTransitionAnimation.cupertino,
-                      );
-                    },
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Stack(
-                          children: [
-                            CachedNetworkImage(
-                              fadeInCurve: Curves.ease,
-                              imageUrl: "$serverImage/${snapshot.data![index].imagePath}-big.webp",
-                              imageBuilder: (context, imageProvider) => Container(
-                                padding: EdgeInsets.zero,
-                                height: 200,
-                                width: MediaQuery.of(context).size.width,
-                                decoration: BoxDecoration(
-                                  borderRadius: borderRadius30,
-                                  image: DecorationImage(
-                                    image: imageProvider,
-                                    fit: BoxFit.cover,
-                                  ),
-                                ),
-                              ),
-                              placeholder: (context, url) => Center(child: spinKit()),
-                              errorWidget: (context, url, error) => noImage(),
-                            ),
-                            Positioned.fill(
-                                child: Container(
-                              decoration: const BoxDecoration(color: Colors.black54, borderRadius: borderRadius30),
-                            )),
-                            Center(
-                              child: Lottie.asset(
-                                videoPlayButton,
-                                repeat: true,
-                                animate: true,
-                                width: 200,
-                                height: 200,
-                                fit: BoxFit.cover,
-                              ),
-                            ),
-                          ],
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(top: 14, bottom: 20),
-                          child: Text(
-                            "${snapshot.data![index].title}",
-                            maxLines: 3,
-                            overflow: TextOverflow.ellipsis,
-                            style: const TextStyle(
-                              color: Colors.black,
-                              fontSize: 20,
-                              fontFamily: montserratMedium,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
+                  return VideoCard(
+                    image: "$serverImage/${snapshot.data![index].imagePath}-big.webp",
+                    name: "${snapshot.data![index].title}",
+                    videoPath: "$serverImage/${snapshot.data![index].videoPath}",
                   );
                 },
               ),

@@ -20,6 +20,7 @@ class MyTranslations extends Translations {
           "address": "Salgyňyz",
           "AddressAdded": "Salgyňyz goşuldy",
           "addressDeleted": "Salgyňyz pozuldy",
+          "addressError": "Salgyňyz uzynlygy 3 harpdan köp bolmaly",
           "agree": "Tassyklamak",
           "aksiyalar": "Aksiýalar",
           "all": "Hemmesi",
@@ -179,6 +180,7 @@ class MyTranslations extends Translations {
           "userName": "Ulanyjy ady",
           "userPassword": "Açar söz",
           "userPasswordApporve": "Açar söz tassyklaň",
+          "forgotPasswordText": "Açar söz unutdum",
           "userPhoneNumber": "Telefon belgiňiz",
           "video": "Wideolar",
           "waiting": "Garaşýlýar",
@@ -188,6 +190,7 @@ class MyTranslations extends Translations {
           "selectMyaddresses": "Täze salgy giriz.",
         },
         'ru': {
+          "forgotPasswordText": "Забыл пароль",
           "aboutUS": "О нас",
           "aboutUsSubtitle":
               "Мы реализуем более 300 видов косметических и гигиенических средств. Потребителями наших товаров являются все группы населения от новорожденных до людей в возрасте. Компания основана в 1997 году. В настоящее время реализация товаров ведется в торговых точках в городе Ашхабаде и во всех регионах Туркменистана.",
@@ -204,6 +207,7 @@ class MyTranslations extends Translations {
           "address": "Адрес доставки",
           "AddressAdded": "Ваш адрес добавлен",
           "addressDeleted": "Ваш адрес удален",
+          "addressError": "Ваш адрес длиннее 3 букв",
           "agree": "Подтвердить!",
           "aksiyalar": "Акции",
           "all": "Все",
@@ -371,6 +375,7 @@ class MyTranslations extends Translations {
         },
         'en': {
           "selectMyaddresses": "Enter a new address.",
+          "forgotPasswordText": "Forgot password",
           "aboutUS": "About Us",
           "aboutUsSubtitle":
               "We sell more than 300 types of cosmetic and hygiene products. All groups of the population, from newborns to people of the age, are consumers of our products. The company was founded in 1997. Currently, the sale of goods is carried out in retail outlets in the city of Ashgabat and in all regions of Turkmenistan.",
@@ -387,6 +392,7 @@ class MyTranslations extends Translations {
           "address": "Delivery address",
           "AddressAdded": "Your address has been added",
           "addressDeleted": "Your address has been deleted",
+          "addressError": "Your address lenght more than 3 letter",
           "agree": "Agree",
           "aksiyalar": "Promotions",
           "all": "All",
