@@ -2,6 +2,7 @@
 
 import 'package:flick_video_player/flick_video_player.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
 import 'package:video_player/video_player.dart';
 
@@ -63,7 +64,19 @@ class _VideoPLayerMineState extends State<VideoPLayerMine> {
                 return Center(
                   child: AspectRatio(
                     aspectRatio: _controller.value.aspectRatio,
-                    child: FlickVideoPlayer(flickManager: flickManager),
+                    child: FlickVideoPlayer(
+                        flickVideoWithControls: FlickVideoWithControls(
+                          controls: FlickPortraitControls(
+                            progressBarSettings: FlickProgressBarSettings(),
+                          ),
+                        ),
+                        preferredDeviceOrientation: [
+                          DeviceOrientation.portraitDown,
+                          DeviceOrientation.portraitUp,
+                        ],
+                        preferredDeviceOrientationFullscreen: [DeviceOrientation.portraitDown, DeviceOrientation.portraitUp],
+                        // flickVideoWithControlsFullscreen: ,
+                        flickManager: flickManager),
                   ),
                 );
               } else {

@@ -70,3 +70,43 @@ class AboutUSModel extends ChangeNotifier {
     }
   }
 }
+
+class SendAdminMessage extends ChangeNotifier {
+  SendAdminMessage({
+    this.count,
+    this.comments,
+  });
+
+  factory SendAdminMessage.fromJson(Map<dynamic, dynamic> json) {
+    return SendAdminMessage(
+      count: json["count"],
+      comments: ((json['comments'] ?? []) as List).map((json) => SendAdminMessage.fromJson(json)).toList(),
+    );
+  }
+  final int? count;
+  final List<SendAdminMessage>? comments;
+
+  Future sendAdminMessage({String? name, String? mail, String? phone, String? message}) async {
+    String lang = Get.locale!.languageCode;
+    if (lang == "tr") lang = "tm";
+    final response = await http.post(
+        Uri.parse(
+          "$serverURL/api/$lang/send-admin-message",
+        ),
+        headers: <String, String>{
+          HttpHeaders.contentTypeHeader: 'application/json; charset=UTF-8',
+        },
+        body: jsonEncode(<String, String>{
+          "name": name!,
+          "email": mail!,
+          "phone": phone!,
+          "message": message!,
+        }));
+    print(response.body);
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+}

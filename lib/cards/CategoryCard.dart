@@ -1,6 +1,5 @@
 // ignore_for_file: file_names, must_be_immutable, avoid_dynamic_calls, unnecessary_null_checks
 
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
 import 'package:get/get.dart';

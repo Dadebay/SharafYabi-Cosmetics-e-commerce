@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:sharaf_yabi_ecommerce/components/PhoneNumber.dart';
 import 'package:sharaf_yabi_ecommerce/components/agreeButton.dart';
 import 'package:sharaf_yabi_ecommerce/components/passwordTextField.dart';
@@ -31,11 +32,13 @@ class Login extends StatelessWidget {
           padding: const EdgeInsets.only(bottom: 10, top: 10),
           child: Text(
             "login".tr,
+            textAlign: TextAlign.start,
             style: const TextStyle(color: Colors.black, fontFamily: montserratSemiBold, fontSize: 22),
           ),
         ),
         Text(
           "signIn2".tr,
+          textAlign: TextAlign.start,
           style: const TextStyle(color: Colors.grey, fontFamily: montserratMedium, fontSize: 18),
         ),
       ],
@@ -58,6 +61,7 @@ class Login extends StatelessWidget {
         key: _login,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             textPart(),
             PhoneNumber(
@@ -70,7 +74,7 @@ class Login extends StatelessWidget {
               onTap: () {
                 Get.to(() => ForgotPassword());
               },
-              child: Text("${"forgotPasswordText".tr}.", style: const TextStyle(color: kPrimaryColor, decoration: TextDecoration.underline, fontFamily: montserratMedium, fontSize: 18)),
+              child: Center(child: Text("${"forgotPasswordText".tr}", style: const TextStyle(color: kPrimaryColor, decoration: TextDecoration.underline, fontFamily: montserratMedium, fontSize: 18))),
             ),
             Center(
               child: AgreeButton(
@@ -79,9 +83,15 @@ class Login extends StatelessWidget {
                   if (_login.currentState!.validate()) {
                     authController.changeSignInAnimation();
                     UserSignInModel().login(phone: loginPhoneController.text, password: loginPassswordController.text).then((value) {
+                      print(value);
                       if (value == true) {
+                        pushNewScreen(
+                          context,
+                          screen: BottomNavBar(),
+                          withNavBar: false,
+                          pageTransitionAnimation: PageTransitionAnimation.fade,
+                        );
                         showSnackBar("signIntitle", "signInSubtitle", kPrimaryColor);
-                        Get.to(() => BottomNavBar());
                       } else if (value == 409) {
                         showSnackBar("signInErrorTitle", "errorLogin", Colors.red);
 

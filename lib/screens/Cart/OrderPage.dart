@@ -321,7 +321,6 @@ class _OrderPageState extends State<OrderPage> {
                                   ),
                                 )
                               : Column(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
                                   children: [
                                     Column(
                                         mainAxisSize: MainAxisSize.min,
@@ -338,8 +337,8 @@ class _OrderPageState extends State<OrderPage> {
                                                     Get.back();
                                                     setState(() {});
                                                   },
-                                                  title: Text(snapshot.data![index].address, maxLines: 2, style: TextStyle(color: Colors.black, fontFamily: montserratMedium)),
-                                                  subtitle: Text(snapshot.data![index].comment, maxLines: 2, style: TextStyle(color: Colors.grey, fontFamily: montserratRegular)),
+                                                  title: Text(snapshot.data![index].address, maxLines: 2, style: const TextStyle(color: Colors.black, fontFamily: montserratMedium)),
+                                                  subtitle: Text(snapshot.data![index].comment, maxLines: 2, style: const TextStyle(color: Colors.grey, fontFamily: montserratRegular)),
                                                 ))),
                                     GestureDetector(
                                       onTap: () {
@@ -354,7 +353,7 @@ class _OrderPageState extends State<OrderPage> {
                                       },
                                       child: Padding(
                                         padding: const EdgeInsets.symmetric(vertical: 8),
-                                        child: Text("selectMyaddresses".tr, style: TextStyle(color: kPrimaryColor, decoration: TextDecoration.underline, fontFamily: montserratMedium)),
+                                        child: Text("selectMyaddresses".tr, style: const TextStyle(color: kPrimaryColor, decoration: TextDecoration.underline, fontFamily: montserratMedium)),
                                       ),
                                     )
                                   ],
@@ -597,6 +596,8 @@ class _OrderPageState extends State<OrderPage> {
   }
 }
 
+
+
 Future<dynamic> completeOrder(BuildContext context) {
   return Get.defaultDialog(
       radius: 25,
@@ -608,9 +609,14 @@ Future<dynamic> completeOrder(BuildContext context) {
           width: Get.size.width / 1.5,
           child: RaisedButton(
             onPressed: () {
-              print("icos");
               Get.back();
-              Get.to(() => BottomNavBar());
+              pushNewScreen(
+                context,
+                screen: BottomNavBar(),
+                withNavBar: false,
+                pageTransitionAnimation: PageTransitionAnimation.fade,
+              );
+              // Get.to(() => BottomNavBar());
             },
             shape: const RoundedRectangleBorder(borderRadius: borderRadius15),
             color: kPrimaryColor,

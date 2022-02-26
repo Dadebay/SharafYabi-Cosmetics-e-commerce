@@ -32,8 +32,8 @@ class TabbarViewPage extends StatelessWidget {
                   indicator: const BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.only(
-                        topRight: Radius.circular(15),
-                        topLeft: Radius.circular(15),
+                        topRight: Radius.circular(10),
+                        topLeft: Radius.circular(10),
                       )),
                   tabs: [
                     Tab(

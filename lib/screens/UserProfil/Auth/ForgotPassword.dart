@@ -8,6 +8,7 @@ import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:sharaf_yabi_ecommerce/components/appBar.dart';
 import 'package:sharaf_yabi_ecommerce/constants/constants.dart';
 import 'package:sharaf_yabi_ecommerce/constants/widgets.dart';
+import 'package:sharaf_yabi_ecommerce/models/UserModels/AuthModel.dart';
 import 'package:sharaf_yabi_ecommerce/models/UserModels/UserSignInModel.dart';
 import 'package:sharaf_yabi_ecommerce/screens/UserProfil/Auth/ChangePassword.dart';
 import 'package:vibration/vibration.dart';
@@ -29,13 +30,25 @@ class _ForgotPasswordState extends State<ForgotPassword> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: backgroundColor,
-      appBar: MyAppBar(
-        icon: Icons.add,
-        onTap: () {},
-        backArrow: true,
-        iconRemove: false,
-        name: "forgotPassword",
-        addName: true,
+      appBar: AppBar(
+        backgroundColor: kPrimaryColor,
+        centerTitle: true,
+        leading: IconButton(
+          icon: Icon(
+            IconlyLight.arrowLeft2,
+          ),
+          onPressed: () async {
+            await Auth().removeToken();
+            Navigator.of(context).pop();
+          },
+        ),
+        elevation: 0,
+        title: Text(
+          "forgotPasswordText".tr,
+          maxLines: 1,
+          textAlign: TextAlign.center,
+          style: TextStyle(color: Colors.white, fontFamily: montserratSemiBold, fontSize: 20),
+        ),
       ),
       body: Container(
         color: Colors.white,

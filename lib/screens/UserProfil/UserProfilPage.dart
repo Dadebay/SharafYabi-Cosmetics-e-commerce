@@ -17,6 +17,7 @@ import 'package:sharaf_yabi_ecommerce/screens/UserProfil/Components/Profile_Widg
 import 'package:sharaf_yabi_ecommerce/screens/UserProfil/pages/AboutUS.dart';
 import 'package:sharaf_yabi_ecommerce/screens/UserProfil/pages/MyAddress.dart';
 import 'package:sharaf_yabi_ecommerce/screens/UserProfil/pages/Orders.dart';
+import 'package:sharaf_yabi_ecommerce/screens/UserProfil/pages/SendMessage.dart';
 import 'package:sharaf_yabi_ecommerce/screens/UserProfil/pages/UserSettings.dart';
 import 'package:sharaf_yabi_ecommerce/screens/UserProfil/pages/ourDeliveryService.dart';
 
@@ -86,6 +87,18 @@ class _UserProfilState extends State<UserProfil> {
                   pushNewScreen(
                     context,
                     screen: Orders(),
+                    withNavBar: true, // OPTIONAL VALUE. True by default.
+                    pageTransitionAnimation: PageTransitionAnimation.cupertino,
+                  );
+                },
+              ),
+              buttonProfile(
+                name: "messageTitle",
+                icon: IconlyLight.message,
+                onTap: () {
+                  pushNewScreen(
+                    context,
+                    screen: SendMessage(),
                     withNavBar: true, // OPTIONAL VALUE. True by default.
                     pageTransitionAnimation: PageTransitionAnimation.cupertino,
                   );

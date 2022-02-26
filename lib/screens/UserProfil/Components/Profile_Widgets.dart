@@ -62,7 +62,7 @@ void logOut(BuildContext context) {
               print(value);
             });
             Get.back();
-            // Restart.restartApp();
+            Restart.restartApp();
             Get.to(() => BottomNavBar());
           },
           child: Container(

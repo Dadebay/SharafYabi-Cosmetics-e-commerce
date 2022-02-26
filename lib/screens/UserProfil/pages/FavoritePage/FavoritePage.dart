@@ -50,7 +50,7 @@ class _FavoritePageState extends State<FavoritePage> {
           print(_homePageController.loadingFavlist.value);
           if (_homePageController.loadingFavlist.value == 1) {
             return fav_cart_controller.favList.isEmpty
-                ? GestureDetector(onTap: () {}, child: emptyData(imagePath: emptyFav, errorTitle: "emptyFavoriteTitle", errorSubtitle: "emptyFavoriteSubtitle"))
+                ? emptyData(imagePath: emptyFav, errorTitle: "emptyFavoriteTitle", errorSubtitle: "emptyFavoriteSubtitle")
                 : GridView.builder(
                     itemCount: _homePageController.listFavlist.length,
                     physics: const BouncingScrollPhysics(),
@@ -76,6 +76,8 @@ class _FavoritePageState extends State<FavoritePage> {
             return retryButton(() {
               _homePageController.fetcbFavListProducts();
             });
+          } else if (_homePageController.loadingFavlist.value == 2) {
+            return emptyData(imagePath: emptyFav, errorTitle: "emptyFavoriteTitle", errorSubtitle: "emptyFavoriteSubtitle");
           } else if (_homePageController.loadingFavlist.value == 0) {
             return Center(
               child: spinKit(),

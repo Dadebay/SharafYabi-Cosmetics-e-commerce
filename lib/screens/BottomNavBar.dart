@@ -133,13 +133,13 @@ class _BottomNavBarState extends State<BottomNavBar> with TickerProviderStateMix
                 ],
                 selectedIndex: _controller.index,
                 onItemSelected: (index) {
-                  if (index == 0) {
-                  } else if (index == 1) {
-                  } else if (index == 2) {
-                    Get.find<CartPageController>().loadData(parametrs: {"products": jsonEncode(Get.find<Fav_Cart_Controller>().cartList)});
-                  } else if (index == 3) {
-                  } else if (index == 4) {}
                   setState(() {
+                    if (index == 0) {
+                    } else if (index == 1) {
+                    } else if (index == 2) {
+                      Get.find<CartPageController>().loadData(parametrs: {"products": jsonEncode(Get.find<Fav_Cart_Controller>().cartList)});
+                    } else if (index == 3) {
+                    } else if (index == 4) {}
                     _controller.index = index;
                   });
                 },

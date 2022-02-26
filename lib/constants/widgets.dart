@@ -310,7 +310,7 @@ Widget cachedMyImage(String image) {
       imageUrl: image,
       imageBuilder: (context, imageProvider) => Container(
             decoration: BoxDecoration(
-              borderRadius: borderRadius20,
+              borderRadius: borderRadius15,
               image: DecorationImage(
                 image: imageProvider,
                 fit: BoxFit.cover,

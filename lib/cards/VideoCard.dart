@@ -32,7 +32,7 @@ class VideoCard extends StatelessWidget {
               SizedBox(height: 200, child: cachedMyImage(image)),
               Positioned.fill(
                   child: Container(
-                decoration: const BoxDecoration(color: Colors.black54, borderRadius: borderRadius20),
+                decoration: const BoxDecoration(color: Colors.black54, borderRadius: borderRadius15),
               )),
               Center(
                 child: Lottie.asset(
