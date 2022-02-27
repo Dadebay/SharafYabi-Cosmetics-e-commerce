@@ -1,3 +1,5 @@
+// ignore_for_file: file_names, must_be_immutable
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
@@ -25,7 +27,7 @@ class SendMessage extends StatelessWidget {
         addName: true,
       ),
       body: SingleChildScrollView(
-        physics: BouncingScrollPhysics(),
+        physics: const BouncingScrollPhysics(),
         child: Padding(
           padding: const EdgeInsets.all(8.0),
           child: Column(
@@ -127,6 +129,7 @@ class SendMessage extends StatelessWidget {
               ),
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 8),
+                // ignore: deprecated_member_use
                 child: RaisedButton(
                   onPressed: () {
                     if (_login.currentState!.validate()) {
@@ -153,14 +156,14 @@ class SendMessage extends StatelessWidget {
                     }
                   },
                   color: kPrimaryColor,
-                  padding: EdgeInsets.symmetric(vertical: 12, horizontal: 12),
+                  padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
                   shape: const RoundedRectangleBorder(borderRadius: borderRadius10),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text("send".tr, style: const TextStyle(color: Colors.white, fontFamily: montserratSemiBold, fontSize: 18)),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 8),
+                      const Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 8),
                         child: Icon(
                           IconlyLight.send,
                           color: Colors.white,

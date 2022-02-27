@@ -1,7 +1,6 @@
 // ignore_for_file: file_names, duplicate_ignore, deprecated_member_use, use_named_constants
 
 // ignore: file_names
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sharaf_yabi_ecommerce/cards/MyAddressCard.dart';

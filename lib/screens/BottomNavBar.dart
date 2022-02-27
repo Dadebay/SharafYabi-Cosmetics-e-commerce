@@ -1,6 +1,5 @@
 // ignore_for_file: file_names, must_be_immutable, always_use_package_imports, avoid_void_async, non_constant_identifier_names
 
-import 'dart:convert';
 import 'dart:io';
 
 import 'package:badges/badges.dart';
@@ -10,7 +9,6 @@ import 'package:get/get.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:sharaf_yabi_ecommerce/constants/constants.dart';
 import 'package:sharaf_yabi_ecommerce/constants/widgets.dart';
-import 'package:sharaf_yabi_ecommerce/controllers/CartPageController.dart';
 import 'package:sharaf_yabi_ecommerce/controllers/Fav_Cart_Controller.dart';
 import 'package:sharaf_yabi_ecommerce/controllers/SettingsController.dart';
 import 'package:sharaf_yabi_ecommerce/screens/Category_Brands/CategoryPage.dart';
@@ -84,6 +82,7 @@ class _BottomNavBarState extends State<BottomNavBar> with TickerProviderStateMix
                     inactiveIcon: const Icon(IconlyLight.home),
                     icon: const Icon(IconlyBold.home),
                     title: 'homePage'.tr,
+                    onPressed: (context) {},
                     textStyle: const TextStyle(color: Colors.white70, fontFamily: montserratMedium),
                   ),
                   PersistentBottomNavBarItem(
@@ -134,13 +133,22 @@ class _BottomNavBarState extends State<BottomNavBar> with TickerProviderStateMix
                 selectedIndex: _controller.index,
                 onItemSelected: (index) {
                   setState(() {
-                    if (index == 0) {
-                    } else if (index == 1) {
-                    } else if (index == 2) {
-                      Get.find<CartPageController>().loadData(parametrs: {"products": jsonEncode(Get.find<Fav_Cart_Controller>().cartList)});
-                    } else if (index == 3) {
-                    } else if (index == 4) {}
+                    // print(index);
+                    // if (index == 0) {
+                    //   Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => BottomNavBar()), (route) => false);
+                    // } else if (index == 1) {
+                    //   _controller.index = 1;
+                    //   Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => BottomNavBar()), (route) => false);
+                    // } else if (index == 2) {
+                    //   _controller.index = 2;
+                    //   Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => BottomNavBar()), (route) => false);
+
+                    //   Get.find<CartPageController>().loadData(parametrs: {"products": jsonEncode(Get.find<Fav_Cart_Controller>().cartList)});
+                    // } else if (index == 3) {
+                    // } else if (index == 4) {
+                    // } else {
                     _controller.index = index;
+                    // }
                   });
                 },
               ),

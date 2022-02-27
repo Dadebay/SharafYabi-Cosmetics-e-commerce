@@ -6,16 +6,13 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
 import 'package:get/get.dart';
-import 'package:lottie/lottie.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
-import 'package:sharaf_yabi_ecommerce/constants/shimmers.dart';
-import 'package:sharaf_yabi_ecommerce/screens/Others/CommentsPage/Comments.dart';
+import 'package:sharaf_yabi_ecommerce/cards/CommentCard.dart';
 import 'package:sharaf_yabi_ecommerce/cards/ProductCard3.dart';
-
 import 'package:sharaf_yabi_ecommerce/constants/constants.dart';
+import 'package:sharaf_yabi_ecommerce/constants/shimmers.dart';
 import 'package:sharaf_yabi_ecommerce/constants/widgets.dart';
 import 'package:sharaf_yabi_ecommerce/controllers/CartPageController.dart';
 import 'package:sharaf_yabi_ecommerce/controllers/Fav_Cart_Controller.dart';
@@ -24,7 +21,7 @@ import 'package:sharaf_yabi_ecommerce/controllers/HomePageController.dart';
 import 'package:sharaf_yabi_ecommerce/models/CommentModel.dart';
 import 'package:sharaf_yabi_ecommerce/models/ProductProfilModel.dart';
 import 'package:sharaf_yabi_ecommerce/models/ProductsModel.dart';
-import 'package:sharaf_yabi_ecommerce/models/UserModels/AuthModel.dart';
+import 'package:sharaf_yabi_ecommerce/screens/Others/CommentsPage/Comments.dart';
 import 'package:sharaf_yabi_ecommerce/screens/Others/FilterPage/ShowAllProductsPage.dart';
 import 'package:share/share.dart';
 import 'package:vibration/vibration.dart';
@@ -464,139 +461,6 @@ class _ProductProfilState extends State<ProductProfil> {
     );
   }
 
-  Widget commentCard(String? userName, String? userDescription, bool addReply, int? commentIDMine) {
-    return Padding(
-      padding: addReply ? const EdgeInsets.symmetric(vertical: 10) : const EdgeInsets.only(bottom: 15),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            padding: const EdgeInsets.all(12),
-            margin: const EdgeInsets.only(right: 5),
-            decoration: BoxDecoration(color: Colors.primaries[Random().nextInt(Colors.primaries.length)].withOpacity(0.3), shape: BoxShape.circle),
-            child: Text(userName!.substring(0, 1).toUpperCase(), style: const TextStyle(color: Colors.black, fontFamily: montserratSemiBold, fontSize: 22)),
-          ),
-          Flexible(
-            child: Padding(
-              padding: const EdgeInsets.only(top: 15),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Container(
-                    padding: const EdgeInsets.all(8),
-                    decoration:
-                        const BoxDecoration(color: backgroundColor, borderRadius: BorderRadius.only(topRight: Radius.circular(15), bottomLeft: Radius.circular(15), bottomRight: Radius.circular(15))),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(right: 10),
-                          child: Text(userName, style: const TextStyle(color: Colors.black, fontFamily: montserratSemiBold, fontSize: 18)),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(left: 5),
-                          child: Text(userDescription!, maxLines: 8, style: const TextStyle(color: Colors.black87, fontFamily: montserratRegular, fontSize: 16)),
-                        )
-                      ],
-                    ),
-                  ),
-                  if (addReply)
-                    GestureDetector(
-                      onTap: () async {
-                        final String? token = await Auth().getToken();
-                        if (token == null) {
-                          showSnackBar("retry", "pleaseLogin", Colors.red);
-                        } else {
-                          Get.defaultDialog(
-                            radius: 4,
-                            title: "writeComment".tr,
-                            titleStyle: const TextStyle(color: Colors.black, fontFamily: montserratSemiBold, fontSize: 24),
-                            content: Column(
-                              children: [
-                                TextFormField(
-                                  controller: controller,
-                                  textCapitalization: TextCapitalization.sentences,
-                                  cursorColor: kPrimaryColor,
-                                  maxLines: 3,
-                                  inputFormatters: [
-                                    LengthLimitingTextInputFormatter(70),
-                                  ],
-                                  style: const TextStyle(color: Colors.black, fontSize: 18, fontFamily: montserratMedium),
-                                  validator: (value) {
-                                    if (value!.isEmpty) {
-                                      return "errorEmpty".tr;
-                                    } else {
-                                      return null;
-                                    }
-                                  },
-                                  decoration: InputDecoration(
-                                      label: Text("writeComment".tr),
-                                      alignLabelWithHint: true,
-                                      prefixIconConstraints: const BoxConstraints.tightForFinite(),
-                                      labelStyle: const TextStyle(color: Colors.grey, fontFamily: montserratMedium),
-                                      constraints: const BoxConstraints(),
-                                      contentPadding: const EdgeInsets.symmetric(vertical: 15, horizontal: 15),
-                                      hintStyle: const TextStyle(color: Colors.grey, fontSize: 18, fontFamily: montserratMedium),
-                                      border: const OutlineInputBorder(borderRadius: borderRadius10, borderSide: BorderSide(color: kPrimaryColor)),
-                                      enabledBorder: OutlineInputBorder(
-                                          borderRadius: borderRadius10,
-                                          borderSide: BorderSide(
-                                            color: Colors.grey.shade400,
-                                          )),
-                                      focusedBorder: const OutlineInputBorder(borderRadius: borderRadius10, borderSide: BorderSide(color: kPrimaryColor, width: 2))),
-                                ),
-                                const SizedBox(height: 20),
-                                SizedBox(
-                                  width: Get.size.width,
-                                  child: RaisedButton(
-                                      onPressed: () {
-                                        CommentModel().writeSubComment(id: widget.id, comment: controller.text, commentID: commentIDMine).then((value) {
-                                          if (value == true) {
-                                            Get.back();
-                                            showSnackBar("commentAdded", "commentAddedSubtitle", kPrimaryColor);
-                                            controller.clear();
-                                          } else {
-                                            Vibration.vibrate();
-                                            showSnackBar("retry", "error404", kPrimaryColor);
-                                            controller.clear();
-                                          }
-                                        });
-                                      },
-                                      color: kPrimaryColor,
-                                      child: Text("send".tr, style: const TextStyle(color: Colors.white, fontFamily: montserratSemiBold, fontSize: 20))),
-                                )
-                              ],
-                            ),
-                          );
-                        }
-                      },
-                      child: Padding(
-                        padding: const EdgeInsets.only(left: 5),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            const Padding(
-                              padding: EdgeInsets.only(right: 8),
-                              child: Icon(Icons.comment_outlined, color: Colors.black54, size: 18),
-                            ),
-                            Text("reply".tr, style: const TextStyle(color: Colors.black54, fontFamily: montserratSemiBold, fontSize: 14)),
-                          ],
-                        ),
-                      ),
-                    )
-                  else
-                    const SizedBox.shrink()
-                ],
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
   whenDataComesBacked({String? price, required String? stockCount, required int? discountValue}) {
     priceMine = double.parse(price!);
 
@@ -688,6 +552,7 @@ class _ProductProfilState extends State<ProductProfil> {
                       )),
                       customContainer(ExpansionTile(
                         iconColor: kPrimaryColor,
+                        initiallyExpanded: true,
                         tilePadding: const EdgeInsets.symmetric(horizontal: 8),
                         title: GestureDetector(
                           onTap: () {
@@ -711,22 +576,21 @@ class _ProductProfilState extends State<ProductProfil> {
                                   }
                                   if (snapshot.hasData) {
                                     return snapshot.data!.comments!.isEmpty
-                                        ? Column(
-                                            mainAxisAlignment: MainAxisAlignment.center,
-                                            children: [
-                                              Lottie.asset(noCommentJson, height: 300, animate: true),
-                                              Text("nocomment".tr, style: const TextStyle(color: Colors.black, fontSize: 20, fontFamily: montserratSemiBold)),
-                                            ],
-                                          )
+                                        ? noCommentwidget()
                                         : ListView.builder(
                                             physics: const BouncingScrollPhysics(),
                                             itemCount: snapshot.data!.comments!.length > 5 ? 5 : snapshot.data!.comments!.length,
                                             itemBuilder: (BuildContext context, int index) {
-                                              return commentCard(snapshot.data!.comments![index].fullName, snapshot.data!.comments![index].commentMine, true, snapshot.data!.comments![index].id);
+                                              return CommentCard(
+                                                  addReplyButton: false,
+                                                  userName: snapshot.data!.comments![index].fullName!,
+                                                  userDescription: snapshot.data!.comments![index].commentMine!,
+                                                  productID: widget.id!,
+                                                  commentID: snapshot.data!.comments![index].id!);
                                             },
                                           );
                                   }
-                                  return Center(child: Text("nocomment".tr, style: const TextStyle(color: Colors.black, fontFamily: montserratSemiBold)));
+                                  return noCommentwidget();
                                 }),
                           )
                         ],

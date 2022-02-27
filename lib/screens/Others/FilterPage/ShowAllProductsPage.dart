@@ -110,7 +110,6 @@ class _ShowAllProductsPageState extends State<ShowAllProductsPage> {
                   onRefresh: _onRefresh,
                   onLoading: _onLoading,
                   child: Obx(() {
-                    print(filterController.loading.value);
                     if (filterController.loading.value == 1) {
                       return GridView.builder(
                           physics: const NeverScrollableScrollPhysics(),
@@ -131,7 +130,6 @@ class _ShowAllProductsPageState extends State<ShowAllProductsPage> {
                     } else if (filterController.loading.value == 2) {
                       return GestureDetector(
                         onTap: () {
-                          print(filterController.page.value);
                           filterController.fetchProducts();
                         },
                         child: Center(child: emptyDataLottie(imagePath: searchNotFound, errorTitle: "emptyProducts", errorSubtitle: "emptyProductsSubtitle")),

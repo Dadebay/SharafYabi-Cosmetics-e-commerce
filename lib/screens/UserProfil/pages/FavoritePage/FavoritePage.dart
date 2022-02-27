@@ -47,7 +47,6 @@ class _FavoritePageState extends State<FavoritePage> {
             backArrow: true,
             iconRemove: fav_cart_controller.favList.isNotEmpty ? true : false),
         body: Obx(() {
-          print(_homePageController.loadingFavlist.value);
           if (_homePageController.loadingFavlist.value == 1) {
             return fav_cart_controller.favList.isEmpty
                 ? emptyData(imagePath: emptyFav, errorTitle: "emptyFavoriteTitle", errorSubtitle: "emptyFavoriteSubtitle")

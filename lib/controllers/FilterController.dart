@@ -78,8 +78,6 @@ class FilterController extends GetxController {
   addPage() {
     int a = 0;
     a = pageNumberFilterController.value;
-    print(a / 20);
-    print(page.value + 1);
     if ((a / 20) > page.value) {
       page.value += 1;
       fetchProducts();

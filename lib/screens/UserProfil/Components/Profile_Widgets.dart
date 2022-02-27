@@ -58,9 +58,7 @@ void logOut(BuildContext context) {
             Auth().logout();
             Auth().removeToken();
             Auth().removeRefreshToken();
-            Auth().getToken().then((value) {
-              print(value);
-            });
+            Auth().getToken().then((value) {});
             Get.back();
             Restart.restartApp();
             Get.to(() => BottomNavBar());

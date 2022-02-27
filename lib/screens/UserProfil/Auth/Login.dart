@@ -74,7 +74,7 @@ class Login extends StatelessWidget {
               onTap: () {
                 Get.to(() => ForgotPassword());
               },
-              child: Center(child: Text("${"forgotPasswordText".tr}", style: const TextStyle(color: kPrimaryColor, decoration: TextDecoration.underline, fontFamily: montserratMedium, fontSize: 18))),
+              child: Center(child: Text("forgotPasswordText".tr, style: const TextStyle(color: kPrimaryColor, decoration: TextDecoration.underline, fontFamily: montserratMedium, fontSize: 18))),
             ),
             Center(
               child: AgreeButton(
@@ -83,7 +83,6 @@ class Login extends StatelessWidget {
                   if (_login.currentState!.validate()) {
                     authController.changeSignInAnimation();
                     UserSignInModel().login(phone: loginPhoneController.text, password: loginPassswordController.text).then((value) {
-                      print(value);
                       if (value == true) {
                         pushNewScreen(
                           context,

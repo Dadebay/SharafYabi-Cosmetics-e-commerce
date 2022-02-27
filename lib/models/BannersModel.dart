@@ -102,7 +102,6 @@ class SendAdminMessage extends ChangeNotifier {
           "phone": phone!,
           "message": message!,
         }));
-    print(response.body);
     if (response.statusCode == 200) {
       return true;
     } else {

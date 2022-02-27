@@ -1,4 +1,5 @@
-import 'package:flutter/cupertino.dart';
+// ignore_for_file: file_names
+
 import 'package:flutter/material.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
 import 'package:get/get_utils/src/extensions/internacionalization.dart';
@@ -44,7 +45,7 @@ class MyAddressCard extends StatelessWidget {
                   ),
                 ),
               ),
-              IconButton(onPressed: onDelete, icon: Icon(IconlyBold.delete, size: 30, color: kPrimaryColor))
+              IconButton(onPressed: onDelete, icon: const Icon(IconlyBold.delete, size: 30, color: kPrimaryColor))
             ],
           ),
         ),

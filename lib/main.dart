@@ -1,6 +1,7 @@
 // ignore_for_file: always_declare_return_types, type_annotate_public_apis
 
 import 'dart:io';
+
 import 'package:device_preview/device_preview.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -11,9 +12,9 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
-import 'package:sharaf_yabi_ecommerce/screens/Others/SpashScreen/SplashScreen.dart';
 import 'package:sharaf_yabi_ecommerce/constants/constants.dart';
 import 'package:sharaf_yabi_ecommerce/controllers/AllContollerBindings.dart';
+import 'package:sharaf_yabi_ecommerce/screens/Others/SpashScreen/SplashScreen.dart';
 import 'package:sharaf_yabi_ecommerce/utils/translations.dart';
 
 class MyHttpOverrides extends HttpOverrides {

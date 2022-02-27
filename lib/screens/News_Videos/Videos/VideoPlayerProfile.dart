@@ -70,11 +70,11 @@ class _VideoPLayerMineState extends State<VideoPLayerMine> {
                             progressBarSettings: FlickProgressBarSettings(),
                           ),
                         ),
-                        preferredDeviceOrientation: [
+                        preferredDeviceOrientation: const [
                           DeviceOrientation.portraitDown,
                           DeviceOrientation.portraitUp,
                         ],
-                        preferredDeviceOrientationFullscreen: [DeviceOrientation.portraitDown, DeviceOrientation.portraitUp],
+                        preferredDeviceOrientationFullscreen: const [DeviceOrientation.portraitDown, DeviceOrientation.portraitUp],
                         // flickVideoWithControlsFullscreen: ,
                         flickManager: flickManager),
                   ),

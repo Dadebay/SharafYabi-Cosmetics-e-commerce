@@ -11,13 +11,13 @@ import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:sharaf_yabi_ecommerce/components/appBar.dart';
 import 'package:sharaf_yabi_ecommerce/constants/constants.dart';
 import 'package:sharaf_yabi_ecommerce/constants/shimmers.dart';
-import 'package:sharaf_yabi_ecommerce/screens/Others/ProductProfilPage/ProductProfil.dart';
 import 'package:sharaf_yabi_ecommerce/constants/widgets.dart';
 import 'package:sharaf_yabi_ecommerce/controllers/CartPageController.dart';
 import 'package:sharaf_yabi_ecommerce/controllers/Fav_Cart_Controller.dart';
 import 'package:sharaf_yabi_ecommerce/controllers/FilterController.dart';
 import 'package:sharaf_yabi_ecommerce/controllers/HomePageController.dart';
 import 'package:sharaf_yabi_ecommerce/screens/Cart/OrderPage.dart';
+import 'package:sharaf_yabi_ecommerce/screens/Others/ProductProfilPage/ProductProfil.dart';
 
 class CartPage extends StatefulWidget {
   @override
@@ -163,8 +163,8 @@ class _CartPageState extends State<CartPage> {
                 children: [
                   Container(
                     margin: const EdgeInsets.all(8.0),
-                    padding: EdgeInsets.all(8.0),
-                    decoration: BoxDecoration(borderRadius: borderRadius15, color: Colors.white),
+                    padding: const EdgeInsets.all(8.0),
+                    decoration: const BoxDecoration(borderRadius: borderRadius15, color: Colors.white),
                     child: CachedNetworkImage(
                         fadeInCurve: Curves.ease,
                         imageUrl: "$serverImage/${cartPageController.list[index]["image"]}-mini.webp",

@@ -1,11 +1,10 @@
-// ignore_for_file: file_names, must_be_immutable, deprecated_member_use
+// ignore_for_file: file_names, must_be_immutable, deprecated_member_use, use_build_context_synchronously
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
 import 'package:get/get.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
-import 'package:sharaf_yabi_ecommerce/components/appBar.dart';
 import 'package:sharaf_yabi_ecommerce/constants/constants.dart';
 import 'package:sharaf_yabi_ecommerce/constants/widgets.dart';
 import 'package:sharaf_yabi_ecommerce/models/UserModels/AuthModel.dart';
@@ -34,7 +33,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
         backgroundColor: kPrimaryColor,
         centerTitle: true,
         leading: IconButton(
-          icon: Icon(
+          icon: const Icon(
             IconlyLight.arrowLeft2,
           ),
           onPressed: () async {
@@ -47,7 +46,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
           "forgotPasswordText".tr,
           maxLines: 1,
           textAlign: TextAlign.center,
-          style: TextStyle(color: Colors.white, fontFamily: montserratSemiBold, fontSize: 20),
+          style: const TextStyle(color: Colors.white, fontFamily: montserratSemiBold, fontSize: 20),
         ),
       ),
       body: Container(

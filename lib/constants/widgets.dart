@@ -9,7 +9,6 @@ import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:sharaf_yabi_ecommerce/controllers/FilterController.dart';
-import 'package:shimmer/shimmer.dart';
 
 import 'constants.dart';
 
@@ -319,4 +318,19 @@ Widget cachedMyImage(String image) {
           ),
       placeholder: (context, url) => Center(child: spinKit()),
       errorWidget: (context, url, error) => noImage());
+}
+
+Widget noCommentwidget() {
+  return Center(
+    child: Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Lottie.asset(noCommentJson, height: 200, animate: true),
+        ),
+        Text("nocomment".tr, style: const TextStyle(color: Colors.black, fontSize: 18, fontFamily: montserratMedium)),
+      ],
+    ),
+  );
 }
