@@ -14,6 +14,7 @@ class SettingsController extends GetxController {
   RxInt bannerSelectedIndex = 0.obs;
   RxInt bottomBadgeCount = 0.obs;
   RxInt addressCount = 0.obs;
+  RxBool dialogsBool = false.obs;
 
   var tm = const Locale(
     'tr',

@@ -11,29 +11,14 @@ import 'package:sharaf_yabi_ecommerce/constants/shimmers.dart';
 import 'package:sharaf_yabi_ecommerce/constants/widgets.dart';
 import 'package:sharaf_yabi_ecommerce/models/CategoryModel.dart';
 
-class CategoryPage extends StatefulWidget {
-  @override
-  State<CategoryPage> createState() => _CategoryPageState();
-}
-
-class _CategoryPageState extends State<CategoryPage> {
-  Future<List<CategoryModel>>? getCategory;
-  Future<List<CategoryModel>>? getBrand;
-
-  @override
-  void initState() {
-    super.initState();
-    getCategory = CategoryModel().getCategory();
-    getBrand = CategoryModel().getBrand();
-  }
-
+class CategoryPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final double sizeWidth = MediaQuery.of(context).size.width;
     return DefaultTabController(
       length: 2,
       child: Scaffold(
-        backgroundColor: kPrimaryColor,
+        backgroundColor: Colors.white,
         appBar: PreferredSize(
             preferredSize: sizeWidth > 800 ? const Size.fromHeight(70) : const Size.fromHeight(kToolbarHeight),
             child: MyAppBar(icon: IconlyLight.search, onTap: () {}, backArrow: false, iconRemove: false)),
@@ -41,18 +26,12 @@ class _CategoryPageState extends State<CategoryPage> {
           children: [
             TabBar(
                 labelPadding: sizeWidth > 800 ? const EdgeInsets.symmetric(vertical: 8) : EdgeInsets.zero,
-                labelStyle: TextStyle(fontFamily: montserratSemiBold, fontSize: sizeWidth > 800 ? 24 : 18),
-                unselectedLabelStyle: TextStyle(fontFamily: montserratMedium, fontSize: sizeWidth > 800 ? 24 : 18),
+                labelStyle: TextStyle(fontFamily: montserratMedium, fontSize: sizeWidth > 800 ? 24 : 17),
+                unselectedLabelStyle: TextStyle(fontFamily: montserratRegular, fontSize: sizeWidth > 800 ? 24 : 17),
                 labelColor: kPrimaryColor,
-                unselectedLabelColor: Colors.white,
+                unselectedLabelColor: Colors.black,
                 indicatorSize: TabBarIndicatorSize.tab,
-                indicatorColor: Colors.white,
-                indicator: const BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.only(
-                      topRight: Radius.circular(10),
-                      topLeft: Radius.circular(10),
-                    )),
+                indicatorColor: kPrimaryColor,
                 tabs: [
                   Tab(
                     text: "category".tr,
@@ -62,32 +41,32 @@ class _CategoryPageState extends State<CategoryPage> {
                   ),
                 ]),
             Expanded(
-              child: Container(
-                color: Colors.white,
-                child: TabBarView(
-                  children: [
-                    FutureBuilder<List<CategoryModel>>(
-                        future: getCategory,
-                        builder: (context, snapshot) {
-                          if (snapshot.hasError) {
-                            return errorConnection(
-                                onTap: () {
-                                  CategoryModel().getCategory();
-                                },
-                                sizeWidth: sizeWidth);
-                          } else if (snapshot.hasData) {
-                            return ListView.builder(
-                              itemCount: snapshot.data?.length,
-                              physics: const BouncingScrollPhysics(),
-                              itemBuilder: (BuildContext context, int index) {
-                                return CategoryCard(category: snapshot.data?[index]);
+              child: TabBarView(
+                children: [
+                  FutureBuilder<List<CategoryModel>>(
+                      future: CategoryModel().getCategory(),
+                      builder: (context, snapshot) {
+                        if (snapshot.hasError) {
+                          return errorConnection(
+                              onTap: () {
+                                CategoryModel().getCategory();
                               },
-                            );
-                          }
-                          return shimmerCategory();
-                        }),
-                    FutureBuilder<List<CategoryModel>>(
-                        future: getBrand,
+                              sizeWidth: sizeWidth);
+                        } else if (snapshot.hasData) {
+                          return ListView.builder(
+                            itemCount: snapshot.data?.length,
+                            physics: const BouncingScrollPhysics(),
+                            itemBuilder: (BuildContext context, int index) {
+                              return CategoryCard(category: snapshot.data?[index]);
+                            },
+                          );
+                        }
+                        return shimmerCategory();
+                      }),
+                  Container(
+                    color: backgroundColor,
+                    child: FutureBuilder<List<CategoryModel>>(
+                        future: CategoryModel().getBrand(),
                         builder: (context, snapshot) {
                           if (snapshot.hasError) {
                             return errorConnection(
@@ -106,8 +85,8 @@ class _CategoryPageState extends State<CategoryPage> {
                           }
                           return shimmerBrand();
                         }),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
           ],

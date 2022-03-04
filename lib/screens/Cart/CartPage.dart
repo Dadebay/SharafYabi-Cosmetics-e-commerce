@@ -18,6 +18,7 @@ import 'package:sharaf_yabi_ecommerce/controllers/FilterController.dart';
 import 'package:sharaf_yabi_ecommerce/controllers/HomePageController.dart';
 import 'package:sharaf_yabi_ecommerce/screens/Cart/OrderPage.dart';
 import 'package:sharaf_yabi_ecommerce/screens/Others/ProductProfilPage/ProductProfil.dart';
+import 'package:vibration/vibration.dart';
 
 class CartPage extends StatefulWidget {
   @override
@@ -208,7 +209,7 @@ class _CartPageState extends State<CartPage> {
                             RichText(
                               overflow: TextOverflow.ellipsis,
                               text: TextSpan(children: <TextSpan>[
-                                TextSpan(text: "$priceMine", style: const TextStyle(fontFamily: montserratSemiBold, fontSize: 20, color: Colors.black)),
+                                TextSpan(text: "${priceMine.toStringAsFixed(2)}", style: const TextStyle(fontFamily: montserratSemiBold, fontSize: 20, color: Colors.black)),
                                 const TextSpan(text: "  m.", style: TextStyle(fontFamily: montserratMedium, fontSize: 16, color: Colors.black))
                               ]),
                             ),
@@ -216,14 +217,12 @@ class _CartPageState extends State<CartPage> {
                               padding: const EdgeInsets.symmetric(horizontal: 8),
                               child: Stack(
                                 children: [
-                                  Positioned(left: 0, right: 5, top: 10, child: Transform.rotate(angle: pi / -14, child: Container(height: 1, color: Colors.red))),
-                                  RichText(
-                                    overflow: TextOverflow.ellipsis,
-                                    text: TextSpan(children: <TextSpan>[
-                                      TextSpan(text: "$priceOLD", style: const TextStyle(fontFamily: montserratRegular, fontSize: 18, color: Colors.grey)),
-                                      const TextSpan(text: " m.", style: TextStyle(fontFamily: montserratRegular, fontSize: 12, color: Colors.grey))
-                                    ]),
-                                  ),
+                                  Positioned(left: 0, right: 0, top: 12, child: Transform.rotate(angle: pi / -8, child: Container(height: 1, color: Colors.red))),
+                                  Text("$priceOLD",
+                                      overflow: TextOverflow.ellipsis,
+                                      maxLines: 1,
+                                      textAlign: TextAlign.center,
+                                      style: const TextStyle(fontFamily: montserratRegular, fontSize: 16, color: Colors.grey)),
                                 ],
                               ),
                             )
@@ -235,7 +234,7 @@ class _CartPageState extends State<CartPage> {
                           overflow: TextOverflow.ellipsis,
                           maxLines: 4,
                           textAlign: TextAlign.center,
-                          style: const TextStyle(fontFamily: montserratSemiBold, fontSize: 18, color: kPrimaryColor),
+                          style: const TextStyle(fontFamily: montserratSemiBold, fontSize: 18, color: Colors.black),
                         ),
                       Row(
                         children: [
@@ -255,15 +254,7 @@ class _CartPageState extends State<CartPage> {
 
                               setState(() {});
                             },
-                            child: Container(
-                                padding: const EdgeInsets.all(4),
-                                decoration: BoxDecoration(color: Colors.grey[200], shape: BoxShape.circle),
-                                child: cartPageController.list[index]["count"] == 1
-                                    ? const Icon(
-                                        IconlyLight.delete,
-                                        color: Colors.grey,
-                                      )
-                                    : const Icon(CupertinoIcons.minus)),
+                            child: Container(padding: const EdgeInsets.all(4), decoration: BoxDecoration(color: Colors.grey[200], shape: BoxShape.circle), child: const Icon(CupertinoIcons.minus)),
                           ),
                           Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -275,13 +266,23 @@ class _CartPageState extends State<CartPage> {
                           ),
                           GestureDetector(
                             onTap: () {
-                              showCustomToast(
-                                context,
-                                "productCountAdded".tr,
-                              );
-                              _homePageController.searchAndAdd(cartPageController.list[index]["id"], cartPageController.list[index]["price"]);
-                              cartPageController.addToCard(cartPageController.list[index]["id"]);
-                              favCartController.addCart(cartPageController.list[index]["id"], cartPageController.list[index]["price"]);
+                              final int stockCount = cartPageController.list[index]["count"];
+                              final int quantity = cartPageController.list[index]["count"] + 1;
+                              if (stockCount > quantity) {
+                                showCustomToast(
+                                  context,
+                                  "productCountAdded".tr,
+                                );
+                                _homePageController.searchAndAdd(cartPageController.list[index]["id"], "$priceMine");
+                                cartPageController.addToCard(cartPageController.list[index]["id"]);
+                                favCartController.addCart(cartPageController.list[index]["id"], "$priceMine");
+                              } else {
+                                Vibration.vibrate();
+                                showCustomToast(
+                                  context,
+                                  "emptyStockCount".tr,
+                                );
+                              }
                             },
                             child: Container(
                                 padding: const EdgeInsets.all(4),

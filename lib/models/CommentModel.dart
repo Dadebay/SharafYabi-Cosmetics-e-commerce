@@ -42,6 +42,7 @@ class CommentModel extends ChangeNotifier {
   }
 
   Future writeComment({int? id, String? comment}) async {
+    print("come here");
     String lang = Get.locale!.languageCode;
     if (lang == "tr") lang = "tm";
     final token = await Auth().getToken();
@@ -57,6 +58,7 @@ class CommentModel extends ChangeNotifier {
         body: jsonEncode(<String, String>{
           "comment": comment!,
         }));
+    print(response.body);
     if (response.statusCode == 200) {
       return true;
     } else {

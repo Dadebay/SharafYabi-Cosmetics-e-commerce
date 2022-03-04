@@ -1,6 +1,7 @@
 // ignore_for_file: file_names
 
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:sharaf_yabi_ecommerce/constants/constants.dart';
@@ -31,7 +32,7 @@ class VideoCard extends StatelessWidget {
         children: [
           Stack(
             children: [
-              SizedBox(height: 200, child: cachedMyImage(image)),
+              SizedBox(height: 200, width: Get.size.width, child: cachedMyImage(image)),
               Positioned.fill(
                   child: Container(
                 decoration: const BoxDecoration(color: Colors.black54, borderRadius: borderRadius15),

@@ -5,33 +5,19 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:sharaf_yabi_ecommerce/cards/CommentCard.dart';
 import 'package:sharaf_yabi_ecommerce/components/appBar.dart';
-import 'package:sharaf_yabi_ecommerce/constants/constants.dart';
-import 'package:sharaf_yabi_ecommerce/constants/widgets.dart';
-import 'package:sharaf_yabi_ecommerce/controllers/ProductProfileController.dart';
+import 'package:sharaf_yabi_ecommerce/components/constants/constants.dart';
+import 'package:sharaf_yabi_ecommerce/components/constants/widgets.dart';
+import 'package:sharaf_yabi_ecommerce/controllers/SettingsController.dart';
+import 'package:sharaf_yabi_ecommerce/dialogs/diologs.dart';
 import 'package:sharaf_yabi_ecommerce/models/CommentModel.dart';
 import 'package:sharaf_yabi_ecommerce/models/UserModels/AuthModel.dart';
 import 'package:vibration/vibration.dart';
 
-class CommentsPage extends StatefulWidget {
+class CommentsPage extends StatelessWidget {
+  TextEditingController controller = TextEditingController();
   final int productID;
 
-  const CommentsPage({Key? key, required this.productID}) : super(key: key);
-
-  @override
-  State<CommentsPage> createState() => _CommentsPageState();
-}
-
-class _CommentsPageState extends State<CommentsPage> {
-  TextEditingController controller = TextEditingController();
-
-  ProductProfilController settingsController = Get.put(ProductProfilController());
-
-  @override
-  void initState() {
-    super.initState();
-    settingsController.commentID.value = 0;
-    settingsController.commentBool.value = false;
-  }
+  CommentsPage({Key? key, required this.productID}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -47,7 +33,7 @@ class _CommentsPageState extends State<CommentsPage> {
       body: Container(
           margin: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
           child: FutureBuilder<CommentModel>(
-              future: CommentModel().getComment(id: widget.productID),
+              future: CommentModel().getComment(id: productID),
               builder: (context, snapshot) {
                 if (snapshot.hasData == true) {
                   return snapshot.data!.count == 0
@@ -65,7 +51,7 @@ class _CommentsPageState extends State<CommentsPage> {
                                         addReplyButton: true,
                                         userName: "${snapshot.data!.comments![index].fullName}",
                                         userDescription: "${snapshot.data!.comments![index].commentMine}",
-                                        productID: widget.productID,
+                                        productID: productID,
                                         commentID: snapshot.data!.comments![index].id!),
                                     Padding(
                                       padding: const EdgeInsets.only(left: 25),
@@ -76,7 +62,7 @@ class _CommentsPageState extends State<CommentsPage> {
                                               addReplyButton: false,
                                               userName: "${snapshot.data!.comments![index].subComment![indexx].fullName}",
                                               userDescription: "${snapshot.data!.comments![index].subComment![indexx].commentMine}",
-                                              productID: widget.productID,
+                                              productID: productID,
                                               commentID: snapshot.data!.comments![index].id!);
                                         }),
                                       ),
@@ -108,71 +94,28 @@ class _CommentsPageState extends State<CommentsPage> {
           if (token == null) {
             showSnackBar("retry", "pleaseLogin", Colors.red);
           } else {
-            Get.defaultDialog(
-              radius: 4,
-              title: "writeComment".tr,
-              titleStyle: const TextStyle(color: Colors.black, fontFamily: montserratSemiBold, fontSize: 24),
-              content: Column(
-                children: [
-                  TextFormField(
-                    controller: controller,
-                    textCapitalization: TextCapitalization.sentences,
-                    cursorColor: kPrimaryColor,
-                    maxLines: 3,
-                    inputFormatters: [
-                      LengthLimitingTextInputFormatter(70),
-                    ],
-                    style: const TextStyle(color: Colors.black, fontSize: 18, fontFamily: montserratMedium),
-                    validator: (value) {
-                      if (value!.isEmpty) {
-                        return "errorEmpty".tr;
-                      } else {
-                        return null;
-                      }
-                    },
-                    decoration: InputDecoration(
-                        label: Text("writeComment".tr),
-                        alignLabelWithHint: true,
-                        prefixIconConstraints: const BoxConstraints.tightForFinite(),
-                        labelStyle: const TextStyle(color: Colors.grey, fontFamily: montserratMedium),
-                        constraints: const BoxConstraints(),
-                        contentPadding: const EdgeInsets.symmetric(vertical: 15, horizontal: 15),
-                        hintStyle: const TextStyle(color: Colors.grey, fontSize: 18, fontFamily: montserratMedium),
-                        border: const OutlineInputBorder(borderRadius: borderRadius10, borderSide: BorderSide(color: kPrimaryColor)),
-                        enabledBorder: OutlineInputBorder(
-                            borderRadius: borderRadius10,
-                            borderSide: BorderSide(
-                              color: Colors.grey.shade400,
-                            )),
-                        focusedBorder: const OutlineInputBorder(borderRadius: borderRadius10, borderSide: BorderSide(color: kPrimaryColor, width: 2))),
-                  ),
-                  const SizedBox(height: 20),
-                  SizedBox(
-                    width: Get.size.width,
-                    child: RaisedButton(
-                        onPressed: () {
-                          CommentModel()
-                              .writeComment(
-                            id: widget.productID,
-                            comment: controller.text,
-                          )
-                              .then((value) {
-                            if (value == true) {
-                              Get.back();
-                              showSnackBar("commentAdded", "commentAddedSubtitle", kPrimaryColor);
-                              controller.clear();
-                            } else {
-                              Vibration.vibrate();
-                              showSnackBar("retry", "error404", kPrimaryColor);
-                              controller.clear();
-                            }
-                          });
-                        },
-                        color: kPrimaryColor,
-                        child: Text("send".tr, style: const TextStyle(color: Colors.white, fontFamily: montserratSemiBold, fontSize: 20))),
-                  )
-                ],
-              ),
+            customDialog(
+              controller: controller,
+              hintText: "writeComment",
+              maxLength: 70,
+              maxLine: 3,
+              secondTextField: false,
+              title: "writeComment",
+              onTap: () {
+                Get.find<SettingsController>().dialogsBool.value = !Get.find<SettingsController>().dialogsBool.value;
+                CommentModel().writeComment(id: productID, comment: controller.text).then((value) {
+                  if (value == true) {
+                    Get.back();
+                    showSnackBar("commentAdded", "commentAddedSubtitle", kPrimaryColor);
+                    controller.clear();
+                  } else {
+                    Vibration.vibrate();
+                    showSnackBar("retry", "error404", kPrimaryColor);
+                    controller.clear();
+                  }
+                  Get.find<SettingsController>().dialogsBool.value = !Get.find<SettingsController>().dialogsBool.value;
+                });
+              },
             );
           }
         },

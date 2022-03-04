@@ -8,9 +8,9 @@ import 'package:sharaf_yabi_ecommerce/cards/ProductCard3.dart';
 import 'package:sharaf_yabi_ecommerce/components/agreeButton.dart';
 import 'package:sharaf_yabi_ecommerce/components/appBar.dart';
 import 'package:sharaf_yabi_ecommerce/components/bottomSheetName.dart';
-import 'package:sharaf_yabi_ecommerce/constants/constants.dart';
+import 'package:sharaf_yabi_ecommerce/components/constants/constants.dart';
 import 'package:sharaf_yabi_ecommerce/constants/shimmers.dart';
-import 'package:sharaf_yabi_ecommerce/constants/widgets.dart';
+import 'package:sharaf_yabi_ecommerce/components/constants/widgets.dart';
 import 'package:sharaf_yabi_ecommerce/controllers/FilterController.dart';
 import 'package:sharaf_yabi_ecommerce/models/CategoryModel.dart';
 
@@ -125,6 +125,7 @@ class _ShowAllProductsPageState extends State<ShowAllProductsPage> {
                                   name: filterController.list[index]["name"],
                                   price: filterController.list[index]["price"],
                                   discountValue: filterController.list[index]["discountValue"],
+                                  stockCount: filterController.list[index]["discountValue"],
                                 ));
                           });
                     } else if (filterController.loading.value == 2) {

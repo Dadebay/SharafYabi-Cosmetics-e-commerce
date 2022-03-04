@@ -29,10 +29,11 @@ class _SearchPageState extends State<SearchPage> {
     filterController.mainCategoryID.value = 0;
     filterController.loading.value = 0;
     filterController.list.clear();
-    filterController.fetchProducts();
     filterController.page.value = 1;
     filterController.search.value = "";
     filterController.brandList.clear();
+    filterController.categoryID.clear();
+    filterController.categoryIDOnlyID.clear();
     filterController.categoryList.clear();
     filterController.recomended.value = false;
     filterController.newInCome.value = false;
@@ -148,6 +149,7 @@ class _SearchPageState extends State<SearchPage> {
                                 name: filterController.list[index]["name"],
                                 price: filterController.list[index]["price"],
                                 discountValue: filterController.list[index]["discountValue"],
+                                stockCount: filterController.list[index]["stockCount"],
                               );
                             }),
                       );

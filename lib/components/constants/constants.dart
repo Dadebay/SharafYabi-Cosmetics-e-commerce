@@ -4,7 +4,7 @@ const String serverURL = "https://sharafyabi.com";
 const String serverImage = "https://sharafyabi.com";
 const String authServerUrl = "https://sharafyabi.com";
 
-const Color backgroundColor = Color(0xfff1f2f4);
+const Color backgroundColor = Color(0xfff2f2f2);
 const Color kPrimaryColor = Color(0xff4C844C);
 
 ///BorderRadius
@@ -25,7 +25,6 @@ const String enIcon = "assets/lang/en.png";
 //App Icons
 const String appLogo = 'assets/appLogo/greyLogo.png';
 const String appLogo2 = 'assets/appLogo/logo.png';
-const String shareIcon = 'assets/icons/share.png';
 
 //Empty States
 const String emptyFav = 'assets/emptyState/emptyFav.png';

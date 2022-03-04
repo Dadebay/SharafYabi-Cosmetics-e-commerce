@@ -5,8 +5,8 @@ import 'package:flutter_iconly/flutter_iconly.dart';
 import 'package:get/get.dart';
 import 'package:sharaf_yabi_ecommerce/cards/ProductCard3.dart';
 import 'package:sharaf_yabi_ecommerce/components/appBar.dart';
-import 'package:sharaf_yabi_ecommerce/constants/constants.dart';
-import 'package:sharaf_yabi_ecommerce/constants/widgets.dart';
+import 'package:sharaf_yabi_ecommerce/components/constants/constants.dart';
+import 'package:sharaf_yabi_ecommerce/components/constants/widgets.dart';
 import 'package:sharaf_yabi_ecommerce/controllers/Fav_Cart_Controller.dart';
 import 'package:sharaf_yabi_ecommerce/controllers/FilterController.dart';
 import 'package:sharaf_yabi_ecommerce/controllers/HomePageController.dart';
@@ -17,9 +17,7 @@ class FavoritePage extends StatefulWidget {
 }
 
 class _FavoritePageState extends State<FavoritePage> {
-  Fav_Cart_Controller fav_cart_controller = Get.put(Fav_Cart_Controller());
   final HomePageController _homePageController = Get.put(HomePageController());
-  final FilterController filterController = Get.put(FilterController());
 
   @override
   void initState() {
@@ -38,17 +36,17 @@ class _FavoritePageState extends State<FavoritePage> {
             addName: true,
             name: "favorite",
             onTap: () {
-              fav_cart_controller.clearFavList();
+              Get.find<Fav_Cart_Controller>().clearFavList();
               _homePageController.refreshList();
-              filterController.list.clear();
-              filterController.fetchProducts();
+              Get.find<FilterController>().list.clear();
+              Get.find<FilterController>().fetchProducts();
               setState(() {});
             },
             backArrow: true,
-            iconRemove: fav_cart_controller.favList.isNotEmpty ? true : false),
+            iconRemove: Get.find<Fav_Cart_Controller>().favList.isNotEmpty ? true : false),
         body: Obx(() {
           if (_homePageController.loadingFavlist.value == 1) {
-            return fav_cart_controller.favList.isEmpty
+            return Get.find<Fav_Cart_Controller>().favList.isEmpty
                 ? emptyData(imagePath: emptyFav, errorTitle: "emptyFavoriteTitle", errorSubtitle: "emptyFavoriteSubtitle")
                 : GridView.builder(
                     itemCount: _homePageController.listFavlist.length,
@@ -63,11 +61,12 @@ class _FavoritePageState extends State<FavoritePage> {
                           bottom: 4,
                         ),
                         child: ProductCard3(
-                          id: _homePageController.listFavlist[index]["id"],
-                          name: _homePageController.listFavlist[index]["name"],
+                          id: _homePageController.listFavlist[index]["id"] ?? 1,
+                          name: _homePageController.listFavlist[index]["name"] ?? "asdasd",
                           price: _homePageController.listFavlist[index]["price"],
                           image: _homePageController.listFavlist[index]["image"],
                           discountValue: _homePageController.listFavlist[index]["discountValue"],
+                          stockCount: _homePageController.listFavlist[index]["stockCount"],
                         ),
                       );
                     });
@@ -82,9 +81,7 @@ class _FavoritePageState extends State<FavoritePage> {
               child: spinKit(),
             );
           }
-          return Center(
-            child: spinKit(),
-          );
+          return emptyData(imagePath: emptyFav, errorTitle: "emptyFavoriteTitle", errorSubtitle: "emptyFavoriteSubtitle");
         }));
   }
 }

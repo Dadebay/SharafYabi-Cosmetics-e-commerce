@@ -1,6 +1,7 @@
 // ignore_for_file: file_names, avoid_dynamic_calls
 
 import 'dart:convert';
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -10,27 +11,35 @@ import 'package:sharaf_yabi_ecommerce/constants/constants.dart';
 import 'package:sharaf_yabi_ecommerce/controllers/FilterController.dart';
 
 class ProductsModel extends ChangeNotifier {
-  ProductsModel({this.id, this.productName, this.minValue, this.discountValue, this.price, this.imagePath, this.categoryName});
+  ProductsModel({
+    this.id,
+    this.productName,
+    this.minValue,
+    this.stockCount,
+    this.discountValue,
+    this.price,
+    this.imagePath,
+  });
 
   factory ProductsModel.fromJson(Map<dynamic, dynamic> json) {
     return ProductsModel(
       id: json["id"],
+      price: json["price"],
+      stockCount: json["stock"],
       productName: json["name"],
       minValue: json["min_value"],
       discountValue: json["discount_value"],
-      price: json["price"],
       imagePath: json["destination"],
-      categoryName: json["category_name"],
     );
   }
 
   final int? id;
   final int? minValue;
   final int? discountValue;
+  final int? stockCount;
   final String? productName;
   final String? price;
   final String? imagePath;
-  final String? categoryName;
 
   Future<List<ProductsModel>> getFavorites({required Map<String, String> parametrs}) async {
     final List<ProductsModel> products = [];
@@ -43,12 +52,15 @@ class ProductsModel extends ChangeNotifier {
         headers: <String, String>{
           HttpHeaders.contentTypeHeader: 'application/json; charset=UTF-8',
         });
+    log(response.body);
+
     if (response.statusCode == 200) {
       final responseJson = jsonDecode(response.body)["rows"];
       if (responseJson != null) {
         for (final Map product in responseJson) {
           products.add(ProductsModel.fromJson(product));
         }
+        print(products);
         return products;
       } else {
         return [];
@@ -69,6 +81,8 @@ class ProductsModel extends ChangeNotifier {
         headers: <String, String>{
           HttpHeaders.contentTypeHeader: 'application/json; charset=UTF-8',
         });
+    print(parametrs);
+    log(response.body);
     if (response.statusCode == 200) {
       final responseJson = jsonDecode(response.body)["rows"]["products"];
       final responseCount = jsonDecode(response.body)["rows"]["count"];

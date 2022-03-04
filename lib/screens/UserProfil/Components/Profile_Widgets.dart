@@ -3,16 +3,18 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
+// import 'package:flutter_restart/flutter_restart.dart';
 import 'package:get/get.dart';
+import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:restart_app/restart_app.dart';
-import 'package:sharaf_yabi_ecommerce/constants/constants.dart';
-import 'package:sharaf_yabi_ecommerce/constants/widgets.dart';
+import 'package:sharaf_yabi_ecommerce/components/constants/constants.dart';
+import 'package:sharaf_yabi_ecommerce/components/constants/widgets.dart';
+import 'package:sharaf_yabi_ecommerce/controllers/HomePageController.dart';
 import 'package:sharaf_yabi_ecommerce/controllers/SettingsController.dart';
+import 'package:sharaf_yabi_ecommerce/models/CategoryModel.dart';
 import 'package:sharaf_yabi_ecommerce/models/UserModels/AuthModel.dart';
 import 'package:sharaf_yabi_ecommerce/screens/BottomNavBar.dart';
 import 'package:share/share.dart';
-
-final SettingsController _settingsController = Get.put(SettingsController());
 
 void logOut(BuildContext context) {
   Get.bottomSheet(Container(
@@ -105,226 +107,122 @@ Widget buttonProfile({required String name, required IconData icon, required Fun
     child: ListTile(
       tileColor: Colors.white,
       focusColor: Colors.white,
-      shape: const RoundedRectangleBorder(borderRadius: borderRadius15),
+      shape: const RoundedRectangleBorder(borderRadius: borderRadius5),
       selectedColor: Colors.white,
       hoverColor: Colors.white,
       selectedTileColor: Colors.white,
-      contentPadding: const EdgeInsets.symmetric(vertical: 10, horizontal: 5),
       onTap: onTap,
-      leading: Container(
-        padding: const EdgeInsets.all(8),
-        margin: const EdgeInsets.only(left: 8),
-        decoration: BoxDecoration(color: const Color(0xfff1f2f4).withOpacity(0.6), borderRadius: borderRadius15),
-        child: Icon(
-          icon,
-          color: Colors.black,
-          size: 26,
-        ),
+      minVerticalPadding: 0.0,
+      minLeadingWidth: 10.0,
+      leading: Icon(
+        icon,
+        color: kPrimaryColor,
+        size: 26,
       ),
       title: Text(
         name.tr,
         maxLines: 1,
         textAlign: TextAlign.left,
         overflow: TextOverflow.ellipsis,
-        style: const TextStyle(color: Colors.black, fontFamily: montserratMedium, fontSize: 16),
-      ),
-      trailing: const Padding(
-        padding: EdgeInsets.only(right: 10),
-        child: Icon(
-          IconlyLight.arrowRightCircle,
-          color: Colors.black,
-          size: 24,
-        ),
+        style: const TextStyle(color: kPrimaryColor, fontFamily: montserratMedium, fontSize: 16),
       ),
     ),
   );
 }
 
-Container selectLang(BuildContext context) {
-  void changeLanguage() {
-    Get.bottomSheet(Container(
-      padding: const EdgeInsets.only(bottom: 20),
-      decoration: const BoxDecoration(color: Colors.white),
-      child: Wrap(
-        children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 10),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const SizedBox.shrink(),
-                Text(
-                  "select_language".tr,
-                  style: const TextStyle(color: Colors.black, fontFamily: montserratMedium, fontSize: 18),
-                ),
-                GestureDetector(
-                  onTap: () {
-                    Get.back();
-                  },
-                  child: const Icon(CupertinoIcons.xmark_circle, size: 22, color: Colors.black),
-                )
-              ],
-            ),
-          ),
-          Divider(
-            color: Colors.grey[200],
-            height: 1,
-            thickness: 2,
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 10),
-            child: ListTile(
+void changeLanguage() {
+  Get.bottomSheet(Container(
+    padding: const EdgeInsets.only(bottom: 20),
+    decoration: const BoxDecoration(color: Colors.white),
+    child: Wrap(
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 10),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              const SizedBox.shrink(),
+              Text(
+                "select_language".tr,
+                style: const TextStyle(color: Colors.black, fontFamily: montserratMedium, fontSize: 18),
+              ),
+              GestureDetector(
                 onTap: () {
-                  _settingsController.switchLang("tr");
-
                   Get.back();
                 },
-                leading: const CircleAvatar(
-                  backgroundImage: AssetImage(
-                    tmIcon,
-                  ),
-                  backgroundColor: Colors.white,
-                  radius: 20,
-                ),
-                title: const Text(
-                  "Türkmen",
-                  style: TextStyle(fontFamily: montserratMedium),
-                )),
+                child: const Icon(CupertinoIcons.xmark_circle, size: 22, color: Colors.black),
+              )
+            ],
           ),
-          dividerr(),
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 10),
-            child: ListTile(
-                onTap: () {
-                  _settingsController.switchLang("ru");
-
-                  Get.back();
-                },
-                leading: const CircleAvatar(
-                  backgroundImage: AssetImage(
-                    ruIcon,
-                  ),
-                  radius: 20,
-                  backgroundColor: Colors.white,
-                ),
-                title: const Text(
-                  "Русский",
-                  style: TextStyle(fontFamily: montserratMedium),
-                )),
-          ),
-          dividerr(),
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 10),
-            child: ListTile(
-                onTap: () {
-                  _settingsController.switchLang("en");
-                  Get.back();
-                },
-                leading: const CircleAvatar(
-                  backgroundImage: AssetImage(
-                    enIcon,
-                  ),
-                  radius: 20,
-                  backgroundColor: Colors.white,
-                ),
-                title: const Text(
-                  "English",
-                  style: TextStyle(fontFamily: montserratMedium),
-                )),
-          ),
-        ],
-      ),
-    ));
-  }
-
-  return Container(
-    margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-    decoration: const BoxDecoration(
-      borderRadius: borderRadius15,
-    ),
-    child: ListTile(
-      shape: const RoundedRectangleBorder(borderRadius: borderRadius15),
-      tileColor: Colors.white,
-      focusColor: Colors.white,
-      hoverColor: Colors.white,
-      selectedTileColor: Colors.white,
-      contentPadding: const EdgeInsets.symmetric(vertical: 10, horizontal: 5),
-      onTap: () async {
-        changeLanguage();
-      },
-      leading: Container(
-        padding: const EdgeInsets.all(8),
-        margin: const EdgeInsets.only(left: 8),
-        child: CircleAvatar(
-          backgroundImage: AssetImage(
-            Get.locale!.languageCode.toString() == "tr"
-                ? tmIcon
-                : Get.locale!.languageCode.toString() == "ru"
-                    ? ruIcon
-                    : enIcon,
-          ),
-          radius: 18,
         ),
-      ),
-      title: Text(
-        Get.locale!.languageCode.toString() == "tr"
-            ? "Türkmen dili"
-            : Get.locale!.languageCode.toString() == "ru"
-                ? "Rus dili"
-                : "English",
-        maxLines: 1,
-        textAlign: TextAlign.left,
-        overflow: TextOverflow.ellipsis,
-        style: const TextStyle(color: Colors.black, fontFamily: montserratMedium, fontSize: 16),
-      ),
-      trailing: const Padding(
-        padding: EdgeInsets.only(right: 10),
-        child: Icon(
-          IconlyLight.arrowRightCircle,
-          color: Colors.black,
-          size: 24,
+        Divider(
+          color: Colors.grey[200],
+          height: 1,
+          thickness: 2,
         ),
-      ),
-    ),
-  );
-}
-
-Container shareApp() {
-  return Container(
-    margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-    decoration: const BoxDecoration(
-      borderRadius: borderRadius15,
-    ),
-    child: ListTile(
-      shape: const RoundedRectangleBorder(borderRadius: borderRadius15),
-      tileColor: Colors.white,
-      focusColor: Colors.white,
-      hoverColor: Colors.white,
-      selectedTileColor: Colors.white,
-      contentPadding: const EdgeInsets.symmetric(vertical: 10, horizontal: 5),
-      onTap: () {
-        Share.share('https://play.google.com/store/apps/details?id=com.bilermennesil.sharafyabi', subject: 'Sharafyabi');
-      },
-      leading: Container(
-          padding: const EdgeInsets.all(8),
-          margin: const EdgeInsets.only(left: 8),
-          decoration: BoxDecoration(color: Colors.grey[100], borderRadius: borderRadius15),
-          child: Image.asset(shareIcon, width: 25)),
-      title: Text(
-        "share".tr,
-        maxLines: 1,
-        textAlign: TextAlign.left,
-        overflow: TextOverflow.ellipsis,
-        style: const TextStyle(color: Colors.black, fontFamily: montserratMedium, fontSize: 16),
-      ),
-      trailing: const Padding(
-        padding: EdgeInsets.only(right: 10),
-        child: Icon(
-          IconlyLight.arrowRightCircle,
-          color: Colors.black,
-          size: 24,
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 10),
+          child: ListTile(
+              onTap: () {
+                Get.find<SettingsController>().switchLang("tr");
+                Get.find<HomePageController>().refreshList();
+                Get.back();
+              },
+              leading: const CircleAvatar(
+                backgroundImage: AssetImage(
+                  tmIcon,
+                ),
+                backgroundColor: Colors.white,
+                radius: 20,
+              ),
+              title: const Text(
+                "Türkmen",
+                style: TextStyle(fontFamily: montserratMedium),
+              )),
         ),
-      ),
+        dividerr(),
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 10),
+          child: ListTile(
+              onTap: () {
+                Get.find<SettingsController>().switchLang("ru");
+                Get.find<HomePageController>().refreshList();
+                Get.back();
+              },
+              leading: const CircleAvatar(
+                backgroundImage: AssetImage(
+                  ruIcon,
+                ),
+                radius: 20,
+                backgroundColor: Colors.white,
+              ),
+              title: const Text(
+                "Русский",
+                style: TextStyle(fontFamily: montserratMedium),
+              )),
+        ),
+        dividerr(),
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 10),
+          child: ListTile(
+              onTap: () {
+                Get.find<SettingsController>().switchLang("en");
+                Get.find<HomePageController>().refreshList();
+                Get.back();
+              },
+              leading: const CircleAvatar(
+                backgroundImage: AssetImage(
+                  enIcon,
+                ),
+                radius: 20,
+                backgroundColor: Colors.white,
+              ),
+              title: const Text(
+                "English",
+                style: TextStyle(fontFamily: montserratMedium),
+              )),
+        ),
+      ],
     ),
-  );
+  ));
 }

@@ -15,8 +15,8 @@ GridView shimmer(int count) {
           margin: const EdgeInsets.all(4),
           child: RaisedButton(
               padding: const EdgeInsets.all(10),
-              elevation: 1,
-              shape: const RoundedRectangleBorder(borderRadius: borderRadius10),
+              elevation: 0,
+              shape: const RoundedRectangleBorder(borderRadius: borderRadius5),
               color: Colors.white,
               onPressed: () {},
               child: Column(

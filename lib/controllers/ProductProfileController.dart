@@ -5,6 +5,4 @@ import 'package:get/state_manager.dart';
 class ProductProfilController extends GetxController {
   RxInt stockCount = 0.obs;
   RxInt quantity = 1.obs;
-  RxBool commentBool = false.obs;
-  RxInt commentID = 0.obs;
 }

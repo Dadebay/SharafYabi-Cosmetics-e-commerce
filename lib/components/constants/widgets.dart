@@ -249,24 +249,21 @@ CustomFooter loadMore() {
   });
 }
 
-Padding namePart({Function()? onTap, String? name, double? sizeWidth, double? sizeHeight}) {
-  return Padding(
-    padding: const EdgeInsets.only(top: 20, left: 15, right: 15, bottom: 15),
+Widget namePart({Function()? onTap, String? name, double? sizeWidth, double? sizeHeight}) {
+  return Container(
+    padding: const EdgeInsets.only(
+      left: 15,
+      top: 20,
+      right: 10,
+    ),
     child: Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Text(name!, style: TextStyle(color: Colors.black, fontFamily: montserratSemiBold, fontSize: sizeWidth! > 800 ? 28 : 18)),
-        GestureDetector(
-          onTap: onTap,
-          child: Row(
-            children: [
-              Text("all".tr, style: TextStyle(color: kPrimaryColor, fontFamily: montserratMedium, fontSize: sizeWidth > 800 ? 22 : 14)),
-              const SizedBox(
-                width: 8,
-              ),
-              Icon(IconlyLight.arrowRightCircle, size: sizeWidth > 800 ? 25 : 20, color: kPrimaryColor),
-            ],
-          ),
+        IconButton(
+          padding: EdgeInsets.symmetric(horizontal: 8),
+          icon: Icon(IconlyLight.arrowRight, size: sizeWidth > 800 ? 30 : 25, color: kPrimaryColor),
+          onPressed: onTap,
         )
       ],
     ),

@@ -14,6 +14,7 @@ import 'package:sharaf_yabi_ecommerce/controllers/Fav_Cart_Controller.dart';
 import 'package:sharaf_yabi_ecommerce/controllers/FilterController.dart';
 import 'package:sharaf_yabi_ecommerce/controllers/HomePageController.dart';
 import 'package:sharaf_yabi_ecommerce/screens/Others/ProductProfilPage/ProductProfil.dart';
+import 'package:vibration/vibration.dart';
 
 class ProductCard3 extends StatefulWidget {
   final int? id;
@@ -22,8 +23,10 @@ class ProductCard3 extends StatefulWidget {
   final String? image;
   final int? discountValue;
   final bool? addCart;
+  final int? stockCount;
+  final bool? newIncome;
 
-  const ProductCard3({Key? key, this.name, this.id, this.discountValue, this.price, this.image, this.addCart}) : super(key: key);
+  const ProductCard3({Key? key, this.name, this.id, this.discountValue, this.price, this.image, this.addCart, required this.stockCount, this.newIncome}) : super(key: key);
 
   @override
   State<ProductCard3> createState() => _ProductCard3State();
@@ -61,7 +64,7 @@ class _ProductCard3State extends State<ProductCard3> {
 
   @override
   Widget build(BuildContext context) {
-    favCartController.cartList.isNotEmpty ? changeCartCount() : null;
+    changeCartCount();
     final double sizeHeight = MediaQuery.of(context).size.height;
     final double sizeWidth = MediaQuery.of(context).size.width;
     return GestureDetector(
@@ -78,19 +81,20 @@ class _ProductCard3State extends State<ProductCard3> {
           pageTransitionAnimation: PageTransitionAnimation.cupertino,
         );
       },
-      child: Material(
-        elevation: 1,
-        shape: const RoundedRectangleBorder(borderRadius: borderRadius5),
-        child: Container(
-          decoration: const BoxDecoration(color: Colors.white, borderRadius: borderRadius5),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              imageExpanded(),
-              namePartMine(sizeWidth, sizeHeight),
-            ],
-          ),
+      child: Container(
+        margin: EdgeInsets.all(5),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          border: Border.all(color: addCart ? kPrimaryColor : Colors.white, width: 1.5),
+          borderRadius: borderRadius5,
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.end,
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            imageExpanded(),
+            namePartMine(sizeWidth, sizeHeight),
+          ],
         ),
       ),
     );
@@ -152,11 +156,12 @@ class _ProductCard3State extends State<ProductCard3> {
   }
 
   discountedPriceWidget() {
+    double staticPrice = double.parse(priceMine.toStringAsFixed(2));
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Text(
-          "$priceMine m.",
+          "$staticPrice m.",
           overflow: TextOverflow.ellipsis,
           maxLines: 1,
           textAlign: TextAlign.center,
@@ -166,14 +171,8 @@ class _ProductCard3State extends State<ProductCard3> {
           padding: const EdgeInsets.symmetric(horizontal: 8),
           child: Stack(
             children: [
-              Positioned(left: 0, right: 5, top: 10, child: Transform.rotate(angle: pi / -14, child: Container(height: 1, color: Colors.red))),
-              RichText(
-                overflow: TextOverflow.ellipsis,
-                text: TextSpan(children: <TextSpan>[
-                  TextSpan(text: "$priceOLD", style: const TextStyle(fontFamily: montserratRegular, fontSize: 16, color: Colors.grey)),
-                  const TextSpan(text: " m.", style: TextStyle(fontFamily: montserratRegular, fontSize: 10, color: Colors.grey))
-                ]),
-              ),
+              Positioned(left: 0, right: 0, top: 12, child: Transform.rotate(angle: pi / -8, child: Container(height: 1, color: Colors.red))),
+              Text("$priceOLD", overflow: TextOverflow.ellipsis, maxLines: 1, textAlign: TextAlign.center, style: const TextStyle(fontFamily: montserratRegular, fontSize: 16, color: Colors.grey)),
             ],
           ),
         )
@@ -191,13 +190,13 @@ class _ProductCard3State extends State<ProductCard3> {
             "addedToCardSubtitle".tr,
           );
           quantity++;
-          _homePageController.searchAndAdd(widget.id!, "${widget.price}");
-          favCartController.addCart(widget.id!, "${widget.price}");
+          _homePageController.searchAndAdd(widget.id!, "$priceMine");
+          favCartController.addCart(widget.id!, "$priceMine");
         });
       },
       elevation: 0,
       disabledElevation: 0,
-      shape: const RoundedRectangleBorder(borderRadius: borderRadius10),
+      shape: const RoundedRectangleBorder(borderRadius: borderRadius5),
       color: kPrimaryColor,
       child: Text(
         "addCart".tr,
@@ -252,15 +251,23 @@ class _ProductCard3State extends State<ProductCard3> {
           ),
           GestureDetector(
             onTap: () {
-              showCustomToast(
-                context,
-                "productCountAdded".tr,
-              );
-              quantity++;
+              if (widget.stockCount! > (quantity + 1)) {
+                showCustomToast(
+                  context,
+                  "productCountAdded".tr,
+                );
+                quantity++;
 
-              _homePageController.searchAndAdd(widget.id!, "${widget.price}");
-              favCartController.addCart(widget.id!, "${widget.price}");
-              setState(() {});
+                _homePageController.searchAndAdd(widget.id!, "$priceMine");
+                favCartController.addCart(widget.id!, "$priceMine");
+                setState(() {});
+              } else {
+                Vibration.vibrate();
+                showCustomToast(
+                  context,
+                  "emptyStockCount".tr,
+                );
+              }
             },
             child: PhysicalModel(
               elevation: 1,
@@ -306,33 +313,24 @@ class _ProductCard3State extends State<ProductCard3> {
             top: 8,
             right: 8,
             child: GestureDetector(
-              onTap: () {
-                setState(() {
-                  favButton = !favButton;
-                  final int? id = widget.id;
-                  favCartController.toggleFav(id ?? 0);
-                  if (favButton == true) {
-                    showCustomToast(context, "addedfavorite");
-                  } else {
-                    showCustomToast(context, "removedfavorite");
-                  }
-                });
-              },
-              child: PhysicalModel(
-                elevation: 2,
-                color: Colors.transparent,
-                shape: BoxShape.circle,
-                child: Container(
-                    padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 5),
-                    decoration: const BoxDecoration(color: Colors.white, shape: BoxShape.circle),
-                    child: Icon(favButton ? IconlyBold.heart : IconlyLight.heart, color: Colors.red)),
-              ),
-            ),
+                onTap: () {
+                  setState(() {
+                    favButton = !favButton;
+                    final int? id = widget.id;
+                    favCartController.toggleFav(id ?? 0);
+                    if (favButton == true) {
+                      showCustomToast(context, "addedfavorite");
+                    } else {
+                      showCustomToast(context, "removedfavorite");
+                    }
+                  });
+                },
+                child: Icon(favButton ? IconlyBold.heart : IconlyLight.heart, color: favButton ? Colors.red : Colors.grey)),
           ),
           if (widget.discountValue != 0 && widget.discountValue != null)
             Positioned(
                 bottom: 8,
-                right: 8,
+                left: 8,
                 child: Container(
                   padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 4),
                   decoration: const BoxDecoration(color: Colors.red, borderRadius: borderRadius5),

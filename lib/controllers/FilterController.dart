@@ -60,9 +60,9 @@ class FilterController extends GetxController {
           "name": element.productName ?? "Ady",
           "price": element.price ?? "0",
           "image": element.imagePath ?? "",
-          "categoryName": element.categoryName ?? "",
           "discountValue": element.discountValue ?? 0,
-          "count": addCart
+          "count": addCart,
+          "stockCount": element.stockCount ?? 0
         });
       }
 

@@ -60,7 +60,7 @@ class Banners extends StatelessWidget {
                                       pageName: "Sharafyabi",
                                       whichFilter: 0,
                                     ),
-                                    withNavBar: true, // OPTIONAL VALUE. True by default.
+                                    withNavBar: true,
                                     pageTransitionAnimation: PageTransitionAnimation.cupertino,
                                   );
                                 } else if (pathID == 3) {
@@ -74,31 +74,42 @@ class Banners extends StatelessWidget {
                                     withNavBar: true, // OPTIONAL VALUE. True by default.
                                     pageTransitionAnimation: PageTransitionAnimation.cupertino,
                                   );
+                                } else if (pathID == 4) {
+                                  filterController.mainCategoryID.value = 0;
+                                  filterController.categoryID.add({"id": itemID, "mainCategoryID": 0});
+
+                                  pushNewScreen(
+                                    context,
+                                    screen: const ShowAllProductsPage(
+                                      pageName: "Sharafyabi",
+                                      whichFilter: 0,
+                                    ),
+                                    withNavBar: true,
+                                    pageTransitionAnimation: PageTransitionAnimation.cupertino,
+                                  );
                                 }
                               },
-                              shape: const RoundedRectangleBorder(borderRadius: borderRadius10),
+                              shape: const RoundedRectangleBorder(borderRadius: borderRadius5),
                               padding: EdgeInsets.zero,
                               disabledColor: Colors.red,
-                              elevation: 1,
+                              elevation: 0,
                               disabledElevation: 1,
                               color: Colors.white,
-                              child: ClipRRect(
-                                borderRadius: borderRadius10,
-                                child: CachedNetworkImage(
-                                    fadeInCurve: Curves.ease,
-                                    imageUrl: "$serverImage/${snapshot.data![index].imagePath}-big.webp",
-                                    imageBuilder: (context, imageProvider) => Container(
-                                          decoration: BoxDecoration(
-                                            borderRadius: borderRadius10,
-                                            image: DecorationImage(
-                                              image: imageProvider,
-                                              fit: BoxFit.cover,
-                                            ),
+                              child: CachedNetworkImage(
+                                  fadeInCurve: Curves.ease,
+                                  imageUrl: "$serverImage/${snapshot.data![index].imagePath}-big.webp",
+                                  imageBuilder: (context, imageProvider) => Container(
+                                        width: Get.size.width,
+                                        decoration: BoxDecoration(
+                                          borderRadius: borderRadius5,
+                                          image: DecorationImage(
+                                            image: imageProvider,
+                                            fit: BoxFit.cover,
                                           ),
                                         ),
-                                    placeholder: (context, url) => Center(child: spinKit()),
-                                    errorWidget: (context, url, error) => noImage()),
-                              ),
+                                      ),
+                                  placeholder: (context, url) => Center(child: spinKit()),
+                                  errorWidget: (context, url, error) => noImage()),
                             ),
                           );
                         },

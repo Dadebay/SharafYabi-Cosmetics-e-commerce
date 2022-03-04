@@ -43,7 +43,7 @@ class HomePageController extends GetxController {
   void fetchDiscountedProducts() async {
     final products = await ProductsModel().getProducts(parametrs: {
       "page": '${1}',
-      "limit": '30',
+      "limit": '4',
       "discounts": "${true}",
     });
     if (products.isNotEmpty) {
@@ -60,7 +60,8 @@ class HomePageController extends GetxController {
           "price": element.price ?? "0",
           "image": element.imagePath ?? "",
           "discountValue": element.discountValue ?? 0,
-          "count": addCart
+          "count": addCart,
+          "stockCount": element.stockCount ?? 0
         });
       }
 
@@ -75,7 +76,7 @@ class HomePageController extends GetxController {
   void fetchNewInComeProducts() async {
     final products = await ProductsModel().getProducts(parametrs: {
       "page": '${1}',
-      "limit": '30',
+      "limit": '4',
       "new_in_come": "${true}",
     });
     if (products.isNotEmpty) {
@@ -92,7 +93,8 @@ class HomePageController extends GetxController {
           "price": element.price ?? "0",
           "image": element.imagePath ?? "",
           "discountValue": element.discountValue ?? 0,
-          "count": addCartNewInCome
+          "count": addCartNewInCome,
+          "stockCount": element.stockCount ?? 0
         });
       }
 
@@ -107,7 +109,7 @@ class HomePageController extends GetxController {
   void fetchPopularProducts() async {
     final products = await ProductsModel().getProducts(parametrs: {
       "page": '${1}',
-      "limit": '30',
+      "limit": '10',
       "recomended": "${true}",
     });
     if (products.isNotEmpty) {
@@ -124,7 +126,8 @@ class HomePageController extends GetxController {
           "price": element.price ?? "0",
           "image": element.imagePath ?? "",
           "discountValue": element.discountValue ?? 0,
-          "count": addCartRecomended
+          "count": addCartRecomended,
+          "stockCount": element.stockCount ?? 0
         });
       }
 
@@ -153,7 +156,8 @@ class HomePageController extends GetxController {
           "price": element.price ?? "0",
           "image": element.imagePath ?? "",
           "discountValue": element.discountValue ?? 0,
-          "count": addCartFavlist
+          "count": addCartFavlist,
+          "stockCount": element.stockCount ?? 0
         });
       }
 
@@ -268,11 +272,14 @@ class HomePageController extends GetxController {
   searchAndAdd(int iD, String priceMine) {
     bool value = false;
     chechFavAndSame(iD, priceMine);
-
+    print("i cannot find");
     for (final element in list) {
       if (element["id"] == iD) {
         value = true;
+        print("i cannot asdasdasd");
+
         addDiscountedItemCart(iD, priceMine);
+        print("i cannot findasda");
       }
     }
     if (value == false) {

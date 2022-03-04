@@ -3,10 +3,11 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:sharaf_yabi_ecommerce/constants/constants.dart';
 import 'package:sharaf_yabi_ecommerce/constants/widgets.dart';
+import 'package:sharaf_yabi_ecommerce/controllers/SettingsController.dart';
+import 'package:sharaf_yabi_ecommerce/dialogs/diologs.dart';
 import 'package:sharaf_yabi_ecommerce/models/CommentModel.dart';
 import 'package:sharaf_yabi_ecommerce/models/UserModels/AuthModel.dart';
 import 'package:vibration/vibration.dart';
@@ -73,7 +74,29 @@ class CommentCard extends StatelessWidget {
         if (token == null) {
           showSnackBar("retry", "pleaseLogin", Colors.red);
         } else {
-          commentDialog();
+          customDialog(
+            controller: controller,
+            hintText: "writeComment",
+            maxLength: 70,
+            maxLine: 3,
+            secondTextField: false,
+            title: "writeComment",
+            onTap: () {
+              Get.find<SettingsController>().dialogsBool.value = !Get.find<SettingsController>().dialogsBool.value;
+              CommentModel().writeSubComment(id: productID, comment: controller.text, commentID: commentID).then((value) {
+                if (value == true) {
+                  Get.back();
+                  showSnackBar("commentAdded", "commentAddedSubtitle", kPrimaryColor);
+                  controller.clear();
+                } else {
+                  Vibration.vibrate();
+                  showSnackBar("retry", "error404", kPrimaryColor);
+                  controller.clear();
+                }
+                Get.find<SettingsController>().dialogsBool.value = !Get.find<SettingsController>().dialogsBool.value;
+              });
+            },
+          );
         }
       },
       child: Padding(
@@ -88,70 +111,6 @@ class CommentCard extends StatelessWidget {
             Text("reply".tr, style: const TextStyle(color: Colors.black54, fontFamily: montserratSemiBold, fontSize: 14)),
           ],
         ),
-      ),
-    );
-  }
-
-  Future<dynamic> commentDialog() {
-    return Get.defaultDialog(
-      radius: 4,
-      title: "writeComment".tr,
-      titleStyle: const TextStyle(color: Colors.black, fontFamily: montserratSemiBold, fontSize: 24),
-      content: Column(
-        children: [
-          TextFormField(
-            controller: controller,
-            textCapitalization: TextCapitalization.sentences,
-            cursorColor: kPrimaryColor,
-            maxLines: 3,
-            inputFormatters: [
-              LengthLimitingTextInputFormatter(70),
-            ],
-            style: const TextStyle(color: Colors.black, fontSize: 18, fontFamily: montserratMedium),
-            validator: (value) {
-              if (value!.isEmpty) {
-                return "errorEmpty".tr;
-              } else {
-                return null;
-              }
-            },
-            decoration: InputDecoration(
-                label: Text("writeComment".tr),
-                alignLabelWithHint: true,
-                prefixIconConstraints: const BoxConstraints.tightForFinite(),
-                labelStyle: const TextStyle(color: Colors.grey, fontFamily: montserratMedium),
-                constraints: const BoxConstraints(),
-                contentPadding: const EdgeInsets.symmetric(vertical: 15, horizontal: 15),
-                hintStyle: const TextStyle(color: Colors.grey, fontSize: 18, fontFamily: montserratMedium),
-                border: const OutlineInputBorder(borderRadius: borderRadius10, borderSide: BorderSide(color: kPrimaryColor)),
-                enabledBorder: OutlineInputBorder(
-                    borderRadius: borderRadius10,
-                    borderSide: BorderSide(
-                      color: Colors.grey.shade400,
-                    )),
-                focusedBorder: const OutlineInputBorder(borderRadius: borderRadius10, borderSide: BorderSide(color: kPrimaryColor, width: 2))),
-          ),
-          const SizedBox(height: 20),
-          SizedBox(
-            width: Get.size.width,
-            child: RaisedButton(
-                onPressed: () {
-                  CommentModel().writeSubComment(id: productID, comment: controller.text, commentID: commentID).then((value) {
-                    if (value == true) {
-                      Get.back();
-                      showSnackBar("commentAdded", "commentAddedSubtitle", kPrimaryColor);
-                      controller.clear();
-                    } else {
-                      Vibration.vibrate();
-                      showSnackBar("retry", "error404", kPrimaryColor);
-                      controller.clear();
-                    }
-                  });
-                },
-                color: kPrimaryColor,
-                child: Text("send".tr, style: const TextStyle(color: Colors.white, fontFamily: montserratSemiBold, fontSize: 20))),
-          )
-        ],
       ),
     );
   }

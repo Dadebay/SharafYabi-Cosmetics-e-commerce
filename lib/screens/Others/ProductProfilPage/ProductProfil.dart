@@ -11,9 +11,9 @@ import 'package:get/get.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:sharaf_yabi_ecommerce/cards/CommentCard.dart';
 import 'package:sharaf_yabi_ecommerce/cards/ProductCard3.dart';
-import 'package:sharaf_yabi_ecommerce/constants/constants.dart';
+import 'package:sharaf_yabi_ecommerce/components/constants/constants.dart';
 import 'package:sharaf_yabi_ecommerce/constants/shimmers.dart';
-import 'package:sharaf_yabi_ecommerce/constants/widgets.dart';
+import 'package:sharaf_yabi_ecommerce/components/constants/widgets.dart';
 import 'package:sharaf_yabi_ecommerce/controllers/CartPageController.dart';
 import 'package:sharaf_yabi_ecommerce/controllers/Fav_Cart_Controller.dart';
 import 'package:sharaf_yabi_ecommerce/controllers/FilterController.dart';
@@ -129,31 +129,21 @@ class _ProductProfilState extends State<ProductProfil> {
             Navigator.of(context).pop();
           },
           icon: const Icon(
-            Icons.arrow_back,
+            Icons.arrow_back_ios,
             color: Colors.black,
+            size: 20,
           )),
       actions: [
-        GestureDetector(
-          onTap: () {
+        IconButton(
+          onPressed: () {
             Share.share(imageMine, subject: 'Sharafyabi programmasy');
           },
-          child: Image.asset(shareIcon, width: 27, color: Colors.black),
-        ),
-        GestureDetector(
-          onTap: () {
-            favCartController.toggleFav(widget.id!);
-            favBool = !favBool;
-            setState(() {});
-          },
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 15),
-            child: Icon(favBool == true ? IconlyBold.heart : IconlyLight.heart, color: favBool == true ? Colors.red : Colors.black, size: 28),
-          ),
-        ),
+          icon: Icon(Icons.share, color: Colors.black),
+        )
       ],
       title: Text(
         name,
-        style: const TextStyle(color: Colors.black, fontFamily: montserratMedium, fontSize: 18),
+        style: const TextStyle(color: Colors.black, fontFamily: montserratRegular, fontSize: 18),
       ),
     );
   }
@@ -161,89 +151,85 @@ class _ProductProfilState extends State<ProductProfil> {
   Widget bottomSheetMine(String? price) {
     return Container(
         child: addCartBool
-            ? Container(
-                decoration: const BoxDecoration(
-                  borderRadius: borderRadius10,
-                  color: kPrimaryColor,
-                ),
-                child: Row(
-                  children: [
-                    GestureDetector(
-                      onTap: () {
-                        favCartController.removeCart(widget.id!);
-                        _homePageController.searchAndRemove(widget.id!);
-                        cartPageController.removeCard(widget.id!);
-                        if (productProfilController.quantity.value > 1) {
-                          if (filterController.list.isNotEmpty) {
-                            for (final element2 in filterController.list) {
-                              if (element2["id"] == widget.id) {
-                                element2["count"]--;
-                              }
+            ? Row(
+                children: [
+                  GestureDetector(
+                    onTap: () {
+                      favCartController.removeCart(widget.id!);
+                      _homePageController.searchAndRemove(widget.id!);
+                      cartPageController.removeCard(widget.id!);
+                      if (productProfilController.quantity.value > 1) {
+                        if (filterController.list.isNotEmpty) {
+                          for (final element2 in filterController.list) {
+                            if (element2["id"] == widget.id) {
+                              element2["count"]--;
                             }
                           }
-                          productProfilController.quantity.value--;
-                          showCustomToast(
-                            context,
-                            "productCountAdded".tr,
-                          );
-                        } else {
-                          addCartBool = false;
-                          showCustomToast(
-                            context,
-                            "removedFromCartTitle".tr,
-                          );
                         }
-                        setState(() {});
-                      },
-                      child: const Padding(
-                        padding: EdgeInsets.all(8.0),
-                        child: Icon(CupertinoIcons.minus_circled, color: Colors.white, size: 25),
-                      ),
-                    ),
-                    Container(
-                      margin: const EdgeInsets.symmetric(horizontal: 15),
-                      child: Obx(() {
-                        return Text(
-                          "${productProfilController.quantity.value}",
-                          textAlign: TextAlign.center,
-                          style: const TextStyle(color: Colors.white, fontFamily: montserratBold, fontSize: 26),
+                        productProfilController.quantity.value--;
+                        showCustomToast(
+                          context,
+                          "productCountAdded".tr,
                         );
-                      }),
+                      } else {
+                        addCartBool = false;
+                        showCustomToast(
+                          context,
+                          "removedFromCartTitle".tr,
+                        );
+                      }
+                      setState(() {});
+                    },
+                    child: Container(
+                      padding: EdgeInsets.all(6.0),
+                      decoration: BoxDecoration(color: kPrimaryColor, borderRadius: borderRadius5),
+                      child: Icon(CupertinoIcons.minus, color: Colors.white, size: 20),
                     ),
-                    GestureDetector(
-                      onTap: () {
-                        if (productProfilController.stockCount.value > (productProfilController.quantity.value + 1)) {
-                          favCartController.addCart(widget.id!, price!);
-                          cartPageController.addToCard(widget.id!);
-                          _homePageController.searchAndAdd(widget.id!, price);
-                          productProfilController.quantity.value++;
-                          if (filterController.list.isNotEmpty) {
-                            for (final element2 in filterController.list) {
-                              if (element2["id"] == widget.id) {
-                                element2["count"]++;
-                              }
+                  ),
+                  Container(
+                    margin: const EdgeInsets.symmetric(horizontal: 30),
+                    child: Obx(() {
+                      return Text(
+                        "${productProfilController.quantity.value}",
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(color: Colors.black, fontFamily: montserratRegular, fontSize: 20),
+                      );
+                    }),
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      if (productProfilController.stockCount.value > (productProfilController.quantity.value + 1)) {
+                        favCartController.addCart(widget.id!, price!);
+                        cartPageController.addToCard(widget.id!);
+                        _homePageController.searchAndAdd(widget.id!, price);
+                        productProfilController.quantity.value++;
+                        if (filterController.list.isNotEmpty) {
+                          for (final element2 in filterController.list) {
+                            if (element2["id"] == widget.id) {
+                              element2["count"]++;
                             }
                           }
-                          showCustomToast(
-                            context,
-                            "productCountAdded".tr,
-                          );
-                        } else {
-                          Vibration.vibrate();
-                          showCustomToast(
-                            context,
-                            "emptyStockSubtitle".tr,
-                          );
                         }
-                        setState(() {});
-                      },
-                      child: const Padding(
-                        padding: EdgeInsets.all(8.0),
-                        child: Icon(CupertinoIcons.add_circled, color: Colors.white, size: 25),
-                      ),
+                        showCustomToast(
+                          context,
+                          "productCountAdded".tr,
+                        );
+                      } else {
+                        Vibration.vibrate();
+                        showCustomToast(
+                          context,
+                          "emptyStockCount".tr,
+                        );
+                      }
+                      setState(() {});
+                    },
+                    child: Container(
+                      padding: EdgeInsets.all(6.0),
+                      decoration: BoxDecoration(color: kPrimaryColor, borderRadius: borderRadius5),
+                      child: Icon(CupertinoIcons.add, color: Colors.white, size: 20),
                     ),
-                  ],
-                ),
+                  ),
+                ],
               )
             : GestureDetector(
                 onTap: () {
@@ -264,10 +250,10 @@ class _ProductProfilState extends State<ProductProfil> {
                   }
                 },
                 child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
+                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
                     decoration: const BoxDecoration(
                       color: kPrimaryColor,
-                      borderRadius: borderRadius10,
+                      borderRadius: borderRadius5,
                     ),
                     child: Text("addCart3".tr, textAlign: TextAlign.center, style: const TextStyle(color: Colors.white, fontFamily: montserratMedium, fontSize: 18))),
               ));
@@ -285,14 +271,14 @@ class _ProductProfilState extends State<ProductProfil> {
             future: ProductsModel().getProducts(
               parametrs: {
                 "page": "1",
-                "limit": "10",
+                "limit": "4",
                 "product_id": "${widget.id}",
                 "main_category_id": "$categoryId",
               },
             ),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
-                return shimmer(10);
+                return shimmer(4);
               } else if (snapshot.hasData) {
                 return snapshot.data.toString() == "[]"
                     ? Center(child: emptyDataLottie(imagePath: searchNotFound, errorSubtitle: "noSameProducts", errorTitle: ""))
@@ -302,15 +288,13 @@ class _ProductProfilState extends State<ProductProfil> {
                         shrinkWrap: true,
                         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2, childAspectRatio: 1.5 / 2.5),
                         itemBuilder: (BuildContext context, int index) {
-                          return Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: ProductCard3(
-                              id: snapshot.data![index].id,
-                              name: snapshot.data![index].productName,
-                              price: snapshot.data![index].price,
-                              image: snapshot.data![index].imagePath,
-                              discountValue: snapshot.data![index].discountValue,
-                            ),
+                          return ProductCard3(
+                            id: snapshot.data![index].id,
+                            name: snapshot.data![index].productName,
+                            price: snapshot.data![index].price,
+                            image: snapshot.data![index].imagePath,
+                            discountValue: snapshot.data![index].discountValue,
+                            stockCount: snapshot.data![index].stockCount ?? 0,
                           );
                         },
                       );
@@ -366,7 +350,7 @@ class _ProductProfilState extends State<ProductProfil> {
                       ],
                     ),
                   ),
-                  bottomSheetMine(snapshot.data!.price),
+                  bottomSheetMine("${priceMine}"),
                 ],
               ),
             ),
@@ -446,17 +430,19 @@ class _ProductProfilState extends State<ProductProfil> {
                 ),
               )),
         ),
-        if (snapshot.data!.discountValue != 0 && snapshot.data!.discountValue != null)
-          Positioned(
-              bottom: 10,
-              right: 20,
-              child: Container(
-                padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 4),
-                decoration: const BoxDecoration(color: Colors.red, borderRadius: borderRadius5),
-                child: Text("- ${snapshot.data!.discountValue} %", style: const TextStyle(color: Colors.white, fontFamily: montserratRegular, fontSize: 16)),
-              ))
-        else
-          const SizedBox.shrink(),
+        Positioned(
+          top: 10,
+          right: 5,
+          child: IconButton(
+            onPressed: () {
+              favCartController.toggleFav(widget.id!);
+              favBool = !favBool;
+              //TODO: showCustom Toast gosuldy we ayryldy we cykanda product card gosulgy bolsubn
+              setState(() {});
+            },
+            icon: Icon(favBool == true ? IconlyBold.heart : IconlyLight.heart, color: favBool == true ? Colors.red : Colors.grey, size: 28),
+          ),
+        )
       ],
     );
   }
@@ -476,7 +462,7 @@ class _ProductProfilState extends State<ProductProfil> {
 
   @override
   Widget build(BuildContext context) {
-    favCartController.favList.isNotEmpty ? whenPageLoad() : null;
+    whenPageLoad();
     return Scaffold(
         backgroundColor: backgroundColor,
         appBar: appBar(),

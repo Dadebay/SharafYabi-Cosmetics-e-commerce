@@ -2,8 +2,8 @@
 
 import 'package:flutter/material.dart';
 import 'package:sharaf_yabi_ecommerce/cards/VideoCard.dart';
-import 'package:sharaf_yabi_ecommerce/constants/constants.dart';
-import 'package:sharaf_yabi_ecommerce/constants/widgets.dart';
+import 'package:sharaf_yabi_ecommerce/components/constants/constants.dart';
+import 'package:sharaf_yabi_ecommerce/components/constants/widgets.dart';
 import 'package:sharaf_yabi_ecommerce/models/getVideosModel.dart';
 
 class VideoPlayerListView extends StatelessWidget {

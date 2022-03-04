@@ -3,7 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get_utils/src/extensions/internacionalization.dart';
 import 'package:sharaf_yabi_ecommerce/components/appBar.dart';
-import 'package:sharaf_yabi_ecommerce/constants/constants.dart';
+import 'package:sharaf_yabi_ecommerce/components/constants/constants.dart';
 import 'package:sharaf_yabi_ecommerce/screens/News_Videos/News/News.dart';
 
 import 'Videos/VideoPlayerListView.dart';
@@ -13,28 +13,25 @@ class TabbarViewPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final double sizeWidth = MediaQuery.of(context).size.width;
+
     return DefaultTabController(
       length: 2,
       child: Scaffold(
-        backgroundColor: Colors.white,
+        backgroundColor: backgroundColor,
         appBar: MyAppBar(icon: Icons.add, onTap: () {}, backArrow: false, iconRemove: false),
         body: Column(
           children: [
             Container(
-              color: kPrimaryColor,
+              color: Colors.white,
               child: TabBar(
-                  labelStyle: const TextStyle(fontFamily: montserratSemiBold, fontSize: 18),
-                  unselectedLabelStyle: const TextStyle(fontFamily: montserratMedium, fontSize: 18),
+                  labelPadding: sizeWidth > 800 ? const EdgeInsets.symmetric(vertical: 8) : EdgeInsets.zero,
+                  labelStyle: TextStyle(fontFamily: montserratMedium, fontSize: sizeWidth > 800 ? 24 : 17),
+                  unselectedLabelStyle: TextStyle(fontFamily: montserratRegular, fontSize: sizeWidth > 800 ? 24 : 17),
                   labelColor: kPrimaryColor,
-                  unselectedLabelColor: Colors.white,
+                  unselectedLabelColor: Colors.black,
                   indicatorSize: TabBarIndicatorSize.tab,
-                  indicatorColor: Colors.white,
-                  indicator: const BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.only(
-                        topRight: Radius.circular(10),
-                        topLeft: Radius.circular(10),
-                      )),
+                  indicatorColor: kPrimaryColor,
                   tabs: [
                     Tab(
                       text: "news".tr,

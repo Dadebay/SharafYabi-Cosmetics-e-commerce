@@ -1,16 +1,16 @@
 // ignore_for_file: file_names, must_be_immutable, always_use_package_imports, avoid_void_async, non_constant_identifier_names
 
-import 'dart:io';
+import 'dart:convert';
 
 import 'package:badges/badges.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
 import 'package:get/get.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
-import 'package:sharaf_yabi_ecommerce/constants/constants.dart';
-import 'package:sharaf_yabi_ecommerce/constants/widgets.dart';
+import 'package:sharaf_yabi_ecommerce/components/constants/constants.dart';
+import 'package:sharaf_yabi_ecommerce/controllers/CartPageController.dart';
 import 'package:sharaf_yabi_ecommerce/controllers/Fav_Cart_Controller.dart';
-import 'package:sharaf_yabi_ecommerce/controllers/SettingsController.dart';
 import 'package:sharaf_yabi_ecommerce/screens/Category_Brands/CategoryPage.dart';
 import 'package:sharaf_yabi_ecommerce/screens/News_Videos/TabbarViewPage.dart';
 
@@ -24,34 +24,20 @@ class BottomNavBar extends StatefulWidget {
 }
 
 class _BottomNavBarState extends State<BottomNavBar> with TickerProviderStateMixin {
-  late TabController tabController;
-  late PersistentTabController _controller;
-  final SettingsController _settingsController = Get.put<SettingsController>(SettingsController());
-  final Fav_Cart_Controller fav_cart_controller = Get.put<Fav_Cart_Controller>(Fav_Cart_Controller());
+  TabController? tabController;
+  PersistentTabController? _controller;
   @override
   void initState() {
     super.initState();
-    fav_cart_controller.returnFavList();
-    fav_cart_controller.returnCartList();
+    Get.find<Fav_Cart_Controller>().returnFavList();
+    Get.find<Fav_Cart_Controller>().returnCartList();
     tabController = TabController(vsync: this, length: 5);
     _controller = PersistentTabController();
-    checkConnection();
-  }
-
-  void checkConnection() async {
-    try {
-      final result = await InternetAddress.lookup('sharafyabi.com');
-      if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
-        _settingsController.connectionState.value = true;
-      }
-    } on SocketException catch (_) {
-      _settingsController.connectionState.value = false;
-    }
   }
 
   List<Widget> _buildScreens() {
     return [
-      const HomePage(),
+      HomePage(),
       CategoryPage(),
       CartPage(), //
       const TabbarViewPage(), //
@@ -60,107 +46,78 @@ class _BottomNavBarState extends State<BottomNavBar> with TickerProviderStateMix
   }
 
   int selectedPageIndex = 0;
-
   @override
   Widget build(BuildContext context) {
-    final double sizeWidth = MediaQuery.of(context).size.width;
-    return Obx(() {
-      return _settingsController.connectionState.value
-          ? PersistentTabView.custom(
-              context,
-              controller: _controller,
-              screens: _buildScreens(),
-              resizeToAvoidBottomInset: true,
-              itemCount: 5,
-              backgroundColor: kPrimaryColor,
-              screenTransitionAnimation: const ScreenTransitionAnimation(animateTabTransition: true),
-              customWidget: CustomNavBarWidget(
-                items: [
-                  PersistentBottomNavBarItem(
-                    activeColorPrimary: Colors.white,
-                    inactiveColorPrimary: Colors.white70,
-                    inactiveIcon: const Icon(IconlyLight.home),
-                    icon: const Icon(IconlyBold.home),
-                    title: 'homePage'.tr,
-                    onPressed: (context) {},
-                    textStyle: const TextStyle(color: Colors.white70, fontFamily: montserratMedium),
-                  ),
-                  PersistentBottomNavBarItem(
-                    activeColorPrimary: Colors.white,
-                    inactiveIcon: const Icon(IconlyLight.category),
-                    icon: const Icon(IconlyBold.category),
-                    title: 'category'.tr,
-                    textStyle: const TextStyle(color: Colors.white70, fontFamily: montserratMedium),
-                    inactiveColorPrimary: Colors.white70,
-                  ),
-                  PersistentBottomNavBarItem(
-                    inactiveIcon: fav_cart_controller.cartList.isEmpty
-                        ? const Icon(IconlyLight.bag)
-                        : Badge(
-                            badgeContent: Text('${fav_cart_controller.cartList.length}', style: const TextStyle(color: Colors.white, fontSize: 10, fontFamily: montserratMedium)),
-                            animationType: BadgeAnimationType.fade,
-                            child: const Icon(IconlyLight.bag)),
-                    icon: fav_cart_controller.cartList.isEmpty
-                        ? const Icon(IconlyBold.bag)
-                        : Badge(
-                            badgeContent: Text('${fav_cart_controller.cartList.length}', style: const TextStyle(color: Colors.white, fontSize: 10, fontFamily: montserratMedium)),
-                            animationType: BadgeAnimationType.fade,
-                            child: const Icon(IconlyBold.bag)),
-                    activeColorPrimary: Colors.white,
-                    title: fav_cart_controller.cartList.isEmpty ? 'cart'.tr : "${fav_cart_controller.priceAll.value} m.",
-                    onPressed: (context) {},
-                    textStyle: const TextStyle(color: Colors.white70, fontFamily: montserratMedium),
-                    inactiveColorPrimary: Colors.white70,
-                  ),
-                  PersistentBottomNavBarItem(
-                    activeColorPrimary: Colors.white,
-                    inactiveIcon: const Icon(IconlyLight.paper),
-                    icon: const Icon(IconlyBold.paper),
-                    title: 'news'.tr,
-                    onPressed: (context) {},
-                    textStyle: const TextStyle(color: Colors.white70, fontFamily: montserratMedium),
-                    inactiveColorPrimary: Colors.white70,
-                  ),
-                  PersistentBottomNavBarItem(
-                    activeColorPrimary: Colors.white,
-                    inactiveIcon: const Icon(IconlyLight.profile),
-                    icon: const Icon(IconlyBold.profile),
-                    title: 'profil'.tr,
-                    textStyle: const TextStyle(color: Colors.white70, fontFamily: montserratMedium),
-                    inactiveColorPrimary: Colors.white70,
-                  ),
-                ],
-                selectedIndex: _controller.index,
-                onItemSelected: (index) {
-                  setState(() {
-                    // print(index);
-                    // if (index == 0) {
-                    //   Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => BottomNavBar()), (route) => false);
-                    // } else if (index == 1) {
-                    //   _controller.index = 1;
-                    //   Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => BottomNavBar()), (route) => false);
-                    // } else if (index == 2) {
-                    //   _controller.index = 2;
-                    //   Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => BottomNavBar()), (route) => false);
-
-                    //   Get.find<CartPageController>().loadData(parametrs: {"products": jsonEncode(Get.find<Fav_Cart_Controller>().cartList)});
-                    // } else if (index == 3) {
-                    // } else if (index == 4) {
-                    // } else {
-                    _controller.index = index;
-                    // }
-                  });
-                },
-              ),
-            )
-          : Scaffold(
-              body: errorConnection(
-                  onTap: () {
-                    checkConnection();
-                  },
-                  sizeWidth: sizeWidth),
-            );
-    });
+    return PersistentTabView.custom(
+      context,
+      controller: _controller,
+      screens: _buildScreens(),
+      resizeToAvoidBottomInset: true,
+      itemCount: 5,
+      screenTransitionAnimation: const ScreenTransitionAnimation(animateTabTransition: true),
+      customWidget: CustomNavBarWidget(
+        items: [
+          PersistentBottomNavBarItem(
+            activeColorPrimary: kPrimaryColor,
+            inactiveColorPrimary: Colors.grey,
+            inactiveIcon: const Icon(IconlyLight.home),
+            icon: const Icon(IconlyBold.home),
+            title: 'homePage'.tr,
+          ),
+          PersistentBottomNavBarItem(
+            activeColorPrimary: kPrimaryColor,
+            inactiveColorPrimary: Colors.grey,
+            inactiveIcon: const Icon(IconlyLight.category),
+            icon: const Icon(IconlyBold.category),
+            title: 'category'.tr,
+          ),
+          PersistentBottomNavBarItem(
+            inactiveIcon: Obx(() {
+              return Get.find<Fav_Cart_Controller>().cartList.isEmpty
+                  ? const Icon(CupertinoIcons.cart)
+                  : Badge(
+                      badgeContent: Text('${Get.find<Fav_Cart_Controller>().cartList.length}', style: const TextStyle(color: Colors.white, fontSize: 10, fontFamily: montserratMedium)),
+                      animationType: BadgeAnimationType.fade,
+                      child: const Icon(CupertinoIcons.cart));
+            }),
+            icon: Obx(() {
+              return Get.find<Fav_Cart_Controller>().cartList.isEmpty
+                  ? const Icon(CupertinoIcons.cart_fill)
+                  : Badge(
+                      badgeContent: Text('${Get.find<Fav_Cart_Controller>().cartList.length}', style: const TextStyle(color: Colors.white, fontSize: 10, fontFamily: montserratMedium)),
+                      animationType: BadgeAnimationType.fade,
+                      child: const Icon(CupertinoIcons.cart_fill));
+            }),
+            title: Get.find<Fav_Cart_Controller>().cartList.isEmpty ? 'cart'.tr : "${Get.find<Fav_Cart_Controller>().priceAll.value.toStringAsFixed(2)} m.",
+            activeColorPrimary: kPrimaryColor,
+            inactiveColorPrimary: Colors.grey,
+          ),
+          PersistentBottomNavBarItem(
+            activeColorPrimary: kPrimaryColor,
+            inactiveColorPrimary: Colors.grey,
+            inactiveIcon: const Icon(IconlyLight.paper),
+            icon: const Icon(IconlyBold.paper),
+            title: 'news'.tr,
+          ),
+          PersistentBottomNavBarItem(
+            activeColorPrimary: kPrimaryColor,
+            inactiveColorPrimary: Colors.grey,
+            inactiveIcon: const Icon(IconlyLight.profile),
+            icon: const Icon(IconlyBold.profile),
+            title: 'profil'.tr,
+          ),
+        ],
+        selectedIndex: _controller!.index,
+        onItemSelected: (index) {
+          setState(() {
+            if (index == 2) {
+              Get.find<CartPageController>().loadData(parametrs: {"products": jsonEncode(Get.find<Fav_Cart_Controller>().cartList)});
+            }
+            _controller!.index = index;
+          });
+        },
+      ),
+    );
   }
 }
 
@@ -188,12 +145,12 @@ class CustomNavBarWidget extends StatelessWidget {
           children: <Widget>[
             Flexible(
               child: IconTheme(
-                data: IconThemeData(size: 26.0, color: isSelected ? (item.activeColorSecondary ?? item.activeColorPrimary) : item.inactiveColorPrimary ?? item.activeColorPrimary),
+                data: IconThemeData(size: 24.0, color: isSelected ? (item.activeColorSecondary ?? item.activeColorPrimary) : item.inactiveColorPrimary ?? item.activeColorPrimary),
                 child: isSelected ? item.icon : item.inactiveIcon ?? const SizedBox.shrink(),
               ),
             ),
             Text("${item.title}",
-                maxLines: 1, overflow: TextOverflow.ellipsis, style: TextStyle(color: isSelected ? Colors.white : Colors.white70, fontSize: isSelected ? 13 : 12, fontFamily: montserratMedium))
+                maxLines: 1, overflow: TextOverflow.ellipsis, style: TextStyle(color: isSelected ? kPrimaryColor : Colors.grey, fontSize: isSelected ? 12 : 11, fontFamily: montserratMedium))
           ],
         ),
       ),
@@ -203,7 +160,7 @@ class CustomNavBarWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Material(
-      color: kPrimaryColor,
+      color: Colors.white,
       child: Container(
         color: Colors.transparent,
         width: double.infinity,
@@ -214,8 +171,7 @@ class CustomNavBarWidget extends StatelessWidget {
             final int index = items!.indexOf(item);
             return Flexible(
               child: OutlinedButton(
-                style: OutlinedButton.styleFrom(
-                    shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(30))), padding: EdgeInsets.zero, primary: kPrimaryColor.withOpacity(0.4), side: BorderSide.none),
+                style: OutlinedButton.styleFrom(padding: EdgeInsets.zero, primary: kPrimaryColor.withOpacity(0.4), side: BorderSide.none),
                 onPressed: () {
                   onItemSelected!(index);
                 },

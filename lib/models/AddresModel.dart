@@ -74,6 +74,7 @@ class AddressModel extends ChangeNotifier {
 
   Future addLocation(String? address, String? comment) async {
     final token = await Auth().getToken();
+    print("geldiu");
     final body = json.encode({
       "address": address,
       "comment": comment,
@@ -89,6 +90,7 @@ class AddressModel extends ChangeNotifier {
           HttpHeaders.authorizationHeader: 'Bearer $token',
         },
         body: body);
+    print(response.body);
     if (response.statusCode == 200) {
       return true;
     } else {

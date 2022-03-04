@@ -11,7 +11,7 @@ import 'package:get_storage/get_storage.dart';
 import 'package:lottie/lottie.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:sharaf_yabi_ecommerce/components/appBar.dart';
-import 'package:sharaf_yabi_ecommerce/constants/constants.dart';
+import 'package:sharaf_yabi_ecommerce/components/constants/constants.dart';
 import 'package:sharaf_yabi_ecommerce/controllers/AuthController.dart';
 import 'package:sharaf_yabi_ecommerce/screens/UserProfil/Components/Profile_Widgets.dart';
 import 'package:sharaf_yabi_ecommerce/screens/UserProfil/pages/AboutUS.dart';
@@ -52,7 +52,7 @@ class _UserProfilState extends State<UserProfil> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: backgroundColor.withOpacity(0.1),
+        backgroundColor: backgroundColor,
         appBar: MyAppBar(
           iconRemove: false,
           backArrow: false,
@@ -93,19 +93,6 @@ class _UserProfilState extends State<UserProfil> {
                 },
               ),
               buttonProfile(
-                name: "messageTitle",
-                icon: IconlyLight.message,
-                onTap: () {
-                  pushNewScreen(
-                    context,
-                    screen: SendMessage(),
-                    withNavBar: true, // OPTIONAL VALUE. True by default.
-                    pageTransitionAnimation: PageTransitionAnimation.cupertino,
-                  );
-                },
-              ),
-              selectLang(context),
-              buttonProfile(
                 name: "favorite",
                 icon: IconlyLight.heart,
                 onTap: () async {
@@ -117,7 +104,13 @@ class _UserProfilState extends State<UserProfil> {
                   );
                 },
               ),
-              shareApp(),
+              buttonProfile(
+                name: "select_language",
+                icon: Icons.language,
+                onTap: () async {
+                  changeLanguage();
+                },
+              ),
               buttonProfile(
                 name: "ourDeliveryService",
                 icon: IconlyLight.paper,
@@ -125,6 +118,18 @@ class _UserProfilState extends State<UserProfil> {
                   pushNewScreen(
                     context,
                     screen: OurDeliveryService(),
+                    withNavBar: true, // OPTIONAL VALUE. True by default.
+                    pageTransitionAnimation: PageTransitionAnimation.cupertino,
+                  );
+                },
+              ),
+              buttonProfile(
+                name: "messageTitle",
+                icon: IconlyLight.message,
+                onTap: () {
+                  pushNewScreen(
+                    context,
+                    screen: SendMessage(),
                     withNavBar: true, // OPTIONAL VALUE. True by default.
                     pageTransitionAnimation: PageTransitionAnimation.cupertino,
                   );

@@ -12,23 +12,18 @@ import 'package:sharaf_yabi_ecommerce/screens/Others/FilterPage/ShowAllProductsP
 
 class BrandCard extends StatelessWidget {
   final CategoryModel brand;
-
   BrandCard(this.brand);
-  FilterController filterController = Get.put(FilterController());
-
   @override
   Widget build(BuildContext context) {
     final double sizeWidth = MediaQuery.of(context).size.width;
-
     return Padding(
-      padding: const EdgeInsets.all(8.0),
+      padding: const EdgeInsets.all(4.0),
       child: RaisedButton(
         onPressed: () {
-          filterController.producersID.clear();
-          filterController.categoryID.clear();
-          filterController.mainCategoryID.value = 0;
-
-          filterController.producersID.add(brand.id);
+          Get.find<FilterController>().producersID.clear();
+          Get.find<FilterController>().categoryID.clear();
+          Get.find<FilterController>().mainCategoryID.value = 0;
+          Get.find<FilterController>().producersID.add(brand.id);
           pushNewScreen(
             context,
             screen: ShowAllProductsPage(
@@ -73,7 +68,7 @@ class BrandCard extends StatelessWidget {
                 overflow: TextOverflow.ellipsis,
                 textAlign: TextAlign.center,
                 maxLines: 1,
-                style: TextStyle(color: Colors.black, fontSize: sizeWidth > 800 ? 26 : 18, fontFamily: montserratMedium),
+                style: TextStyle(color: Colors.black, fontSize: sizeWidth > 800 ? 24 : 16, fontFamily: montserratRegular),
               ),
             )
           ],

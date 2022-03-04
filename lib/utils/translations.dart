@@ -192,8 +192,10 @@ class MyTranslations extends Translations {
           "mail": "E-mail",
           "messageSend": "Hatyňyz ugraduldy",
           "messageTitle": "Habarlaşmak",
+          "emptyStockCount": "Ýeterlik haryt ýok"
         },
         'ru': {
+          "emptyStockCount": "Недостаточно товаров",
           "messageTitle": "Обратная связь",
           "messageSend": "Ваше сообщение отправлено",
           "message": "Напишите письмо",
@@ -330,7 +332,7 @@ class MyTranslations extends Translations {
           "otpErrorSubtitle": "Пожалуйста, проверьте ваш смс-код еще раз",
           "otpErrorTitle": "Ошибка кода СМС",
           "ourDeliveryService": "Доставка и оплата",
-          "paymentMethod": "Способ оплаты :",
+          "paymentMethod": "Способ оплаты ",
           "phone": "Номер телефона",
           "phoneNumber": "Наш номер телефона :",
           "pleaseEnterYourAddress": "Пожалуйста, введите действительный адрес клиента.",
@@ -383,6 +385,7 @@ class MyTranslations extends Translations {
         },
         'en': {
           "messageTitle": "Feedback",
+          "emptyStockCount": "Not enough products",
           "message": "Write your letter",
           "messageSend": "Your message has been sent",
           "mail": "E-mail",
@@ -395,7 +398,7 @@ class MyTranslations extends Translations {
           "accepted": "Accepted",
           "accountSettings": "Account Settings",
           "addAddress": "Add address",
-          "addCart": "Add Cart",
+          "addCart": "Add to cart",
           "addCart2": "+ Add Cart",
           "addCart3": "Add Cart",
           "addedfavorite": "The product has been added to my favorites",
