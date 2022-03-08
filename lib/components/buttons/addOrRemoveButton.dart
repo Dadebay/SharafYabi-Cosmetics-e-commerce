@@ -38,6 +38,9 @@ class _AddOrRemoveButtonState extends State<AddOrRemoveButton> {
         addCartBool = true;
         value = true;
         quantity = element["count"];
+        setState(() {
+          print("setState");
+        });
       }
     }
     if (value == false) addCartBool = false;
