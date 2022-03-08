@@ -6,8 +6,8 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
-import 'package:sharaf_yabi_ecommerce/constants/constants.dart';
-import 'package:sharaf_yabi_ecommerce/constants/widgets.dart';
+import 'package:sharaf_yabi_ecommerce/components/constants/constants.dart';
+import 'package:sharaf_yabi_ecommerce/components/constants/widgets.dart';
 import 'package:sharaf_yabi_ecommerce/controllers/Fav_Cart_Controller.dart';
 import 'package:sharaf_yabi_ecommerce/controllers/SettingsController.dart';
 
@@ -113,7 +113,6 @@ class OrderModel extends ChangeNotifier {
         HttpHeaders.contentTypeHeader: 'application/json; charset=UTF-8',
       },
     );
-    print(response.body);
     if (response.statusCode == 200) {
       if (jsonDecode(response.body)["rows"] == null) {
         return false;
@@ -135,9 +134,7 @@ class OrderModel extends ChangeNotifier {
         HttpHeaders.contentTypeHeader: 'application/json; charset=UTF-8',
       },
     );
-    print(response.body);
     if (response.statusCode == 200) {
-      print(jsonDecode(response.body)["rows"]);
       return response.body;
     } else {
       return false;

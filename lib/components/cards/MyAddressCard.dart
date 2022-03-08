@@ -3,7 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
 import 'package:get/get_utils/src/extensions/internacionalization.dart';
-import 'package:sharaf_yabi_ecommerce/constants/constants.dart';
+import 'package:sharaf_yabi_ecommerce/components/constants/constants.dart';
 
 class MyAddressCard extends StatelessWidget {
   final String address;

@@ -3,6 +3,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:get/get_utils/src/extensions/internacionalization.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:sharaf_yabi_ecommerce/components/appBar.dart';
@@ -132,7 +133,7 @@ class _UserSettingsState extends State<UserSettings> {
                       if (_login.currentState!.validate()) {
                         changedata(nameController.text);
                         showCustomToast(context, "changedPasswordName");
-                        Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => BottomNavBar()));
+                        Get.back();
                         setState(() {});
                       }
                     },

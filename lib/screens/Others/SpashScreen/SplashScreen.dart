@@ -3,8 +3,8 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:sharaf_yabi_ecommerce/components/constants/constants.dart';
 
-import '../../../constants/constants.dart';
 import '../../BottomNavBar.dart';
 
 class MyCustomSplashScreen extends StatefulWidget {

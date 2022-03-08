@@ -3,7 +3,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
 import 'package:get/get.dart';
-import 'package:sharaf_yabi_ecommerce/constants/constants.dart';
+
+import 'constants/constants.dart';
 
 class MyAppBar extends StatelessWidget implements PreferredSize {
   final IconData icon;

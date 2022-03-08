@@ -2,19 +2,12 @@
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_iconly/flutter_iconly.dart';
-// import 'package:flutter_restart/flutter_restart.dart';
 import 'package:get/get.dart';
-import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
-import 'package:restart_app/restart_app.dart';
 import 'package:sharaf_yabi_ecommerce/components/constants/constants.dart';
 import 'package:sharaf_yabi_ecommerce/components/constants/widgets.dart';
 import 'package:sharaf_yabi_ecommerce/controllers/HomePageController.dart';
 import 'package:sharaf_yabi_ecommerce/controllers/SettingsController.dart';
-import 'package:sharaf_yabi_ecommerce/models/CategoryModel.dart';
 import 'package:sharaf_yabi_ecommerce/models/UserModels/AuthModel.dart';
-import 'package:sharaf_yabi_ecommerce/screens/BottomNavBar.dart';
-import 'package:share/share.dart';
 
 void logOut(BuildContext context) {
   Get.bottomSheet(Container(
@@ -62,8 +55,7 @@ void logOut(BuildContext context) {
             Auth().removeRefreshToken();
             Auth().getToken().then((value) {});
             Get.back();
-            Restart.restartApp();
-            Get.to(() => BottomNavBar());
+            // Restart.restartApp();
           },
           child: Container(
             width: Get.size.width,

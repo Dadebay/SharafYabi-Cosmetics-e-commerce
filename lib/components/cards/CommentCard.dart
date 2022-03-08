@@ -4,10 +4,10 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:sharaf_yabi_ecommerce/constants/constants.dart';
-import 'package:sharaf_yabi_ecommerce/constants/widgets.dart';
+import 'package:sharaf_yabi_ecommerce/components/constants/constants.dart';
+import 'package:sharaf_yabi_ecommerce/components/constants/widgets.dart';
+import 'package:sharaf_yabi_ecommerce/components/dialogs/diologs.dart';
 import 'package:sharaf_yabi_ecommerce/controllers/SettingsController.dart';
-import 'package:sharaf_yabi_ecommerce/dialogs/diologs.dart';
 import 'package:sharaf_yabi_ecommerce/models/CommentModel.dart';
 import 'package:sharaf_yabi_ecommerce/models/UserModels/AuthModel.dart';
 import 'package:vibration/vibration.dart';
@@ -76,6 +76,7 @@ class CommentCard extends StatelessWidget {
         } else {
           customDialog(
             controller: controller,
+            secondTextFieldController: controller,
             hintText: "writeComment",
             maxLength: 70,
             maxLine: 3,

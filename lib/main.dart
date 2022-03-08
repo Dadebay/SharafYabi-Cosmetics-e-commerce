@@ -11,6 +11,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:new_version/new_version.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:sharaf_yabi_ecommerce/components/constants/constants.dart';
 import 'package:sharaf_yabi_ecommerce/controllers/AllContollerBindings.dart';
@@ -88,12 +89,32 @@ class _MyAppRunState extends State<MyAppRun> {
   static FirebaseAnalytics analytics = FirebaseAnalytics.instance;
   static FirebaseAnalyticsObserver observer = FirebaseAnalyticsObserver(analytics: analytics);
 
+  _checkVersionUpdate() async {
+    final newVersion = NewVersion(
+      iOSId: 'com.bilermennesil.sharafyabi',
+      androidId: 'com.bilermennesil.sharafyabi',
+    );
+    final status = await newVersion.getVersionStatus();
+    newVersion.showUpdateDialog(
+        context: context,
+        versionStatus: status!,
+        dismissButtonText: "no".tr,
+        dialogTitle: "newVersion".tr,
+        dialogText: "newVersionTitle".tr,
+        dismissAction: () {
+          Navigator.pop(context);
+        },
+        updateButtonText: "yes".tr);
+  }
+
   @override
   void initState() {
     super.initState();
+
     FirebaseMessaging.instance.subscribeToTopic('Events');
     FirebaseMessaging.instance.getToken().then((value) {});
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      _checkVersionUpdate();
       flutterLocalNotificationsPlugin.show(
         message.data.hashCode,
         message.data['body'],

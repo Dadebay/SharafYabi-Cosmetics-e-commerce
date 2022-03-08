@@ -1,14 +1,15 @@
 // ignore_for_file: file_names, must_be_immutable, avoid_positional_boolean_parameters, always_use_package_imports, deprecated_member_use, duplicate_ignore
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:flutter_iconly/flutter_iconly.dart';
 import 'package:get/get.dart';
-import 'package:sharaf_yabi_ecommerce/cards/CommentCard.dart';
 import 'package:sharaf_yabi_ecommerce/components/appBar.dart';
+import 'package:sharaf_yabi_ecommerce/components/cards/CommentCard.dart';
 import 'package:sharaf_yabi_ecommerce/components/constants/constants.dart';
 import 'package:sharaf_yabi_ecommerce/components/constants/widgets.dart';
+import 'package:sharaf_yabi_ecommerce/components/dialogs/diologs.dart';
 import 'package:sharaf_yabi_ecommerce/controllers/SettingsController.dart';
-import 'package:sharaf_yabi_ecommerce/dialogs/diologs.dart';
 import 'package:sharaf_yabi_ecommerce/models/CommentModel.dart';
 import 'package:sharaf_yabi_ecommerce/models/UserModels/AuthModel.dart';
 import 'package:vibration/vibration.dart';
@@ -87,15 +88,16 @@ class CommentsPage extends StatelessWidget {
 
   Widget addCommentButton() {
     return Align(
-      alignment: Alignment.bottomCenter,
-      child: RaisedButton(
-        onPressed: () async {
+      alignment: Alignment.bottomRight,
+      child: GestureDetector(
+        onTap: () async {
           final String? token = await Auth().getToken();
           if (token == null) {
             showSnackBar("retry", "pleaseLogin", Colors.red);
           } else {
             customDialog(
               controller: controller,
+              secondTextFieldController: controller,
               hintText: "writeComment",
               maxLength: 70,
               maxLine: 3,
@@ -119,18 +121,14 @@ class CommentsPage extends StatelessWidget {
             );
           }
         },
-        color: kPrimaryColor,
-        shape: const RoundedRectangleBorder(borderRadius: borderRadius10),
-        padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 8),
-              child: Icon(Icons.comment_outlined, color: Colors.white, size: 24),
-            ),
-            Text("writeComment".tr, style: const TextStyle(color: Colors.white, fontFamily: montserratSemiBold, fontSize: 18)),
-          ],
+        child: Container(
+          decoration: BoxDecoration(color: kPrimaryColor, shape: BoxShape.circle),
+          padding: EdgeInsets.all(10),
+          child: Icon(
+            CupertinoIcons.chat_bubble_text,
+            color: Colors.white,
+            size: 28,
+          ),
         ),
       ),
     );

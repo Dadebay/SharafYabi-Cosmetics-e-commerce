@@ -10,8 +10,8 @@ import 'package:get_storage/get_storage.dart';
 class SettingsController extends GetxController {
   final storage = GetStorage();
   RxList orderList = [].obs;
-  RxBool connectionState = false.obs;
   RxInt bannerSelectedIndex = 0.obs;
+  RxInt productProfilSelectedIndex = 0.obs;
   RxInt bottomBadgeCount = 0.obs;
   RxInt addressCount = 0.obs;
   RxBool dialogsBool = false.obs;

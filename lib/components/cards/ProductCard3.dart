@@ -3,18 +3,13 @@
 import 'dart:math';
 
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_iconly/flutter_iconly.dart';
-import 'package:get/get.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
-import 'package:sharaf_yabi_ecommerce/constants/constants.dart';
-import 'package:sharaf_yabi_ecommerce/constants/widgets.dart';
-import 'package:sharaf_yabi_ecommerce/controllers/Fav_Cart_Controller.dart';
-import 'package:sharaf_yabi_ecommerce/controllers/FilterController.dart';
-import 'package:sharaf_yabi_ecommerce/controllers/HomePageController.dart';
+import 'package:sharaf_yabi_ecommerce/components/buttons/FavButton.dart';
+import 'package:sharaf_yabi_ecommerce/components/buttons/addOrRemoveButton.dart';
+import 'package:sharaf_yabi_ecommerce/components/constants/constants.dart';
+import 'package:sharaf_yabi_ecommerce/components/constants/widgets.dart';
 import 'package:sharaf_yabi_ecommerce/screens/Others/ProductProfilPage/ProductProfil.dart';
-import 'package:vibration/vibration.dart';
 
 class ProductCard3 extends StatefulWidget {
   final int? id;
@@ -33,49 +28,18 @@ class ProductCard3 extends StatefulWidget {
 }
 
 class _ProductCard3State extends State<ProductCard3> {
-  bool addCart = false;
-  bool favButton = false;
-  int quantity = 0;
-  final HomePageController _homePageController = Get.put(HomePageController());
-  final Fav_Cart_Controller favCartController = Get.put(Fav_Cart_Controller());
-  final FilterController filterController = Get.put(FilterController());
-  @override
-  void initState() {
-    super.initState();
-    changeCartCount();
-  }
-
-  changeCartCount() {
-    bool value = false;
-    for (final element in favCartController.favList) {
-      if (element["id"] == widget.id!) {
-        favButton = true;
-      }
-    }
-    for (final element in favCartController.cartList) {
-      if (element["id"] == widget.id!) {
-        addCart = true;
-        value = true;
-        quantity = element["count"];
-      }
-    }
-    if (value == false) addCart = false;
-  }
-
   @override
   Widget build(BuildContext context) {
-    changeCartCount();
     final double sizeHeight = MediaQuery.of(context).size.height;
     final double sizeWidth = MediaQuery.of(context).size.width;
     return GestureDetector(
       onTap: () {
-        final int? a = widget.id;
         pushNewScreen(
           context,
           screen: ProductProfil(
-            id: a,
+            id: widget.id!,
             productName: widget.name,
-            image: "$serverImage/${widget.image}-mini.webp",
+            image: "$serverImage/${widget.image}-big.webp",
           ),
           withNavBar: true, // OPTIONAL VALUE. True by default.
           pageTransitionAnimation: PageTransitionAnimation.cupertino,
@@ -85,7 +49,7 @@ class _ProductCard3State extends State<ProductCard3> {
         margin: EdgeInsets.all(5),
         decoration: BoxDecoration(
           color: Colors.white,
-          border: Border.all(color: addCart ? kPrimaryColor : Colors.white, width: 1.5),
+          border: Border.all(color: Colors.white, width: 1.5),
           borderRadius: borderRadius5,
         ),
         child: Column(
@@ -148,7 +112,15 @@ class _ProductCard3State extends State<ProductCard3> {
                       textAlign: TextAlign.center,
                       style: TextStyle(fontFamily: montserratSemiBold, fontSize: sizeWidth > 800 ? 22 : 18, color: kPrimaryColor),
                     ),
-            if (widget.addCart == false) const SizedBox.shrink() else SizedBox(width: MediaQuery.of(context).size.width, child: addCart ? addRemoveButton() : addButton()),
+            Padding(
+              padding: const EdgeInsets.only(bottom: 8, top: 8),
+              child: AddOrRemoveButton(
+                id: widget.id!,
+                stockCount: widget.stockCount!,
+                price: widget.price!,
+                sizeWidth: true,
+              ),
+            )
           ],
         ),
       ),
@@ -180,114 +152,6 @@ class _ProductCard3State extends State<ProductCard3> {
     );
   }
 
-  RaisedButton addButton() {
-    return RaisedButton(
-      onPressed: () {
-        setState(() {
-          addCart = !addCart;
-          showCustomToast(
-            context,
-            "addedToCardSubtitle".tr,
-          );
-          quantity++;
-          _homePageController.searchAndAdd(widget.id!, "$priceMine");
-          favCartController.addCart(widget.id!, "$priceMine");
-        });
-      },
-      elevation: 0,
-      disabledElevation: 0,
-      shape: const RoundedRectangleBorder(borderRadius: borderRadius5),
-      color: kPrimaryColor,
-      child: Text(
-        "addCart".tr,
-        textAlign: TextAlign.center,
-        style: const TextStyle(color: Colors.white, fontFamily: montserratSemiBold),
-      ),
-    );
-  }
-
-  Padding addRemoveButton() {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          GestureDetector(
-            onTap: () {
-              showCustomToast(
-                context,
-                "productCountAdded".tr,
-              );
-
-              _homePageController.searchAndRemove(
-                widget.id!,
-              );
-              favCartController.removeCart(
-                widget.id!,
-              );
-              quantity--;
-              if (quantity <= 0) {
-                addCart = false;
-              }
-              setState(() {});
-            },
-            child: PhysicalModel(
-              elevation: 1,
-              color: Colors.transparent,
-              borderRadius: borderRadius5,
-              child: Container(
-                  padding: const EdgeInsets.all(6),
-                  decoration: const BoxDecoration(borderRadius: borderRadius5, color: kPrimaryColor),
-                  child: const Icon(
-                    CupertinoIcons.minus,
-                    size: 22,
-                    color: Colors.white,
-                  )),
-            ),
-          ),
-          Text(
-            "$quantity",
-            style: const TextStyle(color: Colors.black, fontSize: 18, fontFamily: montserratSemiBold),
-          ),
-          GestureDetector(
-            onTap: () {
-              if (widget.stockCount! > (quantity + 1)) {
-                showCustomToast(
-                  context,
-                  "productCountAdded".tr,
-                );
-                quantity++;
-
-                _homePageController.searchAndAdd(widget.id!, "$priceMine");
-                favCartController.addCart(widget.id!, "$priceMine");
-                setState(() {});
-              } else {
-                Vibration.vibrate();
-                showCustomToast(
-                  context,
-                  "emptyStockCount".tr,
-                );
-              }
-            },
-            child: PhysicalModel(
-              elevation: 1,
-              borderRadius: borderRadius5,
-              color: Colors.transparent,
-              child: Container(
-                  padding: const EdgeInsets.all(6),
-                  decoration: const BoxDecoration(borderRadius: borderRadius5, color: kPrimaryColor),
-                  child: const Icon(
-                    CupertinoIcons.add,
-                    size: 22,
-                    color: Colors.white,
-                  )),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
   Expanded imageExpanded() {
     return Expanded(
       flex: 4,
@@ -309,24 +173,7 @@ class _ProductCard3State extends State<ProductCard3> {
                 placeholder: (context, url) => Center(child: spinKit()),
                 errorWidget: (context, url, error) => noImage()),
           ),
-          Positioned(
-            top: 8,
-            right: 8,
-            child: GestureDetector(
-                onTap: () {
-                  setState(() {
-                    favButton = !favButton;
-                    final int? id = widget.id;
-                    favCartController.toggleFav(id ?? 0);
-                    if (favButton == true) {
-                      showCustomToast(context, "addedfavorite");
-                    } else {
-                      showCustomToast(context, "removedfavorite");
-                    }
-                  });
-                },
-                child: Icon(favButton ? IconlyBold.heart : IconlyLight.heart, color: favButton ? Colors.red : Colors.grey)),
-          ),
+          Positioned(top: 0, right: 0, child: FavButton(id: widget.id!)),
           if (widget.discountValue != 0 && widget.discountValue != null)
             Positioned(
                 bottom: 8,

@@ -6,7 +6,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
-import 'package:sharaf_yabi_ecommerce/constants/constants.dart';
+import 'package:sharaf_yabi_ecommerce/components/constants/constants.dart';
 
 class BannerModel extends ChangeNotifier {
   BannerModel({this.id, this.imagePath, this.pathID, this.itemID});

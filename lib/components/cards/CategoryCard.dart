@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
 import 'package:get/get.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
-import 'package:sharaf_yabi_ecommerce/constants/constants.dart';
-import 'package:sharaf_yabi_ecommerce/constants/widgets.dart';
+import 'package:sharaf_yabi_ecommerce/components/constants/constants.dart';
+import 'package:sharaf_yabi_ecommerce/components/constants/widgets.dart';
 import 'package:sharaf_yabi_ecommerce/controllers/FilterController.dart';
 import 'package:sharaf_yabi_ecommerce/models/CategoryModel.dart';
 import 'package:sharaf_yabi_ecommerce/screens/Others/FilterPage/ShowAllProductsPage.dart';
@@ -30,6 +30,7 @@ class CategoryCard extends StatelessWidget {
           screen: ShowAllProductsPage(
             pageName: "${category!.name}",
             whichFilter: 5,
+            searchPage: false,
           ),
           withNavBar: true, // OPTIONAL VALUE. True by default.
           pageTransitionAnimation: PageTransitionAnimation.cupertino,
@@ -55,18 +56,16 @@ class CategoryCard extends StatelessWidget {
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Padding(
-                    padding: EdgeInsets.only(top: sizeWidth > 800 ? 24 : 14, bottom: 5),
-                    child: Text(
-                      "${category!.name}",
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: sizeWidth > 800 ? 26 : 18,
-                        fontFamily: montserratSemiBold,
-                      ),
+                  Text(
+                    "${category!.name}",
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontSize: sizeWidth > 800 ? 26 : 17,
+                      fontFamily: montserratMedium,
                     ),
                   ),
                   Text("${category!.count}", maxLines: 2, style: TextStyle(color: Colors.grey.withOpacity(0.6), fontFamily: montserratRegular, fontSize: sizeWidth > 800 ? 24 : 16)),

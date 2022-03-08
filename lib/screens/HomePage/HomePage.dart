@@ -4,17 +4,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
 import 'package:get/get.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
-import 'package:sharaf_yabi_ecommerce/cards/ProductCard3.dart';
 import 'package:sharaf_yabi_ecommerce/components/appBar.dart';
+import 'package:sharaf_yabi_ecommerce/components/cards/ProductCard3.dart';
 import 'package:sharaf_yabi_ecommerce/components/constants/constants.dart';
-import 'package:sharaf_yabi_ecommerce/constants/shimmers.dart';
-import 'package:sharaf_yabi_ecommerce/constants/widgets.dart';
+import 'package:sharaf_yabi_ecommerce/components/constants/shimmers.dart';
+import 'package:sharaf_yabi_ecommerce/components/constants/widgets.dart';
 import 'package:sharaf_yabi_ecommerce/controllers/FilterController.dart';
 import 'package:sharaf_yabi_ecommerce/controllers/HomePageController.dart';
 import 'package:sharaf_yabi_ecommerce/models/BannersModel.dart';
-import 'package:sharaf_yabi_ecommerce/screens/HomePage/Components/Banners.dart';
-import 'package:sharaf_yabi_ecommerce/screens/HomePage/SearchPage/Search.dart';
 import 'package:sharaf_yabi_ecommerce/screens/Others/FilterPage/ShowAllProductsPage.dart';
+
+import 'Banners.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -25,15 +25,13 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   Future<List<BannerModel>>? banners;
-  FilterController filterController = Get.put(FilterController());
+  final FilterController filterController = Get.put(FilterController());
   final HomePageController _homePageController = Get.put(HomePageController());
 
   @override
   void initState() {
     super.initState();
-    _homePageController.fetchDiscountedProducts();
-    _homePageController.fetchNewInComeProducts();
-    _homePageController.fetchPopularProducts();
+    _homePageController.refreshList();
     banners = BannerModel().getBanners();
   }
 
@@ -43,21 +41,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     final double sizeWidth = MediaQuery.of(context).size.width;
     return Scaffold(
       backgroundColor: backgroundColor,
-      appBar: PreferredSize(
-        preferredSize: sizeWidth > 800 ? const Size.fromHeight(70) : const Size.fromHeight(kToolbarHeight),
-        child: MyAppBar(
-            icon: IconlyLight.search,
-            onTap: () {
-              pushNewScreen(
-                context,
-                screen: SearchPage(),
-                withNavBar: true, // OPTIONAL VALUE. True by default.
-                pageTransitionAnimation: PageTransitionAnimation.cupertino,
-              );
-            },
-            backArrow: false,
-            iconRemove: true),
-      ),
+      appBar: appBar(sizeWidth, context),
       body: SingleChildScrollView(
         physics: const BouncingScrollPhysics(),
         child: Column(
@@ -65,84 +49,12 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Banners(banners: banners),
-            discountedProducts(sizeWidth, sizeHeight),
-            newInCome(sizeWidth, sizeHeight),
-            getGridViewItems(sizeWidth, sizeHeight),
-            const SizedBox(
-              height: 25,
-            )
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget getGridViewItems(double sizeWidth, double sizeHeight) {
-    return Obx(() {
-      if (_homePageController.loadingRecomended.value == 1) {
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            namePart(
-                name: "popularProducts".tr,
+            allProducts(
                 sizeHeight: sizeHeight,
                 sizeWidth: sizeWidth,
-                onTap: () {
-                  filterController.producersID.clear();
-                  filterController.categoryID.clear();
-                  filterController.categoryIDOnlyID.clear();
-                  filterController.mainCategoryID.value = 0;
-                  pushNewScreen(
-                    context,
-                    screen: ShowAllProductsPage(
-                      pageName: "popularProducts".tr,
-                      whichFilter: 1,
-                    ),
-                    withNavBar: true, // OPTIONAL VALUE. True by default.
-                    pageTransitionAnimation: PageTransitionAnimation.cupertino,
-                  );
-                }),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 6),
-              child: GridView.builder(
-                itemCount: _homePageController.listRecomended.length,
-                physics: const NeverScrollableScrollPhysics(),
-                shrinkWrap: true,
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: sizeWidth > 800 ? 3 : 2, childAspectRatio: 1.5 / 2.5),
-                itemBuilder: (BuildContext context, int index) {
-                  return ProductCard3(
-                    id: _homePageController.listRecomended[index]["id"],
-                    name: _homePageController.listRecomended[index]["name"],
-                    price: _homePageController.listRecomended[index]["price"],
-                    image: _homePageController.listRecomended[index]["image"],
-                    discountValue: _homePageController.listRecomended[index]["discountValue"],
-                    stockCount: _homePageController.listRecomended[index]["stockCount"],
-                  );
-                },
-              ),
-            ),
-          ],
-        );
-      } else if (_homePageController.loadingRecomended.value == 3) {
-        return retryButton(() {
-          _homePageController.fetchPopularProducts();
-        });
-      } else if (_homePageController.loadingRecomended.value == 0) {
-        return shimmer(10);
-      }
-      return SizedBox.shrink();
-    });
-  }
-
-  Widget discountedProducts(double sizeWidth, double sizeHeight) {
-    return Obx(() {
-      if (_homePageController.loading.value == 1) {
-        return Wrap(
-          children: [
-            namePart(
-                name: "discountedProducts".tr,
-                sizeHeight: sizeHeight,
-                sizeWidth: sizeWidth,
+                list: _homePageController.list,
+                name: "discountedProducts",
+                loading: 1,
                 onTap: () {
                   filterController.producersID.clear();
                   filterController.categoryID.clear();
@@ -153,51 +65,21 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                     screen: ShowAllProductsPage(
                       pageName: "discountedProducts".tr,
                       whichFilter: 3,
+                      searchPage: false,
                     ),
                     withNavBar: true, // OPTIONAL VALUE. True by default.
                     pageTransitionAnimation: PageTransitionAnimation.cupertino,
                   );
+                },
+                retry: () {
+                  _homePageController.fetchDiscountedProducts();
                 }),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 6),
-              child: GridView.builder(
-                  itemCount: _homePageController.list.length,
-                  physics: const NeverScrollableScrollPhysics(),
-                  shrinkWrap: true,
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: sizeWidth > 800 ? 3 : 2, childAspectRatio: 1.5 / 2.5),
-                  itemBuilder: (BuildContext context, int index) {
-                    return ProductCard3(
-                      id: _homePageController.list[index]["id"],
-                      name: _homePageController.list[index]["name"],
-                      price: _homePageController.list[index]["price"],
-                      image: _homePageController.list[index]["image"],
-                      discountValue: _homePageController.list[index]["discountValue"],
-                      stockCount: _homePageController.list[index]["stockCount"],
-                    );
-                  }),
-            )
-          ],
-        );
-      } else if (_homePageController.loading.value == 3) {
-        return retryButton(() {
-          _homePageController.fetchDiscountedProducts();
-        });
-      } else if (_homePageController.loading.value == 0) {
-        return shimmer(4);
-      }
-      return SizedBox.shrink();
-    });
-  }
-
-  Widget newInCome(double sizeWidth, double sizeHeight) {
-    return Obx(() {
-      if (_homePageController.loadingNewInCome.value == 1) {
-        return Wrap(
-          children: [
-            namePart(
-                name: "newProducts".tr,
+            allProducts(
                 sizeHeight: sizeHeight,
                 sizeWidth: sizeWidth,
+                list: _homePageController.listNewInCome,
+                name: "newProducts",
+                loading: 2,
                 onTap: () {
                   filterController.producersID.clear();
                   filterController.categoryID.clear();
@@ -208,39 +90,108 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                     screen: ShowAllProductsPage(
                       pageName: "newProducts".tr,
                       whichFilter: 2,
+                      searchPage: false,
                     ),
                     withNavBar: true, // OPTIONAL VALUE. True by default.
                     pageTransitionAnimation: PageTransitionAnimation.cupertino,
                   );
+                },
+                retry: () {
+                  _homePageController.fetchNewInComeProducts();
                 }),
+            allProducts(
+                sizeHeight: sizeHeight,
+                sizeWidth: sizeWidth,
+                list: _homePageController.listRecomended,
+                name: "popularProducts",
+                loading: 3,
+                onTap: () {
+                  filterController.producersID.clear();
+                  filterController.categoryID.clear();
+                  filterController.categoryIDOnlyID.clear();
+                  filterController.mainCategoryID.value = 0;
+                  pushNewScreen(
+                    context,
+                    screen: ShowAllProductsPage(
+                      pageName: "popularProducts".tr,
+                      whichFilter: 1,
+                      searchPage: false,
+                    ),
+                    withNavBar: true, // OPTIONAL VALUE. True by default.
+                    pageTransitionAnimation: PageTransitionAnimation.cupertino,
+                  );
+                },
+                retry: () {
+                  _homePageController.fetchPopularProducts();
+                }),
+            const SizedBox(
+              height: 25,
+            )
+          ],
+        ),
+      ),
+    );
+  }
+
+  PreferredSize appBar(double sizeWidth, BuildContext context) {
+    return PreferredSize(
+      preferredSize: sizeWidth > 800 ? const Size.fromHeight(70) : const Size.fromHeight(kToolbarHeight),
+      child: MyAppBar(
+          icon: IconlyLight.search,
+          onTap: () {
+            pushNewScreen(
+              context,
+              screen: ShowAllProductsPage(
+                pageName: "Sharafyabi".tr,
+                whichFilter: 0,
+                searchPage: true,
+              ),
+              withNavBar: true, // OPTIONAL VALUE. True by default.
+              pageTransitionAnimation: PageTransitionAnimation.cupertino,
+            );
+          },
+          backArrow: false,
+          iconRemove: true),
+    );
+  }
+
+  Widget allProducts({required double sizeWidth, required double sizeHeight, required String name, required Function() onTap, required List list, required Function() retry, required int loading}) {
+    int loadingMine = 0;
+    return Obx(() {
+      if (loading == 1) {
+        loadingMine = _homePageController.loading.value;
+      } else if (loading == 2) {
+        loadingMine = _homePageController.loadingNewInCome.value;
+      } else if (loading == 3) {
+        loadingMine = _homePageController.loadingRecomended.value;
+      }
+      if (loadingMine == 1) {
+        return Wrap(
+          children: [
+            namePart(name: name.tr, sizeHeight: sizeHeight, sizeWidth: sizeWidth, onTap: onTap),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 6),
               child: GridView.builder(
-                  itemCount: _homePageController.listNewInCome.length,
+                  itemCount: list.length,
                   physics: const NeverScrollableScrollPhysics(),
                   shrinkWrap: true,
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: sizeWidth > 800 ? 3 : 2,
-                    childAspectRatio: 1.5 / 2.5,
-                  ),
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: sizeWidth > 800 ? 3 : 2, childAspectRatio: 1.5 / 2.5),
                   itemBuilder: (BuildContext context, int index) {
                     return ProductCard3(
-                      id: _homePageController.listNewInCome[index]["id"],
-                      name: _homePageController.listNewInCome[index]["name"],
-                      price: _homePageController.listNewInCome[index]["price"],
-                      image: _homePageController.listNewInCome[index]["image"],
-                      discountValue: _homePageController.listNewInCome[index]["discountValue"],
-                      stockCount: _homePageController.listNewInCome[index]["stockCount"],
+                      id: list[index]["id"],
+                      name: list[index]["name"],
+                      price: list[index]["price"],
+                      image: list[index]["image"],
+                      discountValue: list[index]["discountValue"],
+                      stockCount: list[index]["stockCount"],
                     );
                   }),
             )
           ],
         );
-      } else if (_homePageController.loadingNewInCome.value == 3) {
-        return retryButton(() {
-          _homePageController.fetchNewInComeProducts();
-        });
-      } else if (_homePageController.loadingNewInCome.value == 0) {
+      } else if (loadingMine == 3) {
+        return retryButton(retry);
+      } else if (loadingMine == 0) {
         return shimmer(4);
       }
       return SizedBox.shrink();

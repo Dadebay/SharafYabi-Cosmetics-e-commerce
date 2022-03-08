@@ -48,76 +48,74 @@ class _BottomNavBarState extends State<BottomNavBar> with TickerProviderStateMix
   int selectedPageIndex = 0;
   @override
   Widget build(BuildContext context) {
-    return PersistentTabView.custom(
-      context,
-      controller: _controller,
-      screens: _buildScreens(),
-      resizeToAvoidBottomInset: true,
-      itemCount: 5,
-      screenTransitionAnimation: const ScreenTransitionAnimation(animateTabTransition: true),
-      customWidget: CustomNavBarWidget(
-        items: [
-          PersistentBottomNavBarItem(
-            activeColorPrimary: kPrimaryColor,
-            inactiveColorPrimary: Colors.grey,
-            inactiveIcon: const Icon(IconlyLight.home),
-            icon: const Icon(IconlyBold.home),
-            title: 'homePage'.tr,
-          ),
-          PersistentBottomNavBarItem(
-            activeColorPrimary: kPrimaryColor,
-            inactiveColorPrimary: Colors.grey,
-            inactiveIcon: const Icon(IconlyLight.category),
-            icon: const Icon(IconlyBold.category),
-            title: 'category'.tr,
-          ),
-          PersistentBottomNavBarItem(
-            inactiveIcon: Obx(() {
-              return Get.find<Fav_Cart_Controller>().cartList.isEmpty
+    return Obx(() {
+      return PersistentTabView.custom(
+        context,
+        controller: _controller,
+        screens: _buildScreens(),
+        resizeToAvoidBottomInset: true,
+        itemCount: 5,
+        screenTransitionAnimation: const ScreenTransitionAnimation(animateTabTransition: true),
+        customWidget: CustomNavBarWidget(
+          items: [
+            PersistentBottomNavBarItem(
+              activeColorPrimary: kPrimaryColor,
+              inactiveColorPrimary: Colors.grey,
+              inactiveIcon: const Icon(IconlyLight.home),
+              icon: const Icon(IconlyBold.home),
+              title: 'homePage'.tr,
+            ),
+            PersistentBottomNavBarItem(
+              activeColorPrimary: kPrimaryColor,
+              inactiveColorPrimary: Colors.grey,
+              inactiveIcon: const Icon(IconlyLight.category),
+              icon: const Icon(IconlyBold.category),
+              title: 'category'.tr,
+            ),
+            PersistentBottomNavBarItem(
+              inactiveIcon: Get.find<Fav_Cart_Controller>().cartList.isEmpty
                   ? const Icon(CupertinoIcons.cart)
                   : Badge(
                       badgeContent: Text('${Get.find<Fav_Cart_Controller>().cartList.length}', style: const TextStyle(color: Colors.white, fontSize: 10, fontFamily: montserratMedium)),
                       animationType: BadgeAnimationType.fade,
-                      child: const Icon(CupertinoIcons.cart));
-            }),
-            icon: Obx(() {
-              return Get.find<Fav_Cart_Controller>().cartList.isEmpty
+                      child: const Icon(CupertinoIcons.cart)),
+              icon: Get.find<Fav_Cart_Controller>().cartList.isEmpty
                   ? const Icon(CupertinoIcons.cart_fill)
                   : Badge(
                       badgeContent: Text('${Get.find<Fav_Cart_Controller>().cartList.length}', style: const TextStyle(color: Colors.white, fontSize: 10, fontFamily: montserratMedium)),
                       animationType: BadgeAnimationType.fade,
-                      child: const Icon(CupertinoIcons.cart_fill));
-            }),
-            title: Get.find<Fav_Cart_Controller>().cartList.isEmpty ? 'cart'.tr : "${Get.find<Fav_Cart_Controller>().priceAll.value.toStringAsFixed(2)} m.",
-            activeColorPrimary: kPrimaryColor,
-            inactiveColorPrimary: Colors.grey,
-          ),
-          PersistentBottomNavBarItem(
-            activeColorPrimary: kPrimaryColor,
-            inactiveColorPrimary: Colors.grey,
-            inactiveIcon: const Icon(IconlyLight.paper),
-            icon: const Icon(IconlyBold.paper),
-            title: 'news'.tr,
-          ),
-          PersistentBottomNavBarItem(
-            activeColorPrimary: kPrimaryColor,
-            inactiveColorPrimary: Colors.grey,
-            inactiveIcon: const Icon(IconlyLight.profile),
-            icon: const Icon(IconlyBold.profile),
-            title: 'profil'.tr,
-          ),
-        ],
-        selectedIndex: _controller!.index,
-        onItemSelected: (index) {
-          setState(() {
-            if (index == 2) {
-              Get.find<CartPageController>().loadData(parametrs: {"products": jsonEncode(Get.find<Fav_Cart_Controller>().cartList)});
-            }
-            _controller!.index = index;
-          });
-        },
-      ),
-    );
+                      child: const Icon(CupertinoIcons.cart_fill)),
+              title: Get.find<Fav_Cart_Controller>().cartList.isEmpty ? 'cart'.tr : "${Get.find<Fav_Cart_Controller>().priceAll.value.toStringAsFixed(2)} m.",
+              activeColorPrimary: kPrimaryColor,
+              inactiveColorPrimary: Colors.grey,
+            ),
+            PersistentBottomNavBarItem(
+              activeColorPrimary: kPrimaryColor,
+              inactiveColorPrimary: Colors.grey,
+              inactiveIcon: const Icon(IconlyLight.paper),
+              icon: const Icon(IconlyBold.paper),
+              title: 'news'.tr,
+            ),
+            PersistentBottomNavBarItem(
+              activeColorPrimary: kPrimaryColor,
+              inactiveColorPrimary: Colors.grey,
+              inactiveIcon: const Icon(IconlyLight.profile),
+              icon: const Icon(IconlyBold.profile),
+              title: 'profil'.tr,
+            ),
+          ],
+          selectedIndex: _controller!.index,
+          onItemSelected: (index) {
+            setState(() {
+              if (index == 2) {
+                Get.find<CartPageController>().loadData(parametrs: {"products": jsonEncode(Get.find<Fav_Cart_Controller>().cartList)});
+              }
+              _controller!.index = index;
+            });
+          },
+        ),
+      );
+    });
   }
 }
 
@@ -135,7 +133,7 @@ class CustomNavBarWidget extends StatelessWidget {
   Widget _buildItem(PersistentBottomNavBarItem item, bool isSelected) {
     return Tooltip(
       message: "${item.title}",
-      textStyle: const TextStyle(fontFamily: "Poppins", color: Colors.white),
+      textStyle: const TextStyle(fontFamily: "Montserrat_Regular", color: Colors.white),
       child: Container(
         alignment: Alignment.center,
         height: 50.0,
@@ -160,6 +158,7 @@ class CustomNavBarWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Material(
+      elevation: 20,
       color: Colors.white,
       child: Container(
         color: Colors.transparent,

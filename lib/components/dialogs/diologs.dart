@@ -3,7 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:sharaf_yabi_ecommerce/constants/constants.dart';
+import 'package:sharaf_yabi_ecommerce/components/constants/constants.dart';
 import 'package:sharaf_yabi_ecommerce/controllers/SettingsController.dart';
 import 'package:vibration/vibration.dart';
 
@@ -13,14 +13,14 @@ Future<dynamic> customDialog(
     {required String title,
     required String hintText,
     required TextEditingController controller,
-    TextEditingController? secondTextFieldController,
+    required TextEditingController secondTextFieldController,
     required int maxLine,
     required int maxLength,
     required Function() onTap,
     required bool secondTextField}) {
   Get.find<SettingsController>().dialogsBool.value = false;
   controller.clear();
-  secondTextFieldController!.clear();
+  secondTextFieldController.clear();
   return Get.defaultDialog(
     radius: 8,
     title: title.tr,
@@ -29,7 +29,7 @@ Future<dynamic> customDialog(
       top: 10,
     ),
     contentPadding: const EdgeInsets.symmetric(horizontal: 12),
-    titleStyle: const TextStyle(color: Colors.black, fontFamily: montserratMedium, fontSize: 24),
+    titleStyle: const TextStyle(color: Colors.black, fontFamily: montserratMedium, fontSize: 22),
     content: Column(
       children: [
         SizedBox(

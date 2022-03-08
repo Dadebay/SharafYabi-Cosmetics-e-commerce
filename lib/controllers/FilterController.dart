@@ -36,7 +36,7 @@ class FilterController extends GetxController {
 
     final products = await ProductsModel().getProducts(parametrs: {
       "page": '${page.value}',
-      "limit": '20',
+      "limit": '10',
       "sort_direction": "$sortName",
       "sort_column": "$sortColumnName",
       "recomended": "${recomended == false ? "" : true}",
@@ -78,7 +78,7 @@ class FilterController extends GetxController {
   addPage() {
     int a = 0;
     a = pageNumberFilterController.value;
-    if ((a / 20) > page.value) {
+    if ((a / 10) > page.value) {
       page.value += 1;
       fetchProducts();
       scroltoName.value = "scrollTop";

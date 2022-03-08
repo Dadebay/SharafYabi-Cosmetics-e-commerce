@@ -4,12 +4,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:sharaf_yabi_ecommerce/cards/MyAddressCard.dart';
 import 'package:sharaf_yabi_ecommerce/components/appBar.dart';
+import 'package:sharaf_yabi_ecommerce/components/cards/MyAddressCard.dart';
 import 'package:sharaf_yabi_ecommerce/components/constants/constants.dart';
 import 'package:sharaf_yabi_ecommerce/components/constants/widgets.dart';
+import 'package:sharaf_yabi_ecommerce/components/dialogs/diologs.dart';
 import 'package:sharaf_yabi_ecommerce/controllers/SettingsController.dart';
-import 'package:sharaf_yabi_ecommerce/dialogs/diologs.dart';
 import 'package:sharaf_yabi_ecommerce/models/AddresModel.dart';
 import 'package:vibration/vibration.dart';
 

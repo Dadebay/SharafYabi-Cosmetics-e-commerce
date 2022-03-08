@@ -2,15 +2,14 @@
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:sharaf_yabi_ecommerce/components/PhoneNumber.dart';
-import 'package:sharaf_yabi_ecommerce/components/TextFieldMine.dart';
-import 'package:sharaf_yabi_ecommerce/components/agreeButton.dart';
-import 'package:sharaf_yabi_ecommerce/components/passwordTextField.dart';
+import 'package:sharaf_yabi_ecommerce/components/buttons/agreeButton.dart';
 import 'package:sharaf_yabi_ecommerce/components/constants/constants.dart';
 import 'package:sharaf_yabi_ecommerce/components/constants/widgets.dart';
+import 'package:sharaf_yabi_ecommerce/components/textFields/PhoneNumber.dart';
+import 'package:sharaf_yabi_ecommerce/components/textFields/TextFieldMine.dart';
+import 'package:sharaf_yabi_ecommerce/components/textFields/passwordTextField.dart';
 import 'package:sharaf_yabi_ecommerce/controllers/AuthController.dart';
 import 'package:sharaf_yabi_ecommerce/models/UserModels/UserSignInModel.dart';
-import 'package:sharaf_yabi_ecommerce/screens/BottomNavBar.dart';
 import 'package:vibration/vibration.dart';
 
 class SingIN extends StatelessWidget {
@@ -53,7 +52,7 @@ class SingIN extends StatelessWidget {
                       UserSignInModel().signUp(fullname: signInNameController.text, phoneNumber: signInPhoneController.text, password: sigInPassswordController.text).then((value) {
                         if (value == true) {
                           showSnackBar("signIntitle", "signInSubtitle", kPrimaryColor);
-                          Get.to(() => BottomNavBar());
+                          // Restart.restartApp();
                         } else if (value == 409) {
                           showSnackBar("signInErrorTitle", "singInErrorSubtitle", Colors.red);
                           signInPhoneController.clear();

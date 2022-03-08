@@ -5,7 +5,6 @@ import 'package:get/get.dart';
 import 'package:sharaf_yabi_ecommerce/components/appBar.dart';
 import 'package:sharaf_yabi_ecommerce/components/constants/constants.dart';
 import 'package:sharaf_yabi_ecommerce/components/constants/widgets.dart';
-import 'package:sharaf_yabi_ecommerce/components/constants/widgets.dart';
 import 'package:sharaf_yabi_ecommerce/models/NewsModel.dart';
 
 class NewsProfil extends StatelessWidget {

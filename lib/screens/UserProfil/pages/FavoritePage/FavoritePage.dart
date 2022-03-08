@@ -3,8 +3,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
 import 'package:get/get.dart';
-import 'package:sharaf_yabi_ecommerce/cards/ProductCard3.dart';
 import 'package:sharaf_yabi_ecommerce/components/appBar.dart';
+import 'package:sharaf_yabi_ecommerce/components/cards/ProductCard3.dart';
 import 'package:sharaf_yabi_ecommerce/components/constants/constants.dart';
 import 'package:sharaf_yabi_ecommerce/components/constants/widgets.dart';
 import 'package:sharaf_yabi_ecommerce/controllers/Fav_Cart_Controller.dart';
@@ -54,20 +54,13 @@ class _FavoritePageState extends State<FavoritePage> {
                     shrinkWrap: true,
                     gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: sizeWidth > 800 ? 3 : 2, childAspectRatio: 1.5 / 2.5),
                     itemBuilder: (BuildContext context, int index) {
-                      return Container(
-                        width: sizeWidth > 800 ? 220 : 180,
-                        margin: const EdgeInsets.all(6),
-                        padding: const EdgeInsets.only(
-                          bottom: 4,
-                        ),
-                        child: ProductCard3(
-                          id: _homePageController.listFavlist[index]["id"] ?? 1,
-                          name: _homePageController.listFavlist[index]["name"] ?? "asdasd",
-                          price: _homePageController.listFavlist[index]["price"],
-                          image: _homePageController.listFavlist[index]["image"],
-                          discountValue: _homePageController.listFavlist[index]["discountValue"],
-                          stockCount: _homePageController.listFavlist[index]["stockCount"],
-                        ),
+                      return ProductCard3(
+                        id: _homePageController.listFavlist[index]["id"] ?? 1,
+                        name: _homePageController.listFavlist[index]["name"] ?? "asdasd",
+                        price: _homePageController.listFavlist[index]["price"],
+                        image: _homePageController.listFavlist[index]["image"],
+                        discountValue: _homePageController.listFavlist[index]["discountValue"],
+                        stockCount: _homePageController.listFavlist[index]["stockCount"],
                       );
                     });
           } else if (_homePageController.loadingFavlist.value == 3) {

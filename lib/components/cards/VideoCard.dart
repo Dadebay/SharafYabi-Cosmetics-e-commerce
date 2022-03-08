@@ -4,9 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
-import 'package:sharaf_yabi_ecommerce/constants/constants.dart';
-import 'package:sharaf_yabi_ecommerce/constants/widgets.dart';
-import 'package:sharaf_yabi_ecommerce/screens/News_Videos/Videos/VideoPlayerProfile.dart';
+import 'package:sharaf_yabi_ecommerce/components/constants/constants.dart';
+import 'package:sharaf_yabi_ecommerce/components/constants/widgets.dart';
+import 'package:sharaf_yabi_ecommerce/screens/News_Videos/VideoPlayerProfile.dart';
 
 class VideoCard extends StatelessWidget {
   final String name;

@@ -4,34 +4,35 @@ import 'dart:math';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_iconly/flutter_iconly.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
+import 'package:lottie/lottie.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
-import 'package:sharaf_yabi_ecommerce/cards/CommentCard.dart';
-import 'package:sharaf_yabi_ecommerce/cards/ProductCard3.dart';
+import 'package:sharaf_yabi_ecommerce/components/buttons/FavButton.dart';
+import 'package:sharaf_yabi_ecommerce/components/buttons/addOrRemoveButton.dart';
+import 'package:sharaf_yabi_ecommerce/components/cards/CommentCard.dart';
+import 'package:sharaf_yabi_ecommerce/components/cards/ProductCard3.dart';
 import 'package:sharaf_yabi_ecommerce/components/constants/constants.dart';
-import 'package:sharaf_yabi_ecommerce/constants/shimmers.dart';
+import 'package:sharaf_yabi_ecommerce/components/constants/shimmers.dart';
 import 'package:sharaf_yabi_ecommerce/components/constants/widgets.dart';
-import 'package:sharaf_yabi_ecommerce/controllers/CartPageController.dart';
-import 'package:sharaf_yabi_ecommerce/controllers/Fav_Cart_Controller.dart';
+import 'package:sharaf_yabi_ecommerce/components/dialogs/diologs.dart';
 import 'package:sharaf_yabi_ecommerce/controllers/FilterController.dart';
-import 'package:sharaf_yabi_ecommerce/controllers/HomePageController.dart';
+import 'package:sharaf_yabi_ecommerce/controllers/SettingsController.dart';
 import 'package:sharaf_yabi_ecommerce/models/CommentModel.dart';
 import 'package:sharaf_yabi_ecommerce/models/ProductProfilModel.dart';
 import 'package:sharaf_yabi_ecommerce/models/ProductsModel.dart';
+import 'package:sharaf_yabi_ecommerce/models/UserModels/AuthModel.dart';
 import 'package:sharaf_yabi_ecommerce/screens/Others/CommentsPage/Comments.dart';
 import 'package:sharaf_yabi_ecommerce/screens/Others/FilterPage/ShowAllProductsPage.dart';
+import 'package:sharaf_yabi_ecommerce/screens/UserProfil/Auth/LoginPage.dart';
 import 'package:share/share.dart';
 import 'package:vibration/vibration.dart';
 
-import '../../../controllers/ProductProfileController.dart';
 import 'PhotoView.dart';
 
 class ProductProfil extends StatefulWidget {
   const ProductProfil({Key? key, required this.id, this.productName, required this.image}) : super(key: key);
-
   final int? id;
   final String? image;
   final String? productName;
@@ -41,72 +42,40 @@ class ProductProfil extends StatefulWidget {
 }
 
 class _ProductProfilState extends State<ProductProfil> {
-  bool addCartBool = false;
-  bool favBool = false;
-  CartPageController cartPageController = Get.put(CartPageController());
-  TextEditingController controller = TextEditingController();
+  final storage = GetStorage();
+
   double discountedPrice = 0.0;
-  Fav_Cart_Controller favCartController = Get.put(Fav_Cart_Controller());
-  FilterController filterController = Get.put(FilterController());
-  late Future<CommentModel> getComment;
-  late Future<ProductProfilModel> getProduct;
   String imageMine = "";
   String name = "";
   double priceMine = 0.0;
   double priceOLD = 0.0;
-  ProductProfilController productProfilController = Get.put(ProductProfilController());
-  int selectedIndex = 0;
 
-  final HomePageController _homePageController = Get.put(HomePageController());
+  late Future<CommentModel> getComment;
+  late Future<ProductProfilModel> getProduct;
+  late Future<List<ProductsModel>> getSameProducts;
 
   @override
   void initState() {
     super.initState();
-    whenPageLoad();
+    name = widget.productName!;
+    imageMine = widget.image!;
     getProduct = ProductProfilModel().getRealEstatesById(widget.id);
-    getComment = CommentModel().getComment(id: widget.id);
+    getComment = CommentModel().getComment(id: widget.id ?? 0);
   }
 
-  whenPageLoad() {
-    name = widget.productName ?? "Sharafyabi";
-    imageMine = widget.image ?? "asd";
-    if (favCartController.cartList.isNotEmpty) {
-      bool mine = false;
-      for (final element in favCartController.cartList) {
-        final int a = element["count"];
-        if (a < 0) {
-          element["count"] = 1;
-        }
-        if (element["id"] == widget.id) {
-          mine = true;
-          addCartBool = true;
-          productProfilController.quantity.value = element["count"];
-        }
-      }
-      if (mine == false) {
-        addCartBool = false;
-        productProfilController.quantity.value = 1;
-      }
-    } else {
-      addCartBool = false;
-      productProfilController.quantity.value = 1;
-    }
-
-    for (final element in favCartController.favList) {
-      if (element["id"] == widget.id) {
-        favBool = true;
-      }
-    }
-  }
-
-  Padding specificationTexts({String? text1, String? text2}) {
+  Padding specificationTexts({String? text1, String? text2, Function()? onTap}) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 10),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Expanded(flex: 2, child: Text(text1!, overflow: TextOverflow.ellipsis, style: TextStyle(color: Colors.grey[600], fontFamily: montserratSemiBold, fontSize: 16))),
-          Expanded(flex: 2, child: Text(text2!, maxLines: 1, overflow: TextOverflow.ellipsis, style: const TextStyle(color: Colors.black, fontFamily: montserratMedium, fontSize: 16))),
+          Expanded(
+              flex: 2,
+              child: GestureDetector(
+                onTap: onTap,
+                child: Text(text2!, maxLines: 1, overflow: TextOverflow.ellipsis, style: const TextStyle(color: Colors.black, fontFamily: montserratMedium, fontSize: 16)),
+              )),
         ],
       ),
     );
@@ -148,118 +117,60 @@ class _ProductProfilState extends State<ProductProfil> {
     );
   }
 
-  Widget bottomSheetMine(String? price) {
+  Container namePart({required int discountValue, required int stockCount, required String name}) {
     return Container(
-        child: addCartBool
-            ? Row(
+        width: Get.size.width,
+        padding: const EdgeInsets.all(20),
+        margin: const EdgeInsets.only(top: 28),
+        color: Colors.white,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(bottom: 15),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  GestureDetector(
-                    onTap: () {
-                      favCartController.removeCart(widget.id!);
-                      _homePageController.searchAndRemove(widget.id!);
-                      cartPageController.removeCard(widget.id!);
-                      if (productProfilController.quantity.value > 1) {
-                        if (filterController.list.isNotEmpty) {
-                          for (final element2 in filterController.list) {
-                            if (element2["id"] == widget.id) {
-                              element2["count"]--;
-                            }
-                          }
-                        }
-                        productProfilController.quantity.value--;
-                        showCustomToast(
-                          context,
-                          "productCountAdded".tr,
-                        );
-                      } else {
-                        addCartBool = false;
-                        showCustomToast(
-                          context,
-                          "removedFromCartTitle".tr,
-                        );
-                      }
-                      setState(() {});
-                    },
-                    child: Container(
-                      padding: EdgeInsets.all(6.0),
-                      decoration: BoxDecoration(color: kPrimaryColor, borderRadius: borderRadius5),
-                      child: Icon(CupertinoIcons.minus, color: Colors.white, size: 20),
+                  Expanded(
+                    child: Row(
+                      children: [
+                        RichText(
+                          overflow: TextOverflow.ellipsis,
+                          text: TextSpan(children: <TextSpan>[
+                            TextSpan(text: priceMine.toStringAsFixed(2), style: const TextStyle(fontFamily: montserratSemiBold, fontSize: 24, color: Colors.black)),
+                            const TextSpan(text: " m.", style: TextStyle(fontFamily: montserratSemiBold, fontSize: 18, color: Colors.black))
+                          ]),
+                        ),
+                        if (discountValue != 0 && discountValue != null)
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 8),
+                            child: Stack(
+                              children: [
+                                Positioned(left: 0, right: 5, top: 12, child: Transform.rotate(angle: pi / -14, child: Container(height: 1, color: Colors.red))),
+                                Text("$priceOLD", style: const TextStyle(fontFamily: montserratRegular, fontSize: 18, color: Colors.grey)),
+                              ],
+                            ),
+                          )
+                        else
+                          const SizedBox.shrink(),
+                      ],
                     ),
                   ),
-                  Container(
-                    margin: const EdgeInsets.symmetric(horizontal: 30),
-                    child: Obx(() {
-                      return Text(
-                        "${productProfilController.quantity.value}",
-                        textAlign: TextAlign.center,
-                        style: const TextStyle(color: Colors.black, fontFamily: montserratRegular, fontSize: 20),
-                      );
-                    }),
-                  ),
-                  GestureDetector(
-                    onTap: () {
-                      if (productProfilController.stockCount.value > (productProfilController.quantity.value + 1)) {
-                        favCartController.addCart(widget.id!, price!);
-                        cartPageController.addToCard(widget.id!);
-                        _homePageController.searchAndAdd(widget.id!, price);
-                        productProfilController.quantity.value++;
-                        if (filterController.list.isNotEmpty) {
-                          for (final element2 in filterController.list) {
-                            if (element2["id"] == widget.id) {
-                              element2["count"]++;
-                            }
-                          }
-                        }
-                        showCustomToast(
-                          context,
-                          "productCountAdded".tr,
-                        );
-                      } else {
-                        Vibration.vibrate();
-                        showCustomToast(
-                          context,
-                          "emptyStockCount".tr,
-                        );
-                      }
-                      setState(() {});
-                    },
-                    child: Container(
-                      padding: EdgeInsets.all(6.0),
-                      decoration: BoxDecoration(color: kPrimaryColor, borderRadius: borderRadius5),
-                      child: Icon(CupertinoIcons.add, color: Colors.white, size: 20),
-                    ),
+                  AddOrRemoveButton(
+                    id: widget.id!,
+                    price: "$priceMine",
+                    stockCount: stockCount,
+                    sizeWidth: false,
                   ),
                 ],
-              )
-            : GestureDetector(
-                onTap: () {
-                  if (productProfilController.stockCount.value > 2) {
-                    if (priceOLD != 0.0) {
-                      setState(() {
-                        addCartBool = !addCartBool;
-                        final int? a = widget.id;
-                        favCartController.addCart(a!, price!);
-                        showCustomToast(
-                          context,
-                          "addedToCardSubtitle".tr,
-                        );
-                      });
-                    } else {
-                      showSnackBar("retry", "error404", Colors.red);
-                    }
-                  }
-                },
-                child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-                    decoration: const BoxDecoration(
-                      color: kPrimaryColor,
-                      borderRadius: borderRadius5,
-                    ),
-                    child: Text("addCart3".tr, textAlign: TextAlign.center, style: const TextStyle(color: Colors.white, fontFamily: montserratMedium, fontSize: 18))),
-              ));
+              ),
+            ),
+            Text("$name", style: const TextStyle(color: Colors.black, fontFamily: montserratMedium, fontSize: 18)),
+          ],
+        ));
   }
 
-  Column sameProducts(int? categoryId) {
+  Column sameProducts() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -268,14 +179,7 @@ class _ProductProfilState extends State<ProductProfil> {
           child: Text("sameProducts".tr, style: const TextStyle(color: Colors.black, fontFamily: montserratSemiBold, fontSize: 18)),
         ),
         FutureBuilder<List<ProductsModel>>(
-            future: ProductsModel().getProducts(
-              parametrs: {
-                "page": "1",
-                "limit": "4",
-                "product_id": "${widget.id}",
-                "main_category_id": "$categoryId",
-              },
-            ),
+            future: getSameProducts,
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return shimmer(4);
@@ -305,60 +209,6 @@ class _ProductProfilState extends State<ProductProfil> {
     );
   }
 
-  Container namePArt(double priceMine, AsyncSnapshot<ProductProfilModel> snapshot) {
-    return Container(
-        width: Get.size.width,
-        padding: const EdgeInsets.all(20),
-        margin: const EdgeInsets.only(top: 28),
-        color: Colors.white,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(bottom: 15),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Expanded(
-                    child: Row(
-                      children: [
-                        RichText(
-                          overflow: TextOverflow.ellipsis,
-                          text: TextSpan(children: <TextSpan>[
-                            TextSpan(text: priceMine.toStringAsFixed(2), style: const TextStyle(fontFamily: montserratSemiBold, fontSize: 24, color: Colors.black)),
-                            const TextSpan(text: " m.", style: TextStyle(fontFamily: montserratSemiBold, fontSize: 18, color: Colors.black))
-                          ]),
-                        ),
-                        if (snapshot.data!.discountValue != 0 && snapshot.data!.discountValue != null)
-                          Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 8),
-                            child: Stack(
-                              children: [
-                                Positioned(left: 0, right: 5, top: 10, child: Transform.rotate(angle: pi / -14, child: Container(height: 1, color: Colors.red))),
-                                RichText(
-                                  overflow: TextOverflow.ellipsis,
-                                  text: TextSpan(children: <TextSpan>[
-                                    TextSpan(text: "$priceOLD", style: const TextStyle(fontFamily: montserratRegular, fontSize: 18, color: Colors.grey)),
-                                    const TextSpan(text: " m.", style: TextStyle(fontFamily: montserratRegular, fontSize: 12, color: Colors.grey))
-                                  ]),
-                                ),
-                              ],
-                            ),
-                          )
-                        else
-                          const SizedBox.shrink(),
-                      ],
-                    ),
-                  ),
-                  bottomSheetMine("${priceMine}"),
-                ],
-              ),
-            ),
-            Text("${snapshot.data!.name}", style: const TextStyle(color: Colors.black, fontFamily: montserratMedium, fontSize: 18)),
-          ],
-        ));
-  }
-
   Stack imagePart(AsyncSnapshot<ProductProfilModel> snapshot) {
     return Stack(
       children: [
@@ -374,9 +224,7 @@ class _ProductProfilState extends State<ProductProfil> {
                 height: Get.size.height / 2.5,
                 viewportFraction: 1.0,
                 onPageChanged: (index, CarouselPageChangedReason) {
-                  setState(() {
-                    selectedIndex = index;
-                  });
+                  Get.find<SettingsController>().productProfilSelectedIndex.value = index;
                 },
               ),
               itemBuilder: (BuildContext context, int index, int realIndex) {
@@ -385,7 +233,7 @@ class _ProductProfilState extends State<ProductProfil> {
                       pushNewScreen(
                         context,
                         screen: PhotoViewPage(
-                          image: "$serverImage/${snapshot.data!.images[index]["destination"]}-mini.webp",
+                          image: "$serverImage/${snapshot.data!.images[index]["destination"]}-big.webp",
                         ),
                         withNavBar: true, // OPTIONAL VALUE. True by default.
                         pageTransitionAnimation: PageTransitionAnimation.fade,
@@ -419,50 +267,49 @@ class _ProductProfilState extends State<ProductProfil> {
                   scrollDirection: Axis.horizontal,
                   itemCount: snapshot.data!.images.length,
                   itemBuilder: (BuildContext context, int index) {
-                    return AnimatedContainer(
-                      margin: const EdgeInsets.symmetric(horizontal: 10),
-                      duration: const Duration(milliseconds: 500),
-                      curve: Curves.easeInOut,
-                      width: selectedIndex == index ? 30 : 7,
-                      decoration: BoxDecoration(color: selectedIndex == index ? kPrimaryColor : Colors.grey[300], borderRadius: borderRadius15),
-                    );
+                    return Obx(() {
+                      return AnimatedContainer(
+                        margin: const EdgeInsets.symmetric(horizontal: 10),
+                        duration: const Duration(milliseconds: 500),
+                        curve: Curves.easeInOut,
+                        width: Get.find<SettingsController>().productProfilSelectedIndex.value == index ? 30 : 7,
+                        decoration: BoxDecoration(color: Get.find<SettingsController>().productProfilSelectedIndex.value == index ? kPrimaryColor : Colors.grey[300], borderRadius: borderRadius15),
+                      );
+                    });
                   },
                 ),
               )),
         ),
         Positioned(
-          top: 10,
-          right: 5,
-          child: IconButton(
-            onPressed: () {
-              favCartController.toggleFav(widget.id!);
-              favBool = !favBool;
-              //TODO: showCustom Toast gosuldy we ayryldy we cykanda product card gosulgy bolsubn
-              setState(() {});
-            },
-            icon: Icon(favBool == true ? IconlyBold.heart : IconlyLight.heart, color: favBool == true ? Colors.red : Colors.grey, size: 28),
-          ),
-        )
+            top: 10,
+            right: 5,
+            child: FavButton(
+              id: widget.id!,
+            ))
       ],
     );
   }
 
-  whenDataComesBacked({String? price, required String? stockCount, required int? discountValue}) {
+  whenDataComesBacked({String? price, required int? discountValue, int? categoryID}) {
     priceMine = double.parse(price!);
-
+    getSameProducts = ProductsModel().getProducts(
+      parametrs: {
+        "page": "1",
+        "limit": "4",
+        "product_id": "${widget.id}",
+        "main_category_id": "$categoryID",
+      },
+    );
     if (discountValue != null || discountValue != 0) {
       priceOLD = priceMine;
       final int a = discountValue!;
       discountedPrice = (priceMine * a) / 100;
       priceMine -= discountedPrice;
     }
-
-    productProfilController.stockCount.value = int.parse(stockCount!);
   }
 
   @override
   Widget build(BuildContext context) {
-    whenPageLoad();
     return Scaffold(
         backgroundColor: backgroundColor,
         appBar: appBar(),
@@ -474,11 +321,13 @@ class _ProductProfilState extends State<ProductProfil> {
                   return Container(
                       height: Get.size.height - 200, padding: const EdgeInsets.symmetric(horizontal: 15), child: emptyData(imagePath: emptyProducts, errorTitle: "retry", errorSubtitle: "error404"));
                 } else if (snapshot.hasData) {
-                  whenDataComesBacked(price: snapshot.data!.price, stockCount: snapshot.data!.stock, discountValue: snapshot.data!.discountValue);
+                  whenDataComesBacked(price: snapshot.data!.price, discountValue: snapshot.data!.discountValue, categoryID: snapshot.data!.categoryId);
+                  name = snapshot.data!.name!;
+                  imageMine = "$serverImage/${snapshot.data!.images[0]["destination"]}-big.webp";
                   return Column(
                     children: [
                       imagePart(snapshot),
-                      namePArt(priceMine, snapshot),
+                      namePart(discountValue: snapshot.data!.discountValue!, name: snapshot.data!.name!, stockCount: int.parse(snapshot.data!.stock!)),
                       customContainer(Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -486,103 +335,62 @@ class _ProductProfilState extends State<ProductProfil> {
                           const SizedBox(
                             height: 20,
                           ),
-                          GestureDetector(
+                          specificationTexts(
+                              text1: "categoryName".tr,
+                              text2: "${snapshot.data!.categoryName}",
                               onTap: () {
-                                filterController.categoryID.clear();
-                                filterController.producersID.value = [];
+                                Get.find<FilterController>().categoryID.clear();
+                                Get.find<FilterController>().producersID.value = [];
                                 final int? id = snapshot.data!.categoryId;
-                                filterController.mainCategoryID.value = id!;
+                                Get.find<FilterController>().mainCategoryID.value = id!;
                                 pushNewScreen(
                                   context,
                                   screen: ShowAllProductsPage(
                                     pageName: "${snapshot.data!.categoryName}",
                                     whichFilter: 5,
+                                    searchPage: false,
                                   ),
                                   withNavBar: true, // OPTIONAL VALUE. True by default.
                                   pageTransitionAnimation: PageTransitionAnimation.fade,
                                 );
-                              },
-                              child: specificationTexts(text1: "categoryName".tr, text2: "${snapshot.data!.categoryName}")),
-                          GestureDetector(
+                              }),
+                          specificationTexts(
+                              text1: "brandName".tr,
+                              text2: "${snapshot.data!.producerName}",
                               onTap: () {
-                                filterController.producersID.clear();
-                                filterController.categoryID.clear();
-
-                                filterController.producersID.add(snapshot.data!.producerId);
+                                Get.find<FilterController>().producersID.clear();
+                                Get.find<FilterController>().categoryID.clear();
+                                Get.find<FilterController>().producersID.add(snapshot.data!.producerId);
                                 pushNewScreen(
                                   context,
                                   screen: ShowAllProductsPage(
                                     pageName: '${snapshot.data!.producerName}',
+                                    searchPage: false,
                                     whichFilter: 4,
                                   ),
                                   withNavBar: true, // OPTIONAL VALUE. True by default.
                                   pageTransitionAnimation: PageTransitionAnimation.fade,
                                 );
-                              },
-                              child: specificationTexts(text1: "brandName".tr, text2: "${snapshot.data!.producerName}")),
+                              }),
                           const SizedBox(
                             height: 30,
                           ),
-                          if (snapshot.data!.description == null)
-                            const SizedBox.shrink()
-                          else
-                            Text("description".tr, style: const TextStyle(color: Colors.black, fontFamily: montserratSemiBold, fontSize: 17)),
-                          if (snapshot.data!.description == null)
-                            const SizedBox.shrink()
-                          else
-                            Padding(
-                              padding: const EdgeInsets.only(top: 15),
-                              child: Text("${snapshot.data!.description}", style: const TextStyle(color: Colors.black, fontFamily: montserratRegular, fontSize: 16)),
+                          if (snapshot.data!.description != null)
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text("description".tr, style: const TextStyle(color: Colors.black, fontFamily: montserratSemiBold, fontSize: 17)),
+                                Padding(
+                                  padding: const EdgeInsets.only(top: 15),
+                                  child: Text("${snapshot.data!.description}", style: const TextStyle(color: Colors.black, fontFamily: montserratRegular, fontSize: 16)),
+                                ),
+                              ],
                             ),
                         ],
                       )),
-                      customContainer(ExpansionTile(
-                        iconColor: kPrimaryColor,
-                        initiallyExpanded: true,
-                        tilePadding: const EdgeInsets.symmetric(horizontal: 8),
-                        title: GestureDetector(
-                          onTap: () {
-                            Navigator.of(context).push(MaterialPageRoute(
-                                builder: (_) => CommentsPage(
-                                      productID: widget.id!,
-                                    )));
-                          },
-                          child: Text("comments".tr, style: const TextStyle(color: Colors.black, fontFamily: montserratSemiBold, fontSize: 18)),
-                        ),
-                        children: [
-                          SizedBox(
-                            height: 400,
-                            child: FutureBuilder<CommentModel>(
-                                future: getComment,
-                                builder: (context, snapshot) {
-                                  if (snapshot.connectionState == ConnectionState.waiting) {
-                                    return Center(
-                                      child: spinKit(),
-                                    );
-                                  }
-                                  if (snapshot.hasData) {
-                                    return snapshot.data!.comments!.isEmpty
-                                        ? noCommentwidget()
-                                        : ListView.builder(
-                                            physics: const BouncingScrollPhysics(),
-                                            itemCount: snapshot.data!.comments!.length > 5 ? 5 : snapshot.data!.comments!.length,
-                                            itemBuilder: (BuildContext context, int index) {
-                                              return CommentCard(
-                                                  addReplyButton: false,
-                                                  userName: snapshot.data!.comments![index].fullName!,
-                                                  userDescription: snapshot.data!.comments![index].commentMine!,
-                                                  productID: widget.id!,
-                                                  commentID: snapshot.data!.comments![index].id!);
-                                            },
-                                          );
-                                  }
-                                  return noCommentwidget();
-                                }),
-                          )
-                        ],
-                      )),
-                      sameProducts(snapshot.data!.categoryId),
-                      const SizedBox(height: 80),
+                      commentsPart(context),
+                      sameProducts(),
+                      const SizedBox(height: 60),
                     ],
                   );
                 }
@@ -592,5 +400,139 @@ class _ProductProfilState extends State<ProductProfil> {
                 );
               }),
         ));
+  }
+
+  Container commentsPart(BuildContext context) {
+    return customContainer(ExpansionTile(
+      iconColor: kPrimaryColor,
+      initiallyExpanded: true,
+      tilePadding: const EdgeInsets.symmetric(horizontal: 8),
+      title: GestureDetector(
+        onTap: () {
+          Navigator.of(context).push(MaterialPageRoute(
+              builder: (_) => CommentsPage(
+                    productID: widget.id!,
+                  )));
+        },
+        child: Text("comments".tr, style: const TextStyle(color: Colors.black, fontFamily: montserratSemiBold, fontSize: 18)),
+      ),
+      children: [
+        Stack(
+          children: [
+            SizedBox(
+              height: 400,
+              child: FutureBuilder<CommentModel>(
+                  future: getComment,
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return Center(
+                        child: spinKit(),
+                      );
+                    }
+                    if (snapshot.hasData) {
+                      return snapshot.data!.comments!.isEmpty
+                          ? Container(margin: EdgeInsets.all(80), padding: EdgeInsets.only(bottom: 40), child: Lottie.asset(noCommentJson, height: 100, animate: true))
+                          : ListView.builder(
+                              physics: const BouncingScrollPhysics(),
+                              itemCount: snapshot.data!.comments!.length > 5 ? 5 : snapshot.data!.comments!.length,
+                              itemBuilder: (BuildContext context, int index) {
+                                return CommentCard(
+                                    addReplyButton: false,
+                                    userName: snapshot.data!.comments![index].fullName!,
+                                    userDescription: snapshot.data!.comments![index].commentMine!,
+                                    productID: widget.id!,
+                                    commentID: snapshot.data!.comments![index].id!);
+                              },
+                            );
+                    }
+                    return Container(
+                      margin: EdgeInsets.all(80),
+                      padding: EdgeInsets.only(bottom: 40),
+                      child: Lottie.asset(noCommentJson, height: 200, animate: true),
+                    );
+                  }),
+            ),
+            Positioned(
+              bottom: 0,
+              left: 0,
+              right: 0,
+              child: storage.read("AccessToken") == null
+                  ? Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Container(
+                          width: Get.size.width,
+                          margin: EdgeInsets.symmetric(vertical: 8),
+                          padding: EdgeInsets.symmetric(vertical: 6),
+                          decoration: BoxDecoration(
+                            borderRadius: borderRadius5,
+                            color: backgroundColor,
+                          ),
+                          child: Text(
+                            "pleaseLogin".tr,
+                            textAlign: TextAlign.center,
+                            style: TextStyle(color: kPrimaryColor, fontFamily: montserratRegular),
+                          ),
+                        ),
+                        addCommentButton()
+                      ],
+                    )
+                  : addCommentButton(),
+            )
+          ],
+        )
+      ],
+    ));
+  }
+
+  TextEditingController controller = TextEditingController();
+
+  SizedBox addCommentButton() {
+    return SizedBox(
+      width: Get.size.width,
+      child: RaisedButton(
+          onPressed: () async {
+            final String? token = await Auth().getToken();
+            if (token == null) {
+              Get.to(() => LoginPage());
+            } else {
+              customDialog(
+                controller: controller,
+                secondTextFieldController: controller,
+                hintText: "writeComment",
+                maxLength: 70,
+                maxLine: 3,
+                secondTextField: false,
+                title: "writeComment",
+                onTap: () {
+                  Get.find<SettingsController>().dialogsBool.value = !Get.find<SettingsController>().dialogsBool.value;
+                  CommentModel().writeComment(id: widget.id, comment: controller.text).then((value) {
+                    if (value == true) {
+                      Get.back();
+                      showSnackBar("commentAdded", "commentAddedSubtitle", kPrimaryColor);
+                      controller.clear();
+                    } else {
+                      Vibration.vibrate();
+                      showSnackBar("retry", "error404", kPrimaryColor);
+                      controller.clear();
+                    }
+                    Get.find<SettingsController>().dialogsBool.value = !Get.find<SettingsController>().dialogsBool.value;
+                  });
+                },
+              );
+            }
+          },
+          color: kPrimaryColor,
+          padding: EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+          shape: RoundedRectangleBorder(borderRadius: borderRadius5),
+          child: Text(
+            storage.read("AccessToken") == null ? "login".tr : "writeComment".tr,
+            style: TextStyle(
+              color: Colors.white,
+              fontFamily: montserratMedium,
+            ),
+          )),
+    );
   }
 }

@@ -4,7 +4,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:http/http.dart' as http;
-import 'package:sharaf_yabi_ecommerce/constants/constants.dart';
+import 'package:sharaf_yabi_ecommerce/components/constants/constants.dart';
 
 import 'AuthModel.dart';
 

@@ -4,6 +4,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:photo_view/photo_view.dart';
+import 'package:sharaf_yabi_ecommerce/components/constants/constants.dart';
 import 'package:sharaf_yabi_ecommerce/components/constants/widgets.dart';
 
 class PhotoViewPage extends StatelessWidget {
@@ -14,7 +15,7 @@ class PhotoViewPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        backgroundColor: Colors.black,
+        backgroundColor: backgroundColor,
         body: Stack(
           children: [
             Padding(
@@ -29,6 +30,7 @@ class PhotoViewPage extends StatelessWidget {
                     const Icon(Icons.error_outline, color: Colors.white);
                   },
                 ),
+                backgroundDecoration: BoxDecoration(color: backgroundColor),
                 tightMode: false,
                 errorBuilder: (context, url, error) => const Icon(Icons.error_outline),
                 loadingBuilder: (context, url) => Center(child: spinKit()),
@@ -41,7 +43,7 @@ class PhotoViewPage extends StatelessWidget {
                   onTap: () {
                     Navigator.of(context).pop();
                   },
-                  child: const Icon(CupertinoIcons.xmark_circle, color: Colors.white, size: 40)),
+                  child: const Icon(CupertinoIcons.xmark_circle, color: Colors.black, size: 40)),
             ),
           ],
         ),

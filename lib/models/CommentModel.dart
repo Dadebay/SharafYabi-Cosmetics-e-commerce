@@ -6,7 +6,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
-import 'package:sharaf_yabi_ecommerce/constants/constants.dart';
+import 'package:sharaf_yabi_ecommerce/components/constants/constants.dart';
 import 'package:sharaf_yabi_ecommerce/models/UserModels/AuthModel.dart';
 
 class CommentModel extends ChangeNotifier {
@@ -24,7 +24,7 @@ class CommentModel extends ChangeNotifier {
   final int? count;
   final List<Comment>? comments;
 
-  Future<CommentModel> getComment({int? id}) async {
+  Future<CommentModel> getComment({required int id}) async {
     String lang = Get.locale!.languageCode;
     if (lang == "tr") lang = "tm";
     final response = await http.get(
@@ -42,7 +42,6 @@ class CommentModel extends ChangeNotifier {
   }
 
   Future writeComment({int? id, String? comment}) async {
-    print("come here");
     String lang = Get.locale!.languageCode;
     if (lang == "tr") lang = "tm";
     final token = await Auth().getToken();
@@ -58,7 +57,6 @@ class CommentModel extends ChangeNotifier {
         body: jsonEncode(<String, String>{
           "comment": comment!,
         }));
-    print(response.body);
     if (response.statusCode == 200) {
       return true;
     } else {

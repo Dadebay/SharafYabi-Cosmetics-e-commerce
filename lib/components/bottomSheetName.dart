@@ -3,7 +3,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:sharaf_yabi_ecommerce/constants/constants.dart';
+import 'constants/constants.dart';
 
 class BottomSheetName extends StatelessWidget {
   final String? name;

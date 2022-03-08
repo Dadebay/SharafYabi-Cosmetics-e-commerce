@@ -6,7 +6,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
-import 'package:sharaf_yabi_ecommerce/constants/constants.dart';
+import 'package:sharaf_yabi_ecommerce/components/constants/constants.dart';
 
 class CategoryModel extends ChangeNotifier {
   CategoryModel({this.id, this.name, this.count, this.imagePath, this.discount, this.newInCome, this.recomended, this.sub});

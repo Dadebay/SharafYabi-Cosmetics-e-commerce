@@ -1,29 +1,33 @@
 // ignore_for_file: deprecated_member_use, file_names, avoid_dynamic_calls, unnecessary_null_checks, always_use_package_imports
 
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
 import 'package:get/get.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
-import 'package:sharaf_yabi_ecommerce/cards/ProductCard3.dart';
-import 'package:sharaf_yabi_ecommerce/components/agreeButton.dart';
 import 'package:sharaf_yabi_ecommerce/components/appBar.dart';
 import 'package:sharaf_yabi_ecommerce/components/bottomSheetName.dart';
+import 'package:sharaf_yabi_ecommerce/components/buttons/agreeButton.dart';
+import 'package:sharaf_yabi_ecommerce/components/buttons/filterButton.dart';
+import 'package:sharaf_yabi_ecommerce/components/cards/ProductCard3.dart';
 import 'package:sharaf_yabi_ecommerce/components/constants/constants.dart';
-import 'package:sharaf_yabi_ecommerce/constants/shimmers.dart';
+import 'package:sharaf_yabi_ecommerce/components/constants/shimmers.dart';
 import 'package:sharaf_yabi_ecommerce/components/constants/widgets.dart';
 import 'package:sharaf_yabi_ecommerce/controllers/FilterController.dart';
 import 'package:sharaf_yabi_ecommerce/models/CategoryModel.dart';
 
-import '../../../components/filterButton.dart';
-
 class ShowAllProductsPage extends StatefulWidget {
-  final String pageName;
-  final int whichFilter;
   const ShowAllProductsPage({
     Key? key,
     required this.pageName,
     required this.whichFilter,
+    required this.searchPage,
   }) : super(key: key);
+
+  final String pageName;
+  final bool searchPage;
+  final int whichFilter;
 
   @override
   State<ShowAllProductsPage> createState() => _ShowAllProductsPageState();
@@ -31,25 +35,59 @@ class ShowAllProductsPage extends StatefulWidget {
 
 class _ShowAllProductsPageState extends State<ShowAllProductsPage> {
   FilterController filterController = Get.put(FilterController());
+  Timer? searchOnStoppedTyping;
+  int selectedIndex = 0;
+  TextEditingController textEditingController = TextEditingController();
+  final RefreshController _refreshController = RefreshController();
+
   @override
   void initState() {
     super.initState();
     whenPageLoad();
   }
 
-  final RefreshController _refreshController = RefreshController();
-
-  void _onRefresh() {
-    filterController.refreshPage();
-    _refreshController.refreshCompleted();
-  }
-
-  void _onLoading() {
-    filterController.addPage();
-    _refreshController.loadComplete();
+  Widget searchTextField() {
+    return TextField(
+      controller: textEditingController,
+      style: const TextStyle(color: Colors.black, fontFamily: montserratMedium, fontSize: 17),
+      cursorColor: kPrimaryColor,
+      onEditingComplete: () {
+        filterController.list.clear();
+        filterController.loading.value = 0;
+        filterController.search.value = textEditingController.text;
+        filterController.fetchProducts();
+      },
+      onChanged: (String value) {
+        const duration = Duration(seconds: 1);
+        if (searchOnStoppedTyping != null) {
+          setState(() => searchOnStoppedTyping!.cancel());
+        }
+        setState(() => searchOnStoppedTyping = Timer(duration, () {
+              filterController.list.clear();
+              filterController.loading.value = 0;
+              filterController.search.value = textEditingController.text;
+              filterController.fetchProducts();
+            }));
+      },
+      decoration: InputDecoration(
+        hintText: "search".tr,
+        contentPadding: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+        suffixIcon: IconButton(
+          icon: const Icon(IconlyLight.search, size: 26, color: Colors.black),
+          color: kPrimaryColor,
+          onPressed: () {},
+        ),
+        hintStyle: const TextStyle(color: Colors.black38, fontFamily: montserratMedium),
+        focusedBorder: const UnderlineInputBorder(borderSide: BorderSide(color: kPrimaryColor, width: 3), borderRadius: borderRadius10),
+        filled: true,
+        fillColor: Colors.grey[200],
+        enabledBorder: OutlineInputBorder(borderRadius: borderRadius10, borderSide: BorderSide(color: Colors.grey.shade200, width: 2)),
+      ),
+    );
   }
 
   void whenPageLoad() {
+    filterController.search.value = "";
     if (widget.whichFilter == 1) {
       filterController.recomended.value = true;
       filterController.discountBool.value = false;
@@ -70,83 +108,11 @@ class _ShowAllProductsPageState extends State<ShowAllProductsPage> {
     filterController.loading.value = 0;
     filterController.sortColumnName.value = "";
     filterController.list.clear();
-    filterController.page.value = 1;
-    filterController.fetchProducts();
-    filterController.page.value = 1;
-    filterController.search.value = "";
     filterController.brandList.clear();
     filterController.categoryList.clear();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-        backgroundColor: backgroundColor,
-        appBar: MyAppBar(
-          icon: Icons.add,
-          onTap: () {},
-          backArrow: true,
-          iconRemove: false,
-          name: widget.pageName,
-          addName: true,
-        ),
-        body: Column(
-          children: [
-            const Divider(
-              thickness: 1,
-              height: 1,
-              color: backgroundColor,
-            ),
-            appBarBottom(),
-            Expanded(
-              child: SmartRefresher(
-                  enablePullUp: true,
-                  physics: const BouncingScrollPhysics(),
-                  header: const MaterialClassicHeader(
-                    color: kPrimaryColor,
-                  ),
-                  footer: loadMore(),
-                  controller: _refreshController,
-                  onRefresh: _onRefresh,
-                  onLoading: _onLoading,
-                  child: Obx(() {
-                    if (filterController.loading.value == 1) {
-                      return GridView.builder(
-                          physics: const NeverScrollableScrollPhysics(),
-                          itemCount: filterController.list.length,
-                          shrinkWrap: true,
-                          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2, childAspectRatio: 1.5 / 2.5),
-                          itemBuilder: (BuildContext context, int index) {
-                            return Padding(
-                                padding: const EdgeInsets.all(4.0),
-                                child: ProductCard3(
-                                  id: filterController.list[index]["id"],
-                                  image: filterController.list[index]["image"],
-                                  name: filterController.list[index]["name"],
-                                  price: filterController.list[index]["price"],
-                                  discountValue: filterController.list[index]["discountValue"],
-                                  stockCount: filterController.list[index]["discountValue"],
-                                ));
-                          });
-                    } else if (filterController.loading.value == 2) {
-                      return GestureDetector(
-                        onTap: () {
-                          filterController.fetchProducts();
-                        },
-                        child: Center(child: emptyDataLottie(imagePath: searchNotFound, errorTitle: "emptyProducts", errorSubtitle: "emptyProductsSubtitle")),
-                      );
-                    } else if (filterController.loading.value == 3) {
-                      return retryButton(() {
-                        filterController.fetchProducts();
-                      });
-                    } else if (filterController.loading.value == 0) {
-                      return shimmer(10);
-                    }
-                    return const Text("Loading...", style: TextStyle(color: Colors.black, fontFamily: montserratSemiBold));
-                  })),
-            ),
-          ],
-        ));
+    filterController.page.value = 1;
+    filterController.fetchProducts();
+    filterController.search.value = "";
   }
 
   Container appBarBottom() {
@@ -180,7 +146,6 @@ class _ShowAllProductsPageState extends State<ShowAllProductsPage> {
     );
   }
 
-  int selectedIndex = 0;
   void sortBottomSheet() {
     final List title = [
       "recommended".tr,
@@ -189,7 +154,6 @@ class _ShowAllProductsPageState extends State<ShowAllProductsPage> {
     ];
     Get.bottomSheet(StatefulBuilder(builder: (BuildContext context, StateSetter setState) {
       int? value;
-
       return Container(
           color: Colors.white,
           child: Wrap(
@@ -323,13 +287,13 @@ class _ShowAllProductsPageState extends State<ShowAllProductsPage> {
                             );
                           }
                           if (widget.whichFilter == 1) {
-                            return snapshot.data![index].recomended != 0 ? myCheckBoxBrand(index, snapshot) : const SizedBox.shrink();
+                            return snapshot.data![index].recomended != 0 ? myCheckBoxBrand(index, snapshot.data![index].name!) : const SizedBox.shrink();
                           } else if (widget.whichFilter == 2) {
-                            return snapshot.data![index].newInCome != 0 ? myCheckBoxBrand(index, snapshot) : const SizedBox.shrink();
+                            return snapshot.data![index].newInCome != 0 ? myCheckBoxBrand(index, snapshot.data![index].name!) : const SizedBox.shrink();
                           } else if (widget.whichFilter == 3) {
-                            return snapshot.data![index].discount != 0 ? myCheckBoxBrand(index, snapshot) : const SizedBox.shrink();
+                            return snapshot.data![index].discount != 0 ? myCheckBoxBrand(index, snapshot.data![index].name!) : const SizedBox.shrink();
                           } else {
-                            return myCheckBoxBrand(index, snapshot);
+                            return myCheckBoxBrand(index, snapshot.data![index].name!);
                           }
                         },
                       );
@@ -361,7 +325,7 @@ class _ShowAllProductsPageState extends State<ShowAllProductsPage> {
     );
   }
 
-  StatefulBuilder myCheckBoxBrand(int index, AsyncSnapshot<List<CategoryModel>> snapshot) {
+  StatefulBuilder myCheckBoxBrand(int index, String name) {
     return StatefulBuilder(
         builder: (BuildContext context, StateSetter setState) => Obx(() => CheckboxListTile(
               value: filterController.brandList[index]["value"],
@@ -376,7 +340,7 @@ class _ShowAllProductsPageState extends State<ShowAllProductsPage> {
                 setState(() {});
               },
               title: Text(
-                "${snapshot.data![index].name}",
+                "$name",
                 style: const TextStyle(fontFamily: montserratRegular),
               ),
             )));
@@ -568,5 +532,92 @@ class _ShowAllProductsPageState extends State<ShowAllProductsPage> {
         ),
       );
     });
+  }
+
+  void _onRefresh() {
+    filterController.refreshPage();
+    _refreshController.refreshCompleted();
+  }
+
+  void _onLoading() {
+    filterController.addPage();
+    _refreshController.loadComplete();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+        backgroundColor: backgroundColor,
+        appBar: widget.searchPage
+            ? AppBar(
+                backgroundColor: Colors.white,
+                centerTitle: true,
+                title: searchTextField(),
+                leadingWidth: 30,
+                leading: IconButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    icon: const Icon(IconlyLight.arrowLeft, color: Colors.black)),
+                elevation: 0,
+              )
+            : MyAppBar(
+                icon: Icons.add,
+                onTap: () {},
+                backArrow: true,
+                iconRemove: false,
+                name: widget.pageName,
+                addName: true,
+              ),
+        body: Column(
+          children: [
+            const Divider(
+              thickness: 1,
+              height: 1,
+              color: backgroundColor,
+            ),
+            appBarBottom(),
+            Expanded(
+              child: SmartRefresher(
+                  enablePullUp: true,
+                  physics: const BouncingScrollPhysics(),
+                  header: const MaterialClassicHeader(
+                    color: kPrimaryColor,
+                  ),
+                  footer: loadMore(),
+                  controller: _refreshController,
+                  onRefresh: _onRefresh,
+                  onLoading: _onLoading,
+                  child: Obx(() {
+                    if (filterController.loading.value == 1) {
+                      return GridView.builder(
+                          physics: const NeverScrollableScrollPhysics(),
+                          itemCount: filterController.list.length,
+                          shrinkWrap: true,
+                          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2, childAspectRatio: 1.5 / 2.5),
+                          itemBuilder: (BuildContext context, int index) {
+                            return ProductCard3(
+                              id: filterController.list[index]["id"],
+                              image: filterController.list[index]["image"],
+                              name: filterController.list[index]["name"],
+                              price: filterController.list[index]["price"],
+                              discountValue: filterController.list[index]["discountValue"],
+                              stockCount: filterController.list[index]["stockCount"],
+                            );
+                          });
+                    } else if (filterController.loading.value == 2) {
+                      return Center(child: emptyDataLottie(imagePath: searchNotFound, errorTitle: "emptyProducts", errorSubtitle: "emptyProductsSubtitle"));
+                    } else if (filterController.loading.value == 3) {
+                      return retryButton(() {
+                        filterController.fetchProducts();
+                      });
+                    } else if (filterController.loading.value == 0) {
+                      return shimmer(10);
+                    }
+                    return const Text("Loading...", style: TextStyle(color: Colors.black, fontFamily: montserratSemiBold));
+                  })),
+            ),
+          ],
+        ));
   }
 }

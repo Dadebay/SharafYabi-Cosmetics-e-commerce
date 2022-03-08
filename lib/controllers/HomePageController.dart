@@ -34,6 +34,11 @@ class HomePageController extends GetxController {
     listNewInCome.clear();
     listRecomended.clear();
     listFavlist.clear();
+    loading.value = 0;
+    loadingNewInCome.value = 0;
+    loadingRecomended.value = 0;
+    loadingFavlist.value = 0;
+
     fetchDiscountedProducts();
     fetchPopularProducts();
     fetchNewInComeProducts();
@@ -41,6 +46,7 @@ class HomePageController extends GetxController {
   }
 
   void fetchDiscountedProducts() async {
+    print("home Page cekdi");
     final products = await ProductsModel().getProducts(parametrs: {
       "page": '${1}',
       "limit": '4',
@@ -272,14 +278,10 @@ class HomePageController extends GetxController {
   searchAndAdd(int iD, String priceMine) {
     bool value = false;
     chechFavAndSame(iD, priceMine);
-    print("i cannot find");
     for (final element in list) {
       if (element["id"] == iD) {
         value = true;
-        print("i cannot asdasdasd");
-
         addDiscountedItemCart(iD, priceMine);
-        print("i cannot findasda");
       }
     }
     if (value == false) {

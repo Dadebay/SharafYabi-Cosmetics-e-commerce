@@ -5,9 +5,9 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
-import 'package:sharaf_yabi_ecommerce/constants/constants.dart';
-import 'package:sharaf_yabi_ecommerce/constants/shimmers.dart';
-import 'package:sharaf_yabi_ecommerce/constants/widgets.dart';
+import 'package:sharaf_yabi_ecommerce/components/constants/constants.dart';
+import 'package:sharaf_yabi_ecommerce/components/constants/shimmers.dart';
+import 'package:sharaf_yabi_ecommerce/components/constants/widgets.dart';
 import 'package:sharaf_yabi_ecommerce/controllers/FilterController.dart';
 import 'package:sharaf_yabi_ecommerce/controllers/SettingsController.dart';
 import 'package:sharaf_yabi_ecommerce/models/BannersModel.dart';
@@ -15,11 +15,9 @@ import 'package:sharaf_yabi_ecommerce/screens/Others/FilterPage/ShowAllProductsP
 import 'package:sharaf_yabi_ecommerce/screens/Others/ProductProfilPage/ProductProfil.dart';
 
 class Banners extends StatelessWidget {
-  final Future<List<BannerModel>>? banners;
-
-  FilterController filterController = Get.put(FilterController());
-
   Banners({Key? key, this.banners}) : super(key: key);
+
+  final Future<List<BannerModel>>? banners;
 
   @override
   Widget build(BuildContext context) {
@@ -46,19 +44,19 @@ class Banners extends StatelessWidget {
                             margin: const EdgeInsets.all(8),
                             child: RaisedButton(
                               onPressed: () {
-                                filterController.categoryID.clear();
-                                filterController.producersID.clear();
+                                Get.find<FilterController>().categoryID.clear();
+                                Get.find<FilterController>().producersID.clear();
                                 final int? itemID = snapshot.data![index].itemID;
                                 final int? pathID = snapshot.data![index].pathID;
-
                                 final int? id = itemID;
                                 if (pathID == 2) {
-                                  filterController.mainCategoryID.value = id!;
+                                  Get.find<FilterController>().mainCategoryID.value = id!;
                                   pushNewScreen(
                                     context,
                                     screen: const ShowAllProductsPage(
                                       pageName: "Sharafyabi",
                                       whichFilter: 0,
+                                      searchPage: false,
                                     ),
                                     withNavBar: true,
                                     pageTransitionAnimation: PageTransitionAnimation.cupertino,
@@ -75,14 +73,14 @@ class Banners extends StatelessWidget {
                                     pageTransitionAnimation: PageTransitionAnimation.cupertino,
                                   );
                                 } else if (pathID == 4) {
-                                  filterController.mainCategoryID.value = 0;
-                                  filterController.categoryID.add({"id": itemID, "mainCategoryID": 0});
-
+                                  Get.find<FilterController>().mainCategoryID.value = 0;
+                                  Get.find<FilterController>().categoryID.add({"id": itemID, "mainCategoryID": 0});
                                   pushNewScreen(
                                     context,
                                     screen: const ShowAllProductsPage(
                                       pageName: "Sharafyabi",
                                       whichFilter: 0,
+                                      searchPage: false,
                                     ),
                                     withNavBar: true,
                                     pageTransitionAnimation: PageTransitionAnimation.cupertino,

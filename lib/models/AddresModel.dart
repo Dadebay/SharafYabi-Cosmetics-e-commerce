@@ -6,7 +6,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
-import 'package:sharaf_yabi_ecommerce/constants/constants.dart';
+import 'package:sharaf_yabi_ecommerce/components/constants/constants.dart';
 import 'package:sharaf_yabi_ecommerce/models/UserModels/AuthModel.dart';
 
 class AddressModel extends ChangeNotifier {
@@ -74,7 +74,6 @@ class AddressModel extends ChangeNotifier {
 
   Future addLocation(String? address, String? comment) async {
     final token = await Auth().getToken();
-    print("geldiu");
     final body = json.encode({
       "address": address,
       "comment": comment,
@@ -90,7 +89,6 @@ class AddressModel extends ChangeNotifier {
           HttpHeaders.authorizationHeader: 'Bearer $token',
         },
         body: body);
-    print(response.body);
     if (response.statusCode == 200) {
       return true;
     } else {

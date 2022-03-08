@@ -4,6 +4,8 @@ class MyTranslations extends Translations {
   @override
   Map<String, Map<String, String>> get keys => {
         'tr': {
+          "newVersion": "Täze Wersiýa !!!",
+          "newVersionTitle": "Programmyzyň täze wersiýasy çykdy, telefonyňyza ýükläp bilersiňiz.",
           "aboutUS": "Biz barada",
           "aboutUsSubtitle":
               "300-den gowrak kosmetiki we arassaçylyk önümlerini satýarys. Täze doglan çagalardan başlap ýaşa çenli ilatyň ähli toparlary önümlerimiziň sarp edijileridir. Kompaniýa 1997-nji ýylda esaslandyryldy. Häzirki wagtda haryt satmak Aşgabat şäherindäki we Türkmenistanyň ähli sebitlerinde söwda nokatlarynda amala aşyrylýar.",
@@ -195,6 +197,8 @@ class MyTranslations extends Translations {
           "emptyStockCount": "Ýeterlik haryt ýok"
         },
         'ru': {
+          "newVersion": "Новая версия !!!",
+          "newVersionTitle": "Вышла новая версия нашей программы, которую вы можете скачать на свой телефон.",
           "emptyStockCount": "Недостаточно товаров",
           "messageTitle": "Обратная связь",
           "messageSend": "Ваше сообщение отправлено",
@@ -375,7 +379,7 @@ class MyTranslations extends Translations {
           "userName": "Имя пользователя",
           "userPassword": "Пароль",
           "userPasswordApporve": "Подтвердить Пароль",
-          "userPhoneNumber": "Твой номер телефона",
+          "userPhoneNumber": "Ваш номер телефона",
           "video": "Видео",
           "waiting": "Ожидающий",
           "writeComment": "Написать комментарий",
@@ -384,6 +388,8 @@ class MyTranslations extends Translations {
           "selectMyaddresses": "Введите новый адрес.",
         },
         'en': {
+          "newVersion": "New Version !!!",
+          "newVersionTitle": "A new version of our program has been released, which you can download to your phone.",
           "messageTitle": "Feedback",
           "emptyStockCount": "Not enough products",
           "message": "Write your letter",
