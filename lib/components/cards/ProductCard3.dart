@@ -4,11 +4,13 @@ import 'dart:math';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:sharaf_yabi_ecommerce/components/buttons/FavButton.dart';
 import 'package:sharaf_yabi_ecommerce/components/buttons/addOrRemoveButton.dart';
 import 'package:sharaf_yabi_ecommerce/components/constants/constants.dart';
 import 'package:sharaf_yabi_ecommerce/components/constants/widgets.dart';
+import 'package:sharaf_yabi_ecommerce/controllers/Fav_Cart_Controller.dart';
 import 'package:sharaf_yabi_ecommerce/screens/Others/ProductProfilPage/ProductProfil.dart';
 
 class ProductCard3 extends StatefulWidget {
@@ -43,24 +45,25 @@ class _ProductCard3State extends State<ProductCard3> {
           ),
           withNavBar: true, // OPTIONAL VALUE. True by default.
           pageTransitionAnimation: PageTransitionAnimation.cupertino,
-        );
+        ).then((value) {
+          setState(() {});
+        });
       },
       child: Container(
-        margin: EdgeInsets.all(5),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          border: Border.all(color: Colors.white, width: 1.5),
-          borderRadius: borderRadius5,
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.end,
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-            imageExpanded(),
-            namePartMine(sizeWidth, sizeHeight),
-          ],
-        ),
-      ),
+          margin: EdgeInsets.all(5),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            border: Border.all(color: Colors.white, width: 1.5),
+            borderRadius: borderRadius5,
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              imageExpanded(),
+              namePartMine(sizeWidth, sizeHeight),
+            ],
+          )),
     );
   }
 

@@ -123,4 +123,7 @@ class Fav_Cart_Controller extends GetxController {
     storage.write("cartList", jsonString);
     findSumma();
   }
+
+  //
+  RxInt fucking = 0.obs;
 }
