@@ -603,6 +603,7 @@ class _ShowAllProductsPageState extends State<ShowAllProductsPage> {
                               price: filterController.list[index]["price"],
                               discountValue: filterController.list[index]["discountValue"],
                               stockCount: filterController.list[index]["stockCount"],
+                              inOrder: false,
                             );
                           });
                     } else if (filterController.loading.value == 2) {

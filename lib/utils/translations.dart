@@ -194,9 +194,11 @@ class MyTranslations extends Translations {
           "mail": "E-mail",
           "messageSend": "Hatyňyz ugraduldy",
           "messageTitle": "Habarlaşmak",
-          "emptyStockCount": "Ýeterlik haryt ýok"
+          "emptyStockCount": "Ýeterlik haryt ýok",
+          "minSumCount": "Sargydyňyzyň jemi azyndan 50 manat bolmaly",
         },
         'ru': {
+          "minSumCount": "К сожалению, сумма заказа должна быть не менее 50 манатов.",
           "newVersion": "Новая версия !!!",
           "newVersionTitle": "Вышла новая версия нашей программы, которую вы можете скачать на свой телефон.",
           "emptyStockCount": "Недостаточно товаров",
@@ -388,6 +390,7 @@ class MyTranslations extends Translations {
           "selectMyaddresses": "Введите новый адрес.",
         },
         'en': {
+          "minSumCount": "Sorry, your order must be at least 50 TMT in total.",
           "newVersion": "New Version !!!",
           "newVersionTitle": "A new version of our program has been released, which you can download to your phone.",
           "messageTitle": "Feedback",

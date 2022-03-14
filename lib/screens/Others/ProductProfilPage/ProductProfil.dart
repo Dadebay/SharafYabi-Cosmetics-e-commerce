@@ -67,14 +67,15 @@ class _ProductProfilState extends State<ProductProfil> {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 10),
       child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Expanded(flex: 2, child: Text(text1!, overflow: TextOverflow.ellipsis, style: TextStyle(color: Colors.grey[600], fontFamily: montserratSemiBold, fontSize: 16))),
+          Expanded(flex: 2, child: Text(text1!, overflow: TextOverflow.ellipsis, maxLines: 3, style: TextStyle(color: Colors.grey[600], fontFamily: montserratSemiBold, fontSize: 16))),
           Expanded(
               flex: 2,
               child: GestureDetector(
                 onTap: onTap,
-                child: Text(text2!, maxLines: 1, overflow: TextOverflow.ellipsis, style: const TextStyle(color: Colors.black, fontFamily: montserratMedium, fontSize: 16)),
+                child: Text(text2!, maxLines: 3, overflow: TextOverflow.ellipsis, style: const TextStyle(color: Colors.black, fontFamily: montserratMedium, fontSize: 16)),
               )),
         ],
       ),
@@ -198,6 +199,7 @@ class _ProductProfilState extends State<ProductProfil> {
                             price: snapshot.data![index].price,
                             image: snapshot.data![index].imagePath,
                             discountValue: snapshot.data![index].discountValue,
+                            inOrder: false,
                             stockCount: snapshot.data![index].stockCount ?? 0,
                           );
                         },

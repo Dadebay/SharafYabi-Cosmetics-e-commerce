@@ -137,17 +137,15 @@ class OrderProfile extends StatelessWidget {
                   shrinkWrap: true,
                   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2, childAspectRatio: 2 / 3),
                   itemBuilder: (BuildContext context, int index) {
-                    return Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: ProductCard3(
-                        id: snapshot.data![index].id,
-                        name: snapshot.data![index].productName,
-                        price: snapshot.data![index].price,
-                        image: snapshot.data![index].imagePath,
-                        discountValue: snapshot.data![index].discountValue,
-                        addCart: false,
-                        stockCount: 0,
-                      ),
+                    return ProductCard3(
+                      id: snapshot.data![index].id,
+                      name: snapshot.data![index].productName,
+                      price: snapshot.data![index].price,
+                      image: snapshot.data![index].imagePath,
+                      discountValue: snapshot.data![index].discountValue,
+                      addCart: false,
+                      inOrder: true,
+                      stockCount: 0,
                     );
                   },
                 );

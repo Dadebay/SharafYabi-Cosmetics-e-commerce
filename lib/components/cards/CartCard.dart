@@ -100,7 +100,7 @@ class _CartCardState extends State<CartCard> {
                         placeholder: (context, url) => Center(child: spinKit()),
                         errorWidget: (context, url, error) => noImage()),
                   ),
-                  if (discountValue != 0)
+                  if (widget.discountValue > 0)
                     Positioned(
                       bottom: 15,
                       right: 15,
@@ -162,18 +162,18 @@ class _CartCardState extends State<CartCard> {
                                 context,
                                 "productCountAdded".tr,
                               );
-                              setState(() {
-                                _count--;
-                                if (_count == 0) {
-                                  showCustomToast(
-                                    context,
-                                    "removedFromCartTitle".tr,
-                                  );
-                                }
-                              });
+                              _count--;
+                              if (_count == 0) {
+                                showCustomToast(
+                                  context,
+                                  "removedFromCartTitle".tr,
+                                );
+                              }
+                              print(discountValue);
                               Get.find<CartPageController>().removeCard(widget.id);
                               Get.find<Fav_Cart_Controller>().removeCart(widget.id);
                               Get.find<HomePageController>().searchAndRemove(widget.id);
+                              setState(() {});
                             },
                             child: Container(padding: const EdgeInsets.all(4), decoration: BoxDecoration(color: Colors.grey[200], shape: BoxShape.circle), child: const Icon(CupertinoIcons.minus)),
                           ),

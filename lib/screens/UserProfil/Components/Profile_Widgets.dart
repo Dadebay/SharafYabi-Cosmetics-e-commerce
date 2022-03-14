@@ -3,6 +3,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:restart_app/restart_app.dart';
 import 'package:sharaf_yabi_ecommerce/components/constants/constants.dart';
 import 'package:sharaf_yabi_ecommerce/components/constants/widgets.dart';
 import 'package:sharaf_yabi_ecommerce/controllers/HomePageController.dart';
@@ -55,7 +56,7 @@ void logOut(BuildContext context) {
             Auth().removeRefreshToken();
             Auth().getToken().then((value) {});
             Get.back();
-            // Restart.restartApp();
+            Restart.restartApp();
           },
           child: Container(
             width: Get.size.width,

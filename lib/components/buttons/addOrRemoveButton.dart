@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:get/get.dart';
 import 'package:sharaf_yabi_ecommerce/components/constants/constants.dart';
 import 'package:sharaf_yabi_ecommerce/components/constants/widgets.dart';
@@ -31,6 +30,7 @@ class AddOrRemoveButton extends StatefulWidget {
 class _AddOrRemoveButtonState extends State<AddOrRemoveButton> {
   bool addCartBool = false;
   int quantity = 0;
+
   @override
   void initState() {
     super.initState();

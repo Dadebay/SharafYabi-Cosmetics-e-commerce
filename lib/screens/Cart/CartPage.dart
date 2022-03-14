@@ -34,24 +34,28 @@ class _CartPageState extends State<CartPage> {
         double discountedPriceMine = 0.0;
         double a = 0.0;
         int discountValue = 0;
-        for (int i = 0; i < cartPageController.list.length; i++) {
-          a = double.parse(cartPageController.list[i]["price"]);
-          discountValue = cartPageController.list[i]["discountValue"] ?? 0;
-          discountedPriceMine = (a * discountValue) / 100;
-          a -= discountedPriceMine;
-          final int b = cartPageController.list[i]["count"];
-          sum += a * b;
-          sumCount += b;
+        if (Get.find<Fav_Cart_Controller>().priceAll.value > 49.9) {
+          for (int i = 0; i < cartPageController.list.length; i++) {
+            a = double.parse(cartPageController.list[i]["price"]);
+            discountValue = cartPageController.list[i]["discountValue"] ?? 0;
+            discountedPriceMine = (a * discountValue) / 100;
+            a -= discountedPriceMine;
+            final int b = cartPageController.list[i]["count"];
+            sum += a * b;
+            sumCount += b;
+          }
+          pushNewScreen(
+            context,
+            screen: OrderPage(
+              totalPrice: sum,
+              productCount: sumCount,
+            ),
+            withNavBar: true, // OPTIONAL VALUE. True by default.
+            pageTransitionAnimation: PageTransitionAnimation.fade,
+          );
+        } else {
+          showSnackBar("emptyStockMin", "minSumCount", Colors.red);
         }
-        pushNewScreen(
-          context,
-          screen: OrderPage(
-            totalPrice: sum,
-            productCount: sumCount,
-          ),
-          withNavBar: true, // OPTIONAL VALUE. True by default.
-          pageTransitionAnimation: PageTransitionAnimation.fade,
-        );
       },
       backgroundColor: kPrimaryColor,
       splashColor: kPrimaryColor,
@@ -105,19 +109,40 @@ class _CartPageState extends State<CartPage> {
           if (cartPageController.loading.value == 1) {
             return Get.find<Fav_Cart_Controller>().cartList.isEmpty
                 ? Center(child: emptyDataLottie(imagePath: emptyCart, errorTitle: "cartEmpty", errorSubtitle: "cartEmptySubtitle"))
-                : ListView.builder(
-                    physics: const BouncingScrollPhysics(),
-                    itemCount: cartPageController.list.length,
-                    itemBuilder: (BuildContext context, int index) {
-                      return CartCard(
-                          discountValue: cartPageController.list[index]["discountValue"] ?? 0,
-                          count: cartPageController.list[index]["count"],
-                          id: cartPageController.list[index]["id"],
-                          image: "$serverImage/${cartPageController.list[index]["image"]}-mini.webp",
-                          name: cartPageController.list[index]["name"],
-                          price: cartPageController.list[index]["price"],
-                          stockMin: int.parse(cartPageController.list[index]["stockMin"]));
-                    },
+                : Stack(
+                    children: [
+                      Get.find<Fav_Cart_Controller>().priceAll.value > 49.9
+                          ? SizedBox.shrink()
+                          : Positioned(
+                              bottom: 80,
+                              left: 0,
+                              right: 0,
+                              child: Container(
+                                alignment: Alignment.center,
+                                margin: EdgeInsets.all(14),
+                                padding: EdgeInsets.all(6),
+                                decoration: BoxDecoration(color: kPrimaryColor.withOpacity(0.2), borderRadius: borderRadius5),
+                                child: Text(
+                                  "minSumCount".tr,
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(color: Colors.black, fontFamily: montserratRegular, fontSize: 16),
+                                ),
+                              )),
+                      ListView.builder(
+                        physics: const BouncingScrollPhysics(),
+                        itemCount: cartPageController.list.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          return CartCard(
+                              discountValue: cartPageController.list[index]["discountValue"] ?? 0,
+                              count: cartPageController.list[index]["count"],
+                              id: cartPageController.list[index]["id"],
+                              image: "$serverImage/${cartPageController.list[index]["image"]}-mini.webp",
+                              name: cartPageController.list[index]["name"],
+                              price: cartPageController.list[index]["price"],
+                              stockMin: int.parse(cartPageController.list[index]["stockMin"]));
+                        },
+                      ),
+                    ],
                   );
           } else if (cartPageController.loading.value == 2) {
             return emptyDataLottie(imagePath: emptyCart, errorTitle: "cartEmpty", errorSubtitle: "cartEmptySubtitle");

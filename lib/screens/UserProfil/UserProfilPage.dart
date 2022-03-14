@@ -51,6 +51,7 @@ class _UserProfilState extends State<UserProfil> {
 
   @override
   Widget build(BuildContext context) {
+    changeUserData();
     return Scaffold(
         backgroundColor: backgroundColor,
         appBar: MyAppBar(

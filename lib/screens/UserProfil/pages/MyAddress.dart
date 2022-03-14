@@ -96,7 +96,7 @@ class _MyAddressState extends State<MyAddress> {
                               secondTextField: true,
                               maxLength: 100,
                               onTap: () {
-                                if (address.text.length > 4) {
+                                if (address.text.length >= 3) {
                                   Get.find<SettingsController>().dialogsBool.value = !Get.find<SettingsController>().dialogsBool.value;
 
                                   AddressModel().addLocation(address.text, comment.text).then((value) {

@@ -2,7 +2,6 @@
 
 import 'dart:io';
 
-import 'package:device_preview/device_preview.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -15,7 +14,9 @@ import 'package:new_version/new_version.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:sharaf_yabi_ecommerce/components/constants/constants.dart';
 import 'package:sharaf_yabi_ecommerce/controllers/AllContollerBindings.dart';
+import 'package:sharaf_yabi_ecommerce/screens/Others/ProductProfilPage/ProductProfil.dart';
 import 'package:sharaf_yabi_ecommerce/screens/Others/SpashScreen/SplashScreen.dart';
+import 'package:sharaf_yabi_ecommerce/screens/UserProfil/UserProfilPage.dart';
 import 'package:sharaf_yabi_ecommerce/utils/translations.dart';
 
 class MyHttpOverrides extends HttpOverrides {
@@ -34,6 +35,7 @@ AndroidNotificationChannel channel = const AndroidNotificationChannel(
 FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp();
+  print("assssssssssssssss");
   flutterLocalNotificationsPlugin.show(
     message.data.hashCode,
     message.data['body'],
@@ -65,6 +67,17 @@ Future<void> main() async {
     sound: true,
   );
 
+  const AndroidInitializationSettings initializationSettingsAndroid = AndroidInitializationSettings('@mipmap/ic_launcher');
+
+  final InitializationSettings initializationSettings = InitializationSettings(
+    android: initializationSettingsAndroid,
+    iOS: null,
+    macOS: null,
+  );
+  await flutterLocalNotificationsPlugin.initialize(initializationSettings, onSelectNotification: (String? a) {
+    print(a);
+  });
+
   SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
     statusBarBrightness: Brightness.dark,
     statusBarIconBrightness: Brightness.dark,
@@ -77,6 +90,15 @@ Future<void> main() async {
   ]);
 
   runApp(MyAppRun());
+}
+
+Future selectNotification(String? payload) async {
+  debugPrint('notification payload: $payload');
+
+  if (payload != null) {
+    debugPrint('notification payload: $payload');
+  }
+  print(payload);
 }
 
 class MyAppRun extends StatefulWidget {
@@ -94,10 +116,13 @@ class _MyAppRunState extends State<MyAppRun> {
       iOSId: 'com.bilermennesil.sharafyabi',
       androidId: 'com.bilermennesil.sharafyabi',
     );
+
     final status = await newVersion.getVersionStatus();
+    print(status!.localVersion);
+    print(status.storeVersion);
     newVersion.showUpdateDialog(
         context: context,
-        versionStatus: status!,
+        versionStatus: status,
         dismissButtonText: "no".tr,
         dialogTitle: "newVersion".tr,
         dialogText: "newVersionTitle".tr,
@@ -107,14 +132,12 @@ class _MyAppRunState extends State<MyAppRun> {
         updateButtonText: "yes".tr);
   }
 
-  @override
-  void initState() {
-    super.initState();
-
+  firebaseMessagingPart() {
     FirebaseMessaging.instance.subscribeToTopic('Events');
-    FirebaseMessaging.instance.getToken().then((value) {});
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-      _checkVersionUpdate();
+      print(message.data);
+      print(message.data['item_id']);
+      print(message.data['path_id']);
       flutterLocalNotificationsPlugin.show(
         message.data.hashCode,
         message.data['body'],
@@ -133,39 +156,57 @@ class _MyAppRunState extends State<MyAppRun> {
     });
 
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
-      pushNewScreen(
-        context,
-        screen: MyCustomSplashScreen(),
-        withNavBar: true,
-        pageTransitionAnimation: PageTransitionAnimation.fade,
-      );
+      if (message.data['path_id'] == 3) {
+        pushNewScreen(
+          context,
+          screen: ProductProfil(
+            id: message.data['item_id'],
+            image: "$serverImage/${message.data['destination']}-big.webp",
+          ),
+          withNavBar: true,
+          pageTransitionAnimation: PageTransitionAnimation.fade,
+        );
+      } else if (message.data['path_id'] == 2) {
+        pushNewScreen(
+          context,
+          screen: UserProfil(),
+          withNavBar: true,
+          pageTransitionAnimation: PageTransitionAnimation.fade,
+        );
+      } else {
+        pushNewScreen(
+          context,
+          screen: MyCustomSplashScreen(),
+          withNavBar: true,
+          pageTransitionAnimation: PageTransitionAnimation.fade,
+        );
+      }
     });
   }
 
   @override
+  void initState() {
+    super.initState();
+    _checkVersionUpdate();
+    firebaseMessagingPart();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return DevicePreview(
-        enabled: false,
-        builder: (context) {
-          return GetMaterialApp(
-            initialBinding: AllControllerBindings(),
-            useInheritedMediaQuery: true,
-            builder: DevicePreview.appBuilder,
-            locale: storage.read('langCode') != null
-                ? Locale(storage.read('langCode'))
-                : const Locale(
-                    'tr',
-                  ),
-            theme: ThemeData(
-              primaryColor: Colors.green.shade700,
+    return GetMaterialApp(
+      initialBinding: AllControllerBindings(),
+      locale: storage.read('langCode') != null
+          ? Locale(storage.read('langCode'))
+          : const Locale(
+              'tr',
             ),
-            fallbackLocale: const Locale("tr"),
-            navigatorObservers: <NavigatorObserver>[observer],
-            translations: MyTranslations(),
-            defaultTransition: Transition.cupertinoDialog,
-            debugShowCheckedModeBanner: false,
-            home: MyCustomSplashScreen(),
-          );
-        });
+      theme: ThemeData(primaryColor: Colors.green.shade700, fontFamily: montserratRegular),
+      fallbackLocale: const Locale("tr"),
+      navigatorObservers: <NavigatorObserver>[observer],
+      translations: MyTranslations(),
+      defaultTransition: Transition.cupertinoDialog,
+      debugShowCheckedModeBanner: false,
+      home: MyCustomSplashScreen(),
+    );
   }
 }

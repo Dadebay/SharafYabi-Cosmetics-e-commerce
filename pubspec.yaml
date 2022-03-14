@@ -8,7 +8,6 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  device_preview: ^1.0.0
   new_version: ^0.3.0
   badges: ^2.0.2
   cached_network_image: null

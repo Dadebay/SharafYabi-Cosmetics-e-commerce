@@ -4,12 +4,10 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/get_utils/src/extensions/internacionalization.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:sharaf_yabi_ecommerce/components/appBar.dart';
 import 'package:sharaf_yabi_ecommerce/components/constants/constants.dart';
 import 'package:sharaf_yabi_ecommerce/components/constants/widgets.dart';
-import 'package:sharaf_yabi_ecommerce/screens/BottomNavBar.dart';
 
 class UserSettings extends StatefulWidget {
   @override
@@ -133,7 +131,7 @@ class _UserSettingsState extends State<UserSettings> {
                       if (_login.currentState!.validate()) {
                         changedata(nameController.text);
                         showCustomToast(context, "changedPasswordName");
-                        Get.back();
+                        Navigator.of(context).pop();
                         setState(() {});
                       }
                     },

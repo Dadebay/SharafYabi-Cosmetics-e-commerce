@@ -21,6 +21,8 @@ import 'package:sharaf_yabi_ecommerce/screens/BottomNavBar.dart';
 import 'package:sharaf_yabi_ecommerce/screens/UserProfil/pages/MyAddress.dart';
 import 'package:vibration/vibration.dart';
 
+import 'OrderComponents.dart';
+
 class OrderPage extends StatefulWidget {
   const OrderPage({Key? key, this.totalPrice, this.productCount}) : super(key: key);
 
@@ -36,21 +38,23 @@ enum PaymentMethod { cash, creditCard }
 class _OrderPageState extends State<OrderPage> {
   PaymentMethod payment = PaymentMethod.cash;
   TextEditingController addressController = TextEditingController();
-  final CartPageController cartPageController = Get.put(CartPageController());
   TextEditingController couponController = TextEditingController();
-  Fav_Cart_Controller favCartController = Get.put(Fav_Cart_Controller());
   TextEditingController nameController = TextEditingController();
   TextEditingController noteController = TextEditingController();
   TextEditingController phoneController = TextEditingController();
+
+  final CartPageController cartPageController = Get.put(CartPageController());
+  Fav_Cart_Controller favCartController = Get.put(Fav_Cart_Controller());
+
   double price = 0;
-  bool sendButton = false;
   final storage = GetStorage();
   final _form1Key = GlobalKey<FormState>();
   bool dataloaded = false;
   @override
   void initState() {
     super.initState();
-    sendButton = false;
+    favCartController.orderTick.value = -1;
+    cartPageController.sendButtonValue.value = false;
     cartPageController.nagt.value = 1;
     favCartController.promoDiscount.value = 0;
     favCartController.promoLottie.value = false;
@@ -59,10 +63,10 @@ class _OrderPageState extends State<OrderPage> {
 
   changeUserData() async {
     final result = storage.read('data');
-
     await AddressModel().getAddress().then((value) {
       if (value.toString() != "[]") {
         dataloaded = true;
+        favCartController.orderTick.value = 0;
         addressController.text = value[0].address!;
         noteController.text = value[0].comment!;
         if (result != null) {
@@ -73,27 +77,11 @@ class _OrderPageState extends State<OrderPage> {
         dataloaded = true;
         if (result != null) {
           nameController.text = jsonDecode(result)["full_name"];
-          phoneController.text = "+993 ${jsonDecode(result)["phone"]}";
+          phoneController.text = "${jsonDecode(result)["phone"]}";
         }
       }
     });
     setState(() {});
-  }
-
-  Row productsCount() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Text(
-          "productsCount".tr,
-          style: TextStyle(color: Colors.grey[500], fontSize: 16, fontFamily: montserratMedium),
-        ),
-        Text(
-          "${widget.productCount}",
-          style: const TextStyle(color: Colors.black, fontSize: 18, fontFamily: montserratSemiBold),
-        )
-      ],
-    );
   }
 
   Padding couponDiscount() {
@@ -117,53 +105,26 @@ class _OrderPageState extends State<OrderPage> {
     );
   }
 
-  Padding total() {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 20, top: 10),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(
-            "total".tr,
-            style: TextStyle(color: Colors.grey[500], fontSize: 16, fontFamily: montserratMedium),
-          ),
-          Obx(() {
-            price = widget.totalPrice!;
-            price = ((100 - favCartController.promoDiscount.value) / 100) * price;
-            return RichText(
-              overflow: TextOverflow.ellipsis,
-              text: TextSpan(children: <TextSpan>[
-                TextSpan(text: price.toStringAsFixed(2), style: const TextStyle(fontFamily: montserratSemiBold, fontSize: 20, color: Colors.black)),
-                const TextSpan(text: " m.", style: TextStyle(fontFamily: montserratSemiBold, fontSize: 16, color: Colors.black))
-              ]),
-            );
-          }),
-        ],
-      ),
-    );
-  }
-
-  final HomePageController _homePageController = Get.put(HomePageController());
-
   Center orderButton(BuildContext context) {
     return Center(
-      child: SizedBox(
-        width: sendButton ? 70 : Get.size.width,
-        child: RaisedButton(
-          shape: const RoundedRectangleBorder(borderRadius: borderRadius15),
-          color: kPrimaryColor,
-          elevation: 1,
-          padding: const EdgeInsets.symmetric(vertical: 10),
-          onPressed: () {
-            if (nameController.text.isEmpty) {
-              showSnackBar("retry", "errorName", Colors.red);
-            } else if (phoneController.text.isEmpty) {
-              showSnackBar("retry", "errorPhone", Colors.red);
-            } else if (addressController.text.isEmpty) {
-              showSnackBar("retry", "errorAddress", Colors.red);
-            } else {
-              if (favCartController.cartList.isEmpty) {
-                completeOrder(context);
+      child: Obx(() {
+        return SizedBox(
+          width: cartPageController.sendButtonValue.value ? 70 : Get.size.width,
+          child: RaisedButton(
+            shape: const RoundedRectangleBorder(borderRadius: borderRadius15),
+            color: kPrimaryColor,
+            elevation: 1,
+            padding: const EdgeInsets.symmetric(vertical: 10),
+            onPressed: () {
+              if (nameController.text.isEmpty) {
+                Vibration.vibrate();
+                showSnackBar("retry", "errorName", Colors.red);
+              } else if (phoneController.text.isEmpty) {
+                Vibration.vibrate();
+                showSnackBar("retry", "errorPhone", Colors.red);
+              } else if (addressController.text.isEmpty) {
+                Vibration.vibrate();
+                showSnackBar("retry", "errorAddress", Colors.red);
               } else {
                 final storage = GetStorage();
                 final result = storage.read('data') ?? "[]";
@@ -171,45 +132,39 @@ class _OrderPageState extends State<OrderPage> {
                 if (result != "[]") {
                   id = jsonDecode(result)["id"];
                 }
-                setState(() {
-                  sendButton = true;
-                  OrderModel()
-                      .createOrder(
-                          userID: id,
-                          phoneNumber: phoneController.text,
-                          address: addressController.text,
-                          name: nameController.text,
-                          coupon: couponController.text,
-                          comment: noteController.text,
-                          payment: "${cartPageController.nagt.value}")
-                      .then((value) {
-                    if (value == true) {
-                      completeOrder(context);
-                      setState(() {
-                        sendButton = false;
-                      });
-                      _homePageController.refreshList();
-
-                      showSnackBar("orderComplete", "orderCompleteSubtitle", kPrimaryColor);
-                    } else {
-                      sendButton = false;
-                    }
-                  });
+                cartPageController.sendButtonValue.value = true;
+                OrderModel()
+                    .createOrder(
+                        userID: id,
+                        phoneNumber: phoneController.text,
+                        address: addressController.text,
+                        name: nameController.text,
+                        coupon: couponController.text,
+                        comment: noteController.text,
+                        payment: "${cartPageController.nagt.value}")
+                    .then((value) {
+                  if (value == true) {
+                    completeOrder();
+                    Get.find<HomePageController>().refreshList();
+                  } else {
+                    cartPageController.sendButtonValue.value = false;
+                    Vibration.vibrate();
+                    showSnackBar("retry", "error404", Colors.red);
+                  }
                 });
               }
-            }
-          },
-          child: sendButton
-              ? const CircularProgressIndicator(
-                  color: Colors.white,
-                )
-              : Text("order".tr, style: const TextStyle(color: Colors.white, fontSize: 20, fontFamily: montserratSemiBold)),
-        ),
-      ),
+            },
+            child: cartPageController.sendButtonValue.value
+                ? const CircularProgressIndicator(
+                    color: Colors.white,
+                  )
+                : Text("order".tr, style: const TextStyle(color: Colors.white, fontSize: 20, fontFamily: montserratSemiBold)),
+          ),
+        );
+      }),
     );
   }
 
-  bool radioButtonValue = false;
   Widget paymentMethod() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -282,110 +237,18 @@ class _OrderPageState extends State<OrderPage> {
         onTap: () {
           if (storage.read("AccessToken") != null) {
             textLength == 50
-                ? Get.defaultDialog(
-                    radius: 4,
-                    title: "myAddress".tr,
-                    content: FutureBuilder<List<AddressModel>>(
-                      future: AddressModel().getAddress(),
-                      builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
-                        if (snapshot.connectionState == ConnectionState.waiting) {
-                          return Center(
-                            child: spinKit(),
-                          );
-                        } else if (snapshot.hasData) {
-                          return snapshot.data.toString() == "[]"
-                              ? GestureDetector(
-                                  onTap: () {
-                                    Get.back();
-                                    Get.back();
-                                    pushNewScreen(
-                                      context,
-                                      screen: MyAddress(),
-                                      withNavBar: true, // OPTIONAL VALUE. True by default.
-                                      pageTransitionAnimation: PageTransitionAnimation.fade,
-                                    );
-                                  },
-                                  child: Column(
-                                    children: [
-                                      Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: Text("noAddresses".tr, style: const TextStyle(color: Colors.black, fontFamily: montserratRegular)),
-                                      ),
-                                      Container(
-                                          padding: const EdgeInsets.all(8.0),
-                                          margin: const EdgeInsets.only(top: 10),
-                                          decoration: const BoxDecoration(color: kPrimaryColor, borderRadius: borderRadius5),
-                                          child: Text("${"addAddress".tr} + ", style: const TextStyle(color: Colors.white, fontFamily: montserratMedium))),
-                                    ],
-                                  ),
-                                )
-                              : Column(
-                                  children: [
-                                    Column(
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: List.generate(
-                                            snapshot.data!.length,
-                                            (index) => CheckboxListTile(
-                                                  value: favCartController.orderTick.value == index ? true : false,
-                                                  activeColor: kPrimaryColor,
-                                                  onChanged: (value) {
-                                                    favCartController.orderTick.value = index;
-                                                    addressController.text = snapshot.data![index].address;
-                                                    noteController.text = snapshot.data![index].comment;
-                                                    Get.back();
-                                                    Get.back();
-                                                    setState(() {});
-                                                  },
-                                                  title: Text(snapshot.data![index].address, maxLines: 2, style: const TextStyle(color: Colors.black, fontFamily: montserratMedium)),
-                                                  subtitle: Text(snapshot.data![index].comment, maxLines: 2, style: const TextStyle(color: Colors.grey, fontFamily: montserratRegular)),
-                                                ))),
-                                    GestureDetector(
-                                      onTap: () {
-                                        Get.back();
-                                        Get.defaultDialog(
-                                            radius: 8,
-                                            titlePadding: const EdgeInsets.only(top: 15, left: 15, right: 15),
-                                            title: dialogTitle.tr,
-                                            contentPadding: const EdgeInsets.symmetric(horizontal: 10),
-                                            titleStyle: const TextStyle(color: Colors.black, fontSize: 20, fontFamily: montserratMedium),
-                                            content: customTextField(labelText, controllermine, textLength));
-                                      },
-                                      child: Padding(
-                                        padding: const EdgeInsets.symmetric(vertical: 8),
-                                        child: Text("selectMyaddresses".tr, style: const TextStyle(color: kPrimaryColor, decoration: TextDecoration.underline, fontFamily: montserratMedium)),
-                                      ),
-                                    )
-                                  ],
-                                );
-                        }
-                        return GestureDetector(
-                          onTap: () {
-                            Get.back();
-                            Get.back();
-
-                            pushNewScreen(
-                              context,
-                              screen: MyAddress(),
-                              withNavBar: true, // OPTIONAL VALUE. True by default.
-                              pageTransitionAnimation: PageTransitionAnimation.fade,
-                            );
-                          },
-                          child: Column(
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Text("noAddresses".tr, style: const TextStyle(color: Colors.black, fontFamily: montserratRegular)),
-                              ),
-                              Container(
-                                  padding: const EdgeInsets.all(8.0),
-                                  margin: const EdgeInsets.only(top: 10),
-                                  decoration: const BoxDecoration(color: kPrimaryColor, borderRadius: borderRadius5),
-                                  child: Text("${"addAddress".tr} + ", style: const TextStyle(color: Colors.white, fontFamily: montserratMedium))),
-                            ],
-                          ),
-                        );
-                      },
-                    ))
+                ? findMyAddress(
+                    onTap: () {
+                      Get.back();
+                      Get.defaultDialog(
+                          radius: 8,
+                          titlePadding: const EdgeInsets.only(top: 15, left: 15, right: 15),
+                          title: dialogTitle.tr,
+                          contentPadding: const EdgeInsets.symmetric(horizontal: 10),
+                          titleStyle: const TextStyle(color: Colors.black, fontSize: 20, fontFamily: montserratMedium),
+                          content: customTextField(labelText, controllermine, textLength));
+                    },
+                  )
                 : Get.defaultDialog(
                     radius: 8,
                     titlePadding: const EdgeInsets.only(top: 15, left: 15, right: 15),
@@ -415,7 +278,7 @@ class _OrderPageState extends State<OrderPage> {
           child: Form(
             key: _form1Key,
             child: controller == phoneController
-                ? phoneNumberTextField()
+                ? phoneNumberTextField(phoneController)
                 : TextFormField(
                     controller: controller,
                     textCapitalization: TextCapitalization.sentences,
@@ -460,6 +323,8 @@ class _OrderPageState extends State<OrderPage> {
                 if (controller == couponController) {
                   OrderModel().createPromo(coupon: couponController.text).then((value) {
                     if (value == false) {
+                      Vibration.vibrate();
+
                       showSnackBar("retry", "couponCodeError", Colors.red);
                     } else {
                       showSnackBar("couponCodeDiscountTrueTitle", "${"couponCodeDiscountTrueSubtitle".tr} : $value%", kPrimaryColor);
@@ -473,10 +338,10 @@ class _OrderPageState extends State<OrderPage> {
                   favCartController.promoLottie.value = false;
                 });
                 setState(() {});
+                Get.back();
               } else {
                 Vibration.vibrate();
               }
-              Get.back();
             },
             padding: const EdgeInsets.symmetric(
               vertical: 10,
@@ -485,43 +350,6 @@ class _OrderPageState extends State<OrderPage> {
           ),
         ),
       ],
-    );
-  }
-
-  TextFormField phoneNumberTextField() {
-    return TextFormField(
-      controller: phoneController,
-      keyboardType: TextInputType.number,
-      cursorColor: kPrimaryColor,
-      style: const TextStyle(color: Colors.black, fontSize: 18, fontFamily: montserratMedium),
-      validator: (value) {
-        if (value!.isEmpty) {
-          return "errorEmpty".tr;
-        } else {
-          return null;
-        }
-      },
-      inputFormatters: [
-        LengthLimitingTextInputFormatter(8),
-      ],
-      decoration: InputDecoration(
-          hintText: "__ ______",
-          prefixIcon: const Text(
-            '  + 993  ',
-            style: TextStyle(color: Colors.grey, fontSize: 18, fontFamily: montserratSemiBold),
-          ),
-          prefixIconConstraints: const BoxConstraints.tightForFinite(),
-          isDense: true,
-          constraints: const BoxConstraints(),
-          contentPadding: const EdgeInsets.symmetric(vertical: 15, horizontal: 15),
-          hintStyle: const TextStyle(color: Colors.grey, fontSize: 18, fontFamily: montserratMedium),
-          border: const OutlineInputBorder(borderRadius: borderRadius10, borderSide: BorderSide(color: kPrimaryColor)),
-          enabledBorder: OutlineInputBorder(
-              borderRadius: borderRadius10,
-              borderSide: BorderSide(
-                color: Colors.grey.shade400,
-              )),
-          focusedBorder: const OutlineInputBorder(borderRadius: borderRadius10, borderSide: BorderSide(color: kPrimaryColor, width: 2))),
     );
   }
 
@@ -567,7 +395,7 @@ class _OrderPageState extends State<OrderPage> {
                               style: const TextStyle(color: Colors.black, fontFamily: montserratSemiBold, fontSize: 20),
                             ),
                           ),
-                          productsCount(),
+                          productsCount(widget.productCount!),
                           couponDiscount(),
                           total(),
                           orderButton(context),
@@ -593,68 +421,189 @@ class _OrderPageState extends State<OrderPage> {
                 child: spinKit(),
               ));
   }
-}
 
-Future<dynamic> completeOrder(BuildContext context) {
-  return Get.defaultDialog(
-      radius: 25,
-      backgroundColor: Colors.white,
-      title: "",
-      barrierDismissible: false,
-      actions: [
-        SizedBox(
-          width: Get.size.width / 1.5,
-          child: RaisedButton(
-            onPressed: () {
-              Get.back();
-              pushNewScreen(
-                context,
-                screen: BottomNavBar(),
-                withNavBar: false,
-                pageTransitionAnimation: PageTransitionAnimation.fade,
-              );
-              // Get.to(() => BottomNavBar());
-            },
-            shape: const RoundedRectangleBorder(borderRadius: borderRadius15),
-            color: kPrimaryColor,
-            padding: const EdgeInsets.symmetric(vertical: 10),
-            child: Text("homePage".tr,
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 18,
-                  fontFamily: montserratSemiBold,
-                )),
+  Padding total() {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 20, top: 10),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            "total".tr,
+            style: TextStyle(color: Colors.grey[500], fontSize: 16, fontFamily: montserratMedium),
           ),
-        )
-      ],
-      content: Stack(
-        clipBehavior: Clip.none,
-        alignment: Alignment.center,
-        children: <Widget>[
-          Container(
-            margin: const EdgeInsets.only(top: 25),
-            width: Get.size.width / 2,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text("orderComplete".tr, textAlign: TextAlign.center, style: const TextStyle(fontSize: 24, fontFamily: montserratSemiBold)),
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 15),
-                  child: Text("orderCompleteSubtitle".tr, textAlign: TextAlign.center, style: const TextStyle(fontSize: 18, fontFamily: montserratRegular)),
-                ),
-              ],
-            ),
-          ),
-          Positioned(
-            top: -120,
-            child: Container(
-                decoration: const BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: Colors.white,
-                ),
-                padding: const EdgeInsets.all(15),
-                child: Lottie.asset(cartBlack, fit: BoxFit.cover, width: 110, height: 110)),
-          )
+          Obx(() {
+            price = widget.totalPrice!;
+            price = ((100 - favCartController.promoDiscount.value) / 100) * price;
+            return RichText(
+              overflow: TextOverflow.ellipsis,
+              text: TextSpan(children: <TextSpan>[
+                TextSpan(text: price.toStringAsFixed(2), style: const TextStyle(fontFamily: montserratSemiBold, fontSize: 20, color: Colors.black)),
+                const TextSpan(text: " m.", style: TextStyle(fontFamily: montserratSemiBold, fontSize: 16, color: Colors.black))
+              ]),
+            );
+          }),
         ],
-      ));
+      ),
+    );
+  }
+
+  findMyAddress({required Function() onTap}) {
+    Get.defaultDialog(
+        radius: 4,
+        title: "myAddress".tr,
+        content: FutureBuilder<List<AddressModel>>(
+          future: AddressModel().getAddress(),
+          builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return Center(
+                child: spinKit(),
+              );
+            } else if (snapshot.hasData) {
+              return snapshot.data.toString() == "[]"
+                  ? GestureDetector(
+                      onTap: () {
+                        Get.back();
+                        pushNewScreen(context, screen: MyAddress(), withNavBar: true, pageTransitionAnimation: PageTransitionAnimation.fade);
+                      },
+                      child: Column(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text("noAddresses".tr, style: const TextStyle(color: Colors.black, fontFamily: montserratRegular)),
+                          ),
+                          Container(
+                              padding: const EdgeInsets.all(8.0),
+                              margin: const EdgeInsets.only(top: 10),
+                              decoration: const BoxDecoration(color: kPrimaryColor, borderRadius: borderRadius5),
+                              child: Text("${"addAddress".tr} + ", style: const TextStyle(color: Colors.white, fontFamily: montserratMedium))),
+                        ],
+                      ),
+                    )
+                  : Column(
+                      children: [
+                        Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: List.generate(
+                                snapshot.data!.length,
+                                (index) => CheckboxListTile(
+                                      value: favCartController.orderTick.value == index ? true : false,
+                                      activeColor: kPrimaryColor,
+                                      onChanged: (value) {
+                                        favCartController.orderTick.value = index;
+                                        addressController.text = snapshot.data![index].address;
+                                        noteController.text = snapshot.data![index].comment;
+                                        Get.back();
+                                        Get.back();
+                                        setState(() {});
+                                      },
+                                      title: Text(snapshot.data![index].address, maxLines: 2, style: const TextStyle(color: Colors.black, fontFamily: montserratMedium)),
+                                      subtitle: Text(snapshot.data![index].comment, maxLines: 2, style: const TextStyle(color: Colors.grey, fontFamily: montserratRegular)),
+                                    ))),
+                        GestureDetector(
+                          onTap: onTap,
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 8),
+                            child: Text("selectMyaddresses".tr, style: const TextStyle(color: kPrimaryColor, decoration: TextDecoration.underline, fontFamily: montserratMedium)),
+                          ),
+                        )
+                      ],
+                    );
+            }
+            return Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text("noAddresses".tr, style: const TextStyle(color: Colors.black, fontFamily: montserratRegular)),
+                ),
+                Container(
+                    padding: const EdgeInsets.all(8.0),
+                    margin: const EdgeInsets.only(top: 10),
+                    decoration: const BoxDecoration(color: kPrimaryColor, borderRadius: borderRadius5),
+                    child: Text("${"addAddress".tr} + ", style: const TextStyle(color: Colors.white, fontFamily: montserratMedium))),
+              ],
+            );
+          },
+        ));
+  }
+
+  completeOrder() {
+    cartPageController.sendButtonValue.value = false;
+
+    showGeneralDialog(
+        transitionBuilder: (context, a1, a2, widget) {
+          return Transform.scale(
+            scale: a1.value,
+            child: Opacity(
+              opacity: a1.value,
+              child: AlertDialog(
+                shape: RoundedRectangleBorder(borderRadius: borderRadius15),
+                content: Stack(
+                  clipBehavior: Clip.none,
+                  alignment: Alignment.center,
+                  children: <Widget>[
+                    Container(
+                      margin: const EdgeInsets.only(top: 50),
+                      width: Get.size.width / 2,
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text("orderComplete".tr, textAlign: TextAlign.center, style: const TextStyle(fontSize: 24, fontFamily: montserratSemiBold)),
+                          Padding(
+                            padding: const EdgeInsets.only(top: 15),
+                            child: Text("orderCompleteSubtitle".tr, textAlign: TextAlign.center, style: const TextStyle(fontSize: 18, fontFamily: montserratRegular)),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Positioned(
+                      top: -90,
+                      child: Container(
+                          decoration: const BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: Colors.white,
+                          ),
+                          padding: const EdgeInsets.all(15),
+                          child: Lottie.asset(cartBlack, fit: BoxFit.cover, width: 110, height: 110)),
+                    )
+                  ],
+                ),
+                actions: [
+                  SizedBox(
+                    width: Get.size.width / 1.5,
+                    child: RaisedButton(
+                      onPressed: () {
+                        Get.back();
+                        pushNewScreen(
+                          context,
+                          screen: BottomNavBar(),
+                          withNavBar: false,
+                          pageTransitionAnimation: PageTransitionAnimation.fade,
+                        );
+                      },
+                      shape: const RoundedRectangleBorder(borderRadius: borderRadius15),
+                      color: kPrimaryColor,
+                      padding: const EdgeInsets.symmetric(vertical: 10),
+                      child: Text("homePage".tr,
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 18,
+                            fontFamily: montserratSemiBold,
+                          )),
+                    ),
+                  )
+                ],
+              ),
+            ),
+          );
+        },
+        transitionDuration: Duration(milliseconds: 200),
+        barrierDismissible: false,
+        barrierLabel: '',
+        context: context,
+        pageBuilder: (context, animation1, animation2) {
+          return SizedBox.shrink();
+        });
+  }
 }

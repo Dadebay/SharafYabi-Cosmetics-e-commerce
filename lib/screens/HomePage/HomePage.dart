@@ -139,6 +139,10 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       child: MyAppBar(
           icon: IconlyLight.search,
           onTap: () {
+            filterController.producersID.clear();
+            filterController.categoryID.clear();
+            filterController.categoryIDOnlyID.clear();
+            filterController.mainCategoryID.value = 0;
             pushNewScreen(
               context,
               screen: ShowAllProductsPage(
@@ -184,6 +188,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                       image: list[index]["image"],
                       discountValue: list[index]["discountValue"],
                       stockCount: list[index]["stockCount"],
+                      inOrder: false,
                     );
                   }),
             )

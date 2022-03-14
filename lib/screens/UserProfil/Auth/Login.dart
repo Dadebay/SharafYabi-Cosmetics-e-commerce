@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:restart_app/restart_app.dart';
 import 'package:sharaf_yabi_ecommerce/components/buttons/agreeButton.dart';
 import 'package:sharaf_yabi_ecommerce/components/constants/constants.dart';
 import 'package:sharaf_yabi_ecommerce/components/constants/widgets.dart';
@@ -81,7 +82,7 @@ class Login extends StatelessWidget {
                     Get.find<AuthController>().changeSignInAnimation();
                     UserSignInModel().login(phone: loginPhoneController.text, password: loginPassswordController.text).then((value) {
                       if (value == true) {
-                        // Restart.restartApp();
+                        Restart.restartApp();
                         showSnackBar("signIntitle", "signInSubtitle", kPrimaryColor);
                       } else if (value == 409) {
                         showSnackBar("signInErrorTitle", "errorLogin", Colors.red);

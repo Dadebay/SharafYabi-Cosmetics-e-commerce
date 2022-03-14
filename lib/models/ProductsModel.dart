@@ -73,6 +73,7 @@ class ProductsModel extends ChangeNotifier {
     final List<ProductsModel> products = [];
     String lang = Get.locale!.languageCode;
     if (lang == "tr") lang = "tm";
+    print(parametrs);
     final response = await http.get(
         Uri.parse(
           "$serverURL/api/$lang/get-products",
@@ -80,6 +81,7 @@ class ProductsModel extends ChangeNotifier {
         headers: <String, String>{
           HttpHeaders.contentTypeHeader: 'application/json; charset=UTF-8',
         });
+    print(response.body);
     if (response.statusCode == 200) {
       final responseJson = jsonDecode(response.body)["rows"]["products"];
       final responseCount = jsonDecode(response.body)["rows"]["count"];

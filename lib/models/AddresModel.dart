@@ -41,6 +41,7 @@ class AddressModel extends ChangeNotifier {
           HttpHeaders.contentTypeHeader: 'application/json; charset=UTF-8',
           HttpHeaders.authorizationHeader: 'Bearer $token',
         });
+    print(response.body);
     if (response.statusCode == 200) {
       final responseJson = jsonDecode(response.body)["rows"] as List;
       for (final Map product in responseJson) {
@@ -75,8 +76,8 @@ class AddressModel extends ChangeNotifier {
   Future addLocation(String? address, String? comment) async {
     final token = await Auth().getToken();
     final body = json.encode({
-      "address": address,
-      "comment": comment,
+      "address": comment,
+      "comment": address,
     });
     String lang = Get.locale!.languageCode;
     if (lang == "tr") lang = "tm";

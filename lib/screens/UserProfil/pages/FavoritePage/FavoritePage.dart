@@ -61,6 +61,7 @@ class _FavoritePageState extends State<FavoritePage> {
                         image: _homePageController.listFavlist[index]["image"],
                         discountValue: _homePageController.listFavlist[index]["discountValue"],
                         stockCount: _homePageController.listFavlist[index]["stockCount"],
+                        inOrder: false,
                       );
                     });
           } else if (_homePageController.loadingFavlist.value == 3) {

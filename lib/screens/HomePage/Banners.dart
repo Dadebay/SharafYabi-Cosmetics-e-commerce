@@ -102,7 +102,7 @@ class Banners extends StatelessWidget {
                                           borderRadius: borderRadius5,
                                           image: DecorationImage(
                                             image: imageProvider,
-                                            fit: BoxFit.cover,
+                                            fit: BoxFit.fill,
                                           ),
                                         ),
                                       ),

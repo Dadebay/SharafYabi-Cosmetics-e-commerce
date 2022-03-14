@@ -4,13 +4,11 @@ import 'dart:math';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:sharaf_yabi_ecommerce/components/buttons/FavButton.dart';
 import 'package:sharaf_yabi_ecommerce/components/buttons/addOrRemoveButton.dart';
 import 'package:sharaf_yabi_ecommerce/components/constants/constants.dart';
 import 'package:sharaf_yabi_ecommerce/components/constants/widgets.dart';
-import 'package:sharaf_yabi_ecommerce/controllers/Fav_Cart_Controller.dart';
 import 'package:sharaf_yabi_ecommerce/screens/Others/ProductProfilPage/ProductProfil.dart';
 
 class ProductCard3 extends StatefulWidget {
@@ -22,8 +20,9 @@ class ProductCard3 extends StatefulWidget {
   final bool? addCart;
   final int? stockCount;
   final bool? newIncome;
+  final bool inOrder;
 
-  const ProductCard3({Key? key, this.name, this.id, this.discountValue, this.price, this.image, this.addCart, required this.stockCount, this.newIncome}) : super(key: key);
+  const ProductCard3({Key? key, this.name, this.id, this.discountValue, this.price, this.image, this.addCart, required this.stockCount, this.newIncome, required this.inOrder}) : super(key: key);
 
   @override
   State<ProductCard3> createState() => _ProductCard3State();
@@ -36,18 +35,20 @@ class _ProductCard3State extends State<ProductCard3> {
     final double sizeWidth = MediaQuery.of(context).size.width;
     return GestureDetector(
       onTap: () {
-        pushNewScreen(
-          context,
-          screen: ProductProfil(
-            id: widget.id!,
-            productName: widget.name,
-            image: "$serverImage/${widget.image}-big.webp",
-          ),
-          withNavBar: true, // OPTIONAL VALUE. True by default.
-          pageTransitionAnimation: PageTransitionAnimation.cupertino,
-        ).then((value) {
-          setState(() {});
-        });
+        widget.inOrder
+            ? null
+            : pushNewScreen(
+                context,
+                screen: ProductProfil(
+                  id: widget.id!,
+                  productName: widget.name,
+                  image: "$serverImage/${widget.image}-big.webp",
+                ),
+                withNavBar: true, // OPTIONAL VALUE. True by default.
+                pageTransitionAnimation: PageTransitionAnimation.cupertino,
+              ).then((value) {
+                setState(() {});
+              });
       },
       child: Container(
           margin: EdgeInsets.all(5),
@@ -83,49 +84,70 @@ class _ProductCard3State extends State<ProductCard3> {
       flex: widget.addCart == false ? 2 : 3,
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 6),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            Expanded(
-              child: Text(
-                "${widget.name}",
-                overflow: TextOverflow.ellipsis,
-                maxLines: 4,
-                textAlign: TextAlign.center,
-                style: TextStyle(fontFamily: montserratRegular, fontSize: sizeWidth > 800 ? 15 : sizeWidth / 34),
-              ),
-            ),
-            if (discountValue > 0)
-              widget.addCart == false ? Expanded(child: discountedPriceWidget() as Widget) : discountedPriceWidget() as Widget
-            else
-              widget.addCart == false
-                  ? Expanded(
+        child: widget.inOrder
+            ? Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Expanded(
+                    flex: 2,
+                    child: Center(
                       child: Text(
-                        "${widget.price} m.",
+                        "${widget.name}",
                         overflow: TextOverflow.ellipsis,
                         maxLines: 4,
                         textAlign: TextAlign.center,
-                        style: TextStyle(fontFamily: montserratSemiBold, fontSize: sizeWidth > 800 ? 22 : 18, color: kPrimaryColor),
+                        style: TextStyle(fontFamily: montserratRegular, fontSize: sizeWidth > 800 ? 15 : sizeWidth / 36),
                       ),
-                    )
-                  : Text(
+                    ),
+                  ),
+                  Expanded(
+                    flex: 1,
+                    child: Text(
                       "${widget.price} m.",
                       overflow: TextOverflow.ellipsis,
                       maxLines: 4,
                       textAlign: TextAlign.center,
                       style: TextStyle(fontFamily: montserratSemiBold, fontSize: sizeWidth > 800 ? 22 : 18, color: kPrimaryColor),
                     ),
-            Padding(
-              padding: const EdgeInsets.only(bottom: 8, top: 8),
-              child: AddOrRemoveButton(
-                id: widget.id!,
-                stockCount: widget.stockCount!,
-                price: widget.price!,
-                sizeWidth: true,
+                  ),
+                ],
+              )
+            : Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Expanded(
+                    child: Center(
+                      child: Text(
+                        "${widget.name}",
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 4,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(fontFamily: montserratRegular, fontSize: sizeWidth > 800 ? 15 : sizeWidth / 36),
+                      ),
+                    ),
+                  ),
+                  if (discountValue > 0)
+                    widget.addCart == false ? Expanded(child: discountedPriceWidget() as Widget) : discountedPriceWidget() as Widget
+                  else
+                    Text(
+                      "${widget.price} m.",
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 4,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(fontFamily: montserratSemiBold, fontSize: sizeWidth > 800 ? 22 : 18, color: kPrimaryColor),
+                    ),
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 8, top: 8),
+                    child: AddOrRemoveButton(
+                      id: widget.id!,
+                      stockCount: widget.stockCount!,
+                      price: "$priceMine",
+                      sizeWidth: true,
+                    ),
+                  )
+                ],
               ),
-            )
-          ],
-        ),
       ),
     );
   }
@@ -157,39 +179,56 @@ class _ProductCard3State extends State<ProductCard3> {
 
   Expanded imageExpanded() {
     return Expanded(
-      flex: 4,
-      child: Stack(
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(10.0),
-            child: CachedNetworkImage(
-                fadeInCurve: Curves.ease,
-                imageUrl: "$serverImage/${widget.image}-mini.webp",
-                imageBuilder: (context, imageProvider) => Container(
-                      decoration: BoxDecoration(
-                        image: DecorationImage(
-                          image: imageProvider,
-                          fit: BoxFit.contain,
+      flex: 3,
+      child: widget.inOrder
+          ? Padding(
+              padding: const EdgeInsets.only(top: 10.0, right: 10.0, left: 10.0),
+              child: CachedNetworkImage(
+                  fadeInCurve: Curves.ease,
+                  imageUrl: "$serverImage/${widget.image}-mini.webp",
+                  imageBuilder: (context, imageProvider) => Container(
+                        decoration: BoxDecoration(
+                          image: DecorationImage(
+                            image: imageProvider,
+                            fit: BoxFit.contain,
+                          ),
                         ),
                       ),
-                    ),
-                placeholder: (context, url) => Center(child: spinKit()),
-                errorWidget: (context, url, error) => noImage()),
-          ),
-          Positioned(top: 0, right: 0, child: FavButton(id: widget.id!)),
-          if (widget.discountValue != 0 && widget.discountValue != null)
-            Positioned(
-                bottom: 8,
-                left: 8,
-                child: Container(
-                  padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 4),
-                  decoration: const BoxDecoration(color: Colors.red, borderRadius: borderRadius5),
-                  child: Text("- ${widget.discountValue} %", style: const TextStyle(color: Colors.white, fontFamily: montserratRegular, fontSize: 12)),
-                ))
-          else
-            const SizedBox.shrink()
-        ],
-      ),
+                  placeholder: (context, url) => Center(child: spinKit()),
+                  errorWidget: (context, url, error) => noImage()),
+            )
+          : Stack(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(top: 10.0, right: 10.0, left: 10.0),
+                  child: CachedNetworkImage(
+                      fadeInCurve: Curves.ease,
+                      imageUrl: "$serverImage/${widget.image}-mini.webp",
+                      imageBuilder: (context, imageProvider) => Container(
+                            decoration: BoxDecoration(
+                              image: DecorationImage(
+                                image: imageProvider,
+                                fit: BoxFit.contain,
+                              ),
+                            ),
+                          ),
+                      placeholder: (context, url) => Center(child: spinKit()),
+                      errorWidget: (context, url, error) => noImage()),
+                ),
+                Positioned(top: 0, right: 0, child: FavButton(id: widget.id!)),
+                if (widget.discountValue != 0 && widget.discountValue != null)
+                  Positioned(
+                      bottom: 8,
+                      left: 8,
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 4),
+                        decoration: const BoxDecoration(color: Colors.red, borderRadius: borderRadius5),
+                        child: Text("- ${widget.discountValue} %", style: const TextStyle(color: Colors.white, fontFamily: montserratRegular, fontSize: 12)),
+                      ))
+                else
+                  const SizedBox.shrink()
+              ],
+            ),
     );
   }
 }
