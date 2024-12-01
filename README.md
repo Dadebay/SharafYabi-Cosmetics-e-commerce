@@ -8,22 +8,12 @@
 [Download the app from the Google Play Store](https://play.google.com/store/apps/details?id=com.bilermennesil.sharafyabi)
 
 ## Screenshots
-
-### App in Action
-
 ![ScreenShot 1](https://play-lh.googleusercontent.com/iM26UXqPSmpGapPB8Cx2w9TqYesSi21vlPiGR7RwiPYo2rcaea_4ZIDPtdmJGJGsxxE=w1052-h592-rw)
 ![ScreenShot 2](https://play-lh.googleusercontent.com/6vhgUPpheOFrsbjuvQWhDFBEykZK7yVFVsNgNq-jUhwXjywZGZ9vVVnI_aQTF5-Xfd8=w1052-h592-rw)
 ![ScreenShot 3](https://play-lh.googleusercontent.com/q4paMSipPLMsrZMhc7V1fwj6arRmbg5f-3HD2spKilIKD6fYpcMZAka8U8emzmvXFmg=w1052-h592-rw)
-
-### Detailed Views
-
 ![ScreenShot 4](https://play-lh.googleusercontent.com/_-OrRxIY7frreBGTbFcigdF2oGRUgbUYfJQLOV_5w-p3GBvuQdWnH3v-IBU41CC-2A=w1052-h592-rw)
 ![ScreenShot 5](https://play-lh.googleusercontent.com/zsG8O475enwQ-Y7t3c3m_UMgS4dNJT6qDbiHKDdgV41uBBYrmg1aGaFOc9Kgl7BbYEQ=w1052-h592-rw)
-
-### User Interface
-
 ![ScreenShot 6](https://play-lh.googleusercontent.com/pCyn6T45EcHKipqaaPEjD4fSFgUVua8U9KdgiT9zMeOBoywhfAC3bRNnMwB4p0Q-wN0=w1052-h592-rw)
-![ScreenShot 7](https://play-lh.googleusercontent.com/UxsS1M-B3lnzpbQmKB2XLQQGazy-LJozlBAwFr-aITJllDyT48y4MWO0ejsxIWFM7wJE=w1052-h592-rw)
 
 ## Features
 
